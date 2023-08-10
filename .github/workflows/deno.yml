@@ -15,7 +15,18 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup deno
         uses: denoland/setup-deno@v1
-      - name: Build Astro from Denom
+      - uses: actions/cache@v3
+        id: deno_cache
+        env:
+          cache-name: cache-deno
+        with:
+          path: |
+            node_modules
+            
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/deno.lock') }}
+      - name: Test deno cache dir
+        run: deno info
+      - name: Build Astro from Deno
         run: deno task build
       - name: Deploy Astro Website
         uses: denoland/deployctl@v1
