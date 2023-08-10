@@ -71,7 +71,7 @@ export default (props: Props) => {
                   <button class="p-2 rounded-full border" onClick={() => {
                     editor?.chain().focus().toggleSheet().run()
                   }}>          
-                    { editor?.isActive('note') ? <IconNote /> : <IconNoteOff /> }
+                    { editor?.isActive('sheet') ? <IconNote /> : <IconNoteOff /> }
                   </button>
                  <button class="p-2 rounded-full border" onClick={() => {
                     editor?.chain().focus().toggleBold().run()
