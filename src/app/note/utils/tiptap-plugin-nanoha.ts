@@ -18,7 +18,7 @@ export const TipTapPluginNanoha = Mark.create({
       {
         tag: 'span',
         getAttrs: element => {
-          return element.getAttribute("class") === "nanoha-sheet"
+          return "nanohasheet" in element.dataset
         }
       },
     ];
