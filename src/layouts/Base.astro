@@ -1,0 +1,21 @@
+--- 
+interface Props {
+  title: string
+  description: string
+}
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+		<meta name="description" content={ Astro.props.descripton } />
+    <meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{Astro.props.title}</title>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
