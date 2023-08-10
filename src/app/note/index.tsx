@@ -17,7 +17,14 @@ export default function(props: Props){
   return <>
     <div>This is app!</div>
 
-    <TextNote mode={mode} isView={isView} />
+    <TextNote mode={mode} isView={isView} defaultContent={`
+       <p>こんにちは！これはNanohaNoteです！</p>
+       <p>NanohaNoteは、「じぶん」で作る、学習用ノートブックです！</p>
+       <p>暗記をスムーズに行えます。</p>
+       <p>例えば、こんなことができちゃいます:</p>
+       <p><span data-nanohasheet="true">Scratch</span></p>
+    `} />
+    
     <div class="fixed bottom-0">
       {/* Navbar */}
       <div class="flex gap-4">
