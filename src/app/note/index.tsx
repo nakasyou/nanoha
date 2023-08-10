@@ -16,7 +16,7 @@ export default function(props: Props){
 
   return <>
     <div>This is app!</div>
-    <TextNote mode={mode} isView={isView} />
+
     
     <div class="fixed bottom-0">
       {/* Navbar */}
