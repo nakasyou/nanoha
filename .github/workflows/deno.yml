@@ -1,0 +1,25 @@
+name: Deploy from Astro via Deno
+on:
+  push:
+  pull_request:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: Setup deno
+        uses: denoland/setup-deno@v1
+      - name: Build Astro from Denom
+        run: deno task build
+      - name: Deploy Astro Website
+        uses: denoland/deployctl@v1
+        with:
+          project: "nanohanote"
+          entrypoint: server/entry.mjs
+          root: dist
