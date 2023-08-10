@@ -81,7 +81,7 @@ export default (props: Props) => {
                   {editor?.isActive('bold') ? 'active' : 'nonactive'}
                 </div>
               </div>
-             </div>)
+             </div>
             <div className={classNames({ hidden: props.mode === "edit" })}>
                {/* View Mode */}
               <div class="p-4 rounded-md border">
@@ -90,7 +90,6 @@ export default (props: Props) => {
                 }}/>
               </div>
             </div>
-            
       </div>
     </>
   )
