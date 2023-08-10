@@ -60,7 +60,7 @@ export default (props: Props) => {
   return (
     <>
       <div class="mx-10">
-          <div className={classNames({ hidden: props.mode === "edit" })}>
+          <div className={classNames({ hidden: props.mode === "play" })}>
               {/* Edit Mode */}
               <div class="p-4 rounded-md border">
                 <EditorContent editor={editor} />
@@ -82,7 +82,7 @@ export default (props: Props) => {
                 </div>
               </div>
              </div>)
-            <div className={classNames({ hidden: props.mode === "play" })}>
+            <div className={classNames({ hidden: props.mode === "edit" })}>
                {/* View Mode */}
               <div class="p-4 rounded-md border">
                 <div ref={viewEditorRef} dangerouslySetInnerHTML={{
