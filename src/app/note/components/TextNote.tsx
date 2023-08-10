@@ -1,17 +1,14 @@
 //    <TextNote mode={mode} isView={isView} />
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import { TipTapPluginNanoha } from "../utils/tiptap-plugin-nanoha.ts"
+import { EditorContent, useEditor } from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
+import { TipTapPluginSheet } from "../utils/tiptap-plugin-sheet.js"
 import {
-  IconNote,
-  IconNoteOff,
   IconBold,
   IconBoldOff,
-} from '@tabler/icons-react'
-import {
-  useRef,
-  useEffect,
-} from "react"
+  IconNote,
+  IconNoteOff,
+} from "@tabler/icons-react"
+import { useEffect, useRef } from "react"
 import classNames from "classnames"
 export interface Props {
   mode: "edit" | "play"
@@ -20,24 +17,27 @@ export interface Props {
 }
 export default (props: Props) => {
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      TipTapPluginNanoha,
-    ],
+    extensions: [StarterKit, TipTapPluginSheet],
     content: props.defaultContent,
   })
+  const viewEditorRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    for (const nanohaSheetElement of (viewEditorRef?.current?.getElementsByClassName("nanoha-sheet") || [])) {
+    for (const nanohaSheetElement of viewEditorRef?.current?.getElementsByClassName(
+      "nanoha-sheet"
+    ) || []) {
       nanohaSheetElement.dataset.isview = props.isView
       nanohaSheetElement?.onresetsheet()
     }
   }, [props.isView])
-  const viewEditorRef = useRef(null)
   useEffect(() => {
-    for (const nanohaSheetElement of (viewEditorRef?.current?.getElementsByClassName("nanoha-sheet") || [])) {
+    for (const nanohaSheetElement of viewEditorRef?.current?.getElementsByClassName(
+      "nanoha-sheet"
+    ) || []) {
       nanohaSheetElement.dataset.isview = "true"
       nanohaSheetElement.style = ""
-      const getIsView = (): boolean => (nanohaSheetElement.dataset.isview === "true")
+      nanohaSheetElement.classList.add("select-none")
+      const getIsView = (): boolean =>
+        nanohaSheetElement.dataset.isview === "true"
       const reset = () => {
         if (getIsView()) {
           nanohaSheetElement.classList.add("bg-red-100")
@@ -60,36 +60,45 @@ export default (props: Props) => {
   }, [props.mode])
   return (
     <>
-      <div class="mx-10">
-          <div className={classNames({ hidden: props.mode === "play" })}>
-              {/* Edit Mode */}
-              <div class="p-4 rounded-md border">
-                <EditorContent editor={editor} />
-              </div>
-              <div>
-                {/* コントロールパネル */}
-                <div class="flex justify-center items-center">
-                  <button class="p-2 rounded-full border" onClick={() => {
-                    editor?.chain().focus().toggleSheet().run()
-                  }}>          
-                    { editor?.isActive('sheet') ? <IconNote /> : <IconNoteOff /> }
-                  </button>
-                 <button class="p-2 rounded-full border" onClick={() => {
-                    editor?.chain().focus().toggleBold().run()
-                  }}>
-                    {editor?.isActive('bold') ? <IconBold /> : <IconBoldOff />}
-                  </button>
-                </div>
-              </div>
-             </div>
-            <div className={classNames({ hidden: props.mode === "edit" })}>
-               {/* View Mode */}
-              <div class="p-4 rounded-md border">
-                <div ref={viewEditorRef} dangerouslySetInnerHTML={{
-                  __html: editor?.getHTML()
-                }}/>
-              </div>
+      <div className="mx-10">
+        <div className={classNames({ hidden: props.mode === "play" })}>
+          {/* Edit Mode */}
+          <div className="p-4 rounded-md border">
+            <EditorContent editor={editor} />
+          </div>
+          <div>
+            {/* コントロールパネル */}
+            <div className="flex justify-center items-center">
+              <button
+                className="p-2 rounded-full border"
+                onClick={() => {
+                  editor?.chain().focus().toggleSheet().run()
+                }}
+              >
+                {editor?.isActive("sheet") ? <IconNote /> : <IconNoteOff />}
+              </button>
+              <button
+                className="p-2 rounded-full border"
+                onClick={() => {
+                  editor?.chain().focus().toggleBold().run()
+                }}
+              >
+                {editor?.isActive("bold") ? <IconBold /> : <IconBoldOff />}
+              </button>
             </div>
+          </div>
+        </div>
+        <div className={classNames({ hidden: props.mode === "edit" })}>
+          {/* View Mode */}
+          <div className="p-4 rounded-md border">
+            <div
+              ref={viewEditorRef}
+              dangerouslySetInnerHTML={{
+                __html: editor?.getHTML() as string,
+              }}
+            />
+          </div>
+        </div>
       </div>
     </>
   )

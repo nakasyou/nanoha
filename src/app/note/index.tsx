@@ -27,10 +27,10 @@ export default function(props: Props){
        <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
     `} />
     
-    <div class="fixed bottom-0">
+    <div className="fixed bottom-0">
       {/* Navbar */}
-      <div class="flex gap-4">
-        <div class="flex justify-center items-center bg-stone-100 rounded-full">
+      <div className="flex gap-4">
+        <div className="flex justify-center items-center bg-stone-100 rounded-full">
           <button onClick={()=>setMode("edit")} className={classnames("p-4 rounded-full", { "bg-lime-300": mode === "edit" })}>
             <IconEdit />
           </button>
@@ -38,8 +38,8 @@ export default function(props: Props){
             <IconPlayerPlay />
           </button>
         </div>
-        <div class="flex justify-center items-center gap-2">
-          <button onClick={()=>setIsView(!isView)} class="p-4 rounded-full drop-shadow-md bg-emerald-100 hover:bg-emerald-200">
+        <div className="flex justify-center items-center gap-2">
+          <button onClick={()=>setIsView(!isView)} className="p-4 rounded-full drop-shadow-md bg-emerald-100 hover:bg-emerald-200">
             <IconEye />
           </button>
         </div>

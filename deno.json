@@ -3,7 +3,10 @@
     "dev": "deno run -A --node-modules-dir npm:astro@2.8.1 dev",
     "start": "deno run -A --node-modules-dir npm:astro@2.8.1 dev",
     "build": "deno run -A --node-modules-dir npm:astro@2.8.1 build",
-    "preview": "deno run -A --node-modules-dir npm:astro@2.8.1 preview",
+    "preview": "deno run --allow-net --allow-read --allow-env ./dist/server/entry.mjs",
     "astro": "deno run -A --node-modules-dir npm:astro@2.8.1"
+  },
+  "fmt": {
+    "semiColons": false
   }
 }

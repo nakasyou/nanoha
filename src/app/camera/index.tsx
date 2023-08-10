@@ -1,7 +1,7 @@
-import {} from ""
+import { useRef } from "react"
 
 export default function () {
-  const 
+  const videoRef =useRef()
   return <>
   </>
 }

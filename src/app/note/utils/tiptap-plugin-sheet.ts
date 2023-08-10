@@ -4,7 +4,18 @@ import {
   mergeAttributes,
 } from '@tiptap/core'
 
-export const TipTapPluginNanoha = Mark.create({
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    sheet: {
+      /**
+       * Set a sheet mark
+       */
+      toggleSheet: () => ReturnType,
+    }
+  }
+}
+
+export const TipTapPluginSheet = Mark.create({
   name: 'sheet',
   priority: 1000,
   addOptions() {
@@ -37,6 +48,13 @@ export const TipTapPluginNanoha = Mark.create({
       toggleSheet: () => ({ commands }) => {
         return commands.toggleMark(this.name)
       },
+    }
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      'Mod-Shift-S': () => this.editor.commands.toggleSheet(),
+      'Mod-Shift-s': () => this.editor.commands.toggleSheet(),
     }
   },
 })
