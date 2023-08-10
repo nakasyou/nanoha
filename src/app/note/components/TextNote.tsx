@@ -70,15 +70,14 @@ export default (props: Props) => {
                 <div class="flex justify-center items-center">
                   <button class="p-2 rounded-full border" onClick={() => {
                     editor?.chain().focus().toggleSheet().run()
-                  }}>
-                    <IconNote />
+                  }}>          
+                    { editor?.isActive('note') ? <IconNote /> : <IconNoteOff /> }
                   </button>
                  <button class="p-2 rounded-full border" onClick={() => {
                     editor?.chain().focus().toggleBold().run()
                   }}>
                     {editor?.isActive('bold') ? <IconBold /> : <IconBoldOff />}
                   </button>
-                  {editor?.isActive('bold') ? 'active' : 'nonactive'}
                 </div>
               </div>
              </div>
