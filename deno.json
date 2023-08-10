@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "dev": "deno run -A --node-modules-dir npm:astro@2.8.1 dev",
+    "start": "deno run -A --node-modules-dir npm:astro@2.8.1 dev",
+    "build": "deno run -A --node-modules-dir npm:astro@2.8.1 build",
+    "preview": "deno run -A --node-modules-dir npm:astro@2.8.1 preview",
+    "astro": "deno run -A --node-modules-dir npm:astro@2.8.1"
+  }
+}
