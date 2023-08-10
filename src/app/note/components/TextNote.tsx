@@ -16,6 +16,7 @@ import classNames from "classnames"
 export interface Props {
   mode: "edit" | "play"
   isView: boolean
+  defaultContent: string
 }
 export default (props: Props) => {
   const editor = useEditor({
@@ -23,7 +24,7 @@ export default (props: Props) => {
       StarterKit,
       TipTapPluginNanoha,
     ],
-    content: '<p>TextNote</p>',
+    content: props.defaultContent,
   })
   useEffect(() => {
     for (const nanohaSheetElement of (viewEditorRef?.current?.getElementsByClassName("nanoha-sheet") || [])) {
