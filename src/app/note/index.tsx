@@ -28,7 +28,7 @@ export default function(props: Props){
        <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
       `} />
     </div>
-    <div className="fixed bottom-0">
+    <div className="fixed bottom-0 w-full bg-amber-100">
       {/* Navbar */}
       <div className="flex gap-4">
         <div className="flex justify-center items-center bg-stone-100 rounded-full">
@@ -49,7 +49,7 @@ export default function(props: Props){
         </button>
       </div> }
       { mode === "edit" && <div className="flex justify-center items-center gap-2">
-        <button className="p-4 rounded-full drop-shadow-md bg-emerald-100 hover:bg-emerald-200">
+        <button className="p-4 rounded-full drop-shadow-md bg-white border hover:bg-emerald-200">
           <IconPlus />
         </button>
       </div> }
