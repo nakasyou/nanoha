@@ -28,10 +28,10 @@ export default function(props: Props){
        <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
       `} />
     </div>
-    <div className="fixed bottom-0 w-full bg-amber-100">
+    <div className="fixed bottom-0 w-full bg-lime-200">
       {/* Navbar */}
       <div className="flex gap-4 justify-center items-center m-2">
-        <div className="flex justify-center items-center bg-stone-100 rounded-full">
+        <div className="flex justify-center items-center bg-lime-50 rounded-full">
           <button onClick={()=>setMode("edit")} className={classnames("p-4 rounded-full", { "bg-lime-300": mode === "edit" })}>
             <IconEdit />
           </button>
