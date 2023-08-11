@@ -3,6 +3,7 @@ import {
   IconPlayerPlay,
   IconEdit,
   IconEye,
+  IconPlus
 } from "@tabler/icons-react"
 import { useState } from "react"
 import classnames from "classnames"
@@ -45,6 +46,11 @@ export default function(props: Props){
       { mode === "play" && <div className="flex justify-center items-center gap-2">
         <button onClick={()=>setIsView(!isView)} className="p-4 rounded-full drop-shadow-md bg-emerald-100 hover:bg-emerald-200">
           <IconEye />
+        </button>
+      </div> }
+      { mode === "edit" && <div className="flex justify-center items-center gap-2">
+        <button className="p-4 rounded-full drop-shadow-md bg-emerald-100 hover:bg-emerald-200">
+          <IconPlus />
         </button>
       </div> }
     </div>

@@ -1,9 +1,12 @@
 ---
 import BaseLayout from '../layouts/Base.astro'
+
+import type { APIRoute } from 'astro';
+
 ---
 <BaseLayout title="Creating" description='nanohanote'>
   <div>Creating...</div>
 </BaseLayout>
 <script>
-  location.href = "/notes/" + crypto.randomUUID()
+  location.href = "/notes/" + 0
 </script>
