@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useRef, useEffect } from "react"
 
 export default function () {
   const videoRef = useRef<HTMLVideoElement | null>(null)
