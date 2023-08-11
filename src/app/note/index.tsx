@@ -13,11 +13,7 @@ export interface Props {
 export default function(props: Props){
   const [mode, setMode] = useState<"edit" | "play">("edit")
   const [isView, setIsView] = useState(false)
-
-  return <>
-    <div>This is app!</div>
-
-    <TextNote mode={mode} isView={isView} defaultContent={`
+  const [notes, setNotes] = useState(<TextNote mode={mode} isView={isView} defaultContent={`
        <p>こんにちは！これはNanohaNoteです！</p>
        <p>NanohaNoteは、「じぶん」で作る、学習用ノートブックです！</p>
        <p>暗記をスムーズに行えます。</p>
@@ -25,8 +21,16 @@ export default function(props: Props){
        <p>「Scratchでプログラミングするように、視覚的にプログラミングすることを、<span data-nanohasheet="true">ビジュアルプログラミング</span>という」</p>
        <p>じゃーん。すごいでしょ。<b>こんなふうに太字</b>にしたり、<del>証拠隠滅</del>したりできます。</p>
        <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
-    `} />
-    
+  `} />)
+  return <>
+    <div>This is app!</div>
+    <div>
+      {
+        notes.map(note => {
+          return note
+        })
+      }
+    </div>
     <div className="fixed bottom-0">
       {/* Navbar */}
       <div className="flex gap-4">
