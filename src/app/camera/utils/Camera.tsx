@@ -14,7 +14,9 @@ export interface UseCameraInit {
   height: number
 }
 export const useCamera = (init: UseCameraInit): CameraContext => {
+  alert('start useCamera')
   const videoRef = useRef(document.createElement('video'))
+  alert('videoRef', videoRef)
   videoRef.current.autoplay = true
   videoRef.current.width = init.width
   videoRef.current.height = init.height
