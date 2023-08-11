@@ -1,26 +1,30 @@
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 
 export default function () {
-  const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [cameraStream, setCameraStream] = useState(null)
   useEffect(() => {
     (async () => {
       if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
         // カメラ使えない
         alert('お使いのデバイスには、ウェブカメラ機能が搭載されていません...')
       }
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true }).catch(() => alert('カメラへのアクセスを許可してください'))
-      videoRef.current.srcObject = stream
-      videoRef.current?.play()
+      setCameraStream(await navigator.mediaDevices.getUserMedia({ video: true }).catch(() => alert('カメラへのアクセスを許可してください')))
+      
+      const video = document.createElement('video')
+      video.width = 1000
+      video.height = 1000
+      video.autoplay = true
+      video.srcObject = cameraStream
+      video.play()
       const ctx = canvasRef.current.getContext('2d')
       setInterval(() => {
-        ctx.drawImage(videoRef.current, 1000, 1000)
+        ctx.drawImage(video, 0, 0)
       }, 10)
     })()
   }, [])
 
   return <>
-    <video width="1000" height="1000" autoplay ref={videoRef} />
     <canvas width="1000" height="1000" ref={canvasRef} />
     Hello camera!
   </>
