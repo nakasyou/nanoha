@@ -15,6 +15,6 @@ export default function () {
   }, [])
   return <>
     aaa
-    <Camera cameraContext={camera} />
+
   </>
 }
