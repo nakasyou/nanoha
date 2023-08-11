@@ -41,15 +41,15 @@ export default function(props: Props){
         </div>
       </div>
     </div>
-    <div className="fixed bottom-8 right-0">
+    <div className="fixed bottom-10 right-0">
       {/* 重要ボタンとか言うやつ */}
       { mode === "play" && <div className="flex justify-center items-center gap-2">
-        <button onClick={()=>setIsView(!isView)} className="p-4 rounded-full drop-shadow-md bg-emerald-100 hover:bg-emerald-200">
+        <button className="p-4 rounded-md drop-shadow bg-white border hover:bg-lime-50" onClick={()=>setIsView(!isView)}>
           <IconEye />
         </button>
       </div> }
       { mode === "edit" && <div className="flex justify-center items-center gap-2">
-        <button className="p-4 rounded-full drop-shadow-md bg-white border hover:bg-emerald-200">
+        <button className="p-4 rounded-md drop-shadow bg-white border hover:bg-lime-50">
           <IconPlus />
         </button>
       </div> }
