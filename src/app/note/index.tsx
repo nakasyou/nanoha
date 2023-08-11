@@ -30,7 +30,7 @@ export default function(props: Props){
     </div>
     <div className="fixed bottom-0 w-full bg-amber-100">
       {/* Navbar */}
-      <div className="flex gap-4">
+      <div className="flex gap-4 justify-center items-center m-2">
         <div className="flex justify-center items-center bg-stone-100 rounded-full">
           <button onClick={()=>setMode("edit")} className={classnames("p-4 rounded-full", { "bg-lime-300": mode === "edit" })}>
             <IconEdit />
