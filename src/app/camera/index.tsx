@@ -10,7 +10,7 @@ export default function () {
         height: 100,
       })
       alert(camera)
-      } catch(e) {alert("error", e)}
+      } catch(e) {alert(e)}
       const inputs = await camera.getInputs()
       await camera.startCamera(inputs[0])
     })()
