@@ -44,12 +44,12 @@ export default function(props: Props){
     <div className="fixed bottom-10 right-4">
       {/* 重要ボタンとか言うやつ */}
       { mode === "play" && <div className="flex justify-center items-center gap-2">
-        <button className="p-4 rounded-3xl drop-shadow bg-white border hover:bg-lime-50" onClick={()=>setIsView(!isView)}>
+        <button className="p-4 rounded-2xl drop-shadow bg-white border hover:bg-lime-50" onClick={()=>setIsView(!isView)}>
           <IconEye />
         </button>
       </div> }
       { mode === "edit" && <div className="flex justify-center items-center gap-2">
-        <button className="p-4 rounded-3xl drop-shadow bg-white border hover:bg-lime-50">
+        <button className="p-4 rounded-2xl drop-shadow bg-white border hover:bg-lime-50">
           <IconPlus />
         </button>
       </div> }
