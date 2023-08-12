@@ -13,6 +13,7 @@
     "@astrojs/deno": "^4.3.0",
     "@astrojs/react": "^2.2.1",
     "@astrojs/tailwind": "^4.0.0",
+    "@material/material-color-utilities": "^0.2.7",
     "@tabler/icons-react": "^2.30.0",
     "@tiptap/core": "^2.0.4",
     "@tiptap/pm": "^2.0.4",
