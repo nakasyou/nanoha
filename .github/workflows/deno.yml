@@ -23,7 +23,7 @@ jobs:
           path: |
             node_modules
             /home/runner/.cache/deno
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/deno.lock') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/deno.lock', '**/pnpm-lock.yaml') }}
       - name: Test deno cache dir
         run: deno info
       - name: Build Astro from Deno
