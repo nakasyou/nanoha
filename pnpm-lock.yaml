@@ -44,6 +44,9 @@ dependencies:
   classnames:
     specifier: ^2.3.2
     version: 2.3.2
+  mikanui:
+    specifier: ^0.1.10
+    version: 0.1.10
   react:
     specifier: ^18.0.0
     version: 18.2.0
@@ -3203,6 +3206,15 @@ packages:
     dependencies:
       braces: 3.0.2
       picomatch: 2.3.1
+    dev: false
+
+  /mikanui@0.1.10:
+    resolution: {integrity: sha512-BM2dhDPasfcWPNxtT1xRcWrfGAXwp6aZ0aPyPhZAb6g3xh1KhzyN9DPB8fE1AuA2gu2njV6yBW27+VfH2/Hgdw==}
+    dependencies:
+      '@material/material-color-utilities': 0.2.7
+      tailwindcss: 3.3.3
+    transitivePeerDependencies:
+      - ts-node
     dev: false
 
   /mime@3.0.0:

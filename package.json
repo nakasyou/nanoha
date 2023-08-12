@@ -23,6 +23,7 @@
     "@types/react-dom": "^18.0.6",
     "astro": "^2.10.4",
     "classnames": "^2.3.2",
+    "mikanui": "^0.1.10",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "tailwindcss": "^3.0.24"
