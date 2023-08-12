@@ -4,7 +4,8 @@ import {
   IconEdit,
   IconEye,
   IconPlus,
-  IconScan
+  IconScan,
+  IconX,
 } from "@tabler/icons-react"
 import { useState } from "react"
 import classnames from "classnames"
@@ -55,11 +56,14 @@ export default function(props: Props){
         { mode === "edit" && <>
           <div className="flex justify-center items-center gap-2 flex-col">
             {
-              plusFubActive && <div>
+              plusFubActive && <>
+                <button className="fab" onClick={() => setPlusFubActive(false)}>
+                  <IconX />
+                </button>
                 <button className="fab">
                   <IconScan />
                 </button>
-              </div>
+              </>
             }
             <button className="fab" onClick={() => {
               setPlusFubActive(!plusFubActive)
