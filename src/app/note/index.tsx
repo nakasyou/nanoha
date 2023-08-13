@@ -9,6 +9,7 @@ import {
 } from "@tabler/icons-react"
 import { useState } from "react"
 import classnames from "classnames"
+import ScanDialog from "./components/ScanDialog.tsx"
 
 export interface Props {
   
@@ -16,9 +17,13 @@ export interface Props {
 export default function(props: Props){
   const [mode, setMode] = useState<"edit" | "play">("edit")
   const [isView, setIsView] = useState(false)
-
+  
   const [plusFubActive, setPlusFubActive] = useState(false)
+  const [isScanActive, setIsScanActive] = useState(false)
   return <>
+    <div>
+      { isScanActive && <ScanDialog /> }
+    </div>
     <div className="bg-background text-on-background min-h-screen">
       <div>This is app!</div>
       <div>
@@ -60,7 +65,9 @@ export default function(props: Props){
                 <button className="fab" onClick={() => setPlusFubActive(false)}>
                   <IconX />
                 </button>
-                <button className="fab">
+                <button className="fab" onClick={() => {
+                  setIsScanActive(true)
+                }}>
                   <IconScan />
                 </button>
               </>
