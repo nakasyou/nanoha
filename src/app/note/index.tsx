@@ -62,10 +62,10 @@ export default function(props: Props){
           <div className="flex justify-center items-center gap-2 flex-col">
             {
               plusFubActive && <>
-                <button className="fab" onClick={() => setPlusFubActive(false)}>
+                <button className="small-fab flex justify-center items-center" onClick={() => setPlusFubActive(false)}>
                   <IconX />
                 </button>
-                <button className="fab" onClick={() => {
+                <button className="small-fab flex justify-center items-center" onClick={() => {
                   setIsScanActive(true)
                 }}>
                   <IconScan />
