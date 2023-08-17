@@ -7,6 +7,8 @@ export default () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [scanedFile, setScanedFile] = useState<File | null>(null)
   const [scanedImage, setScanedImage] = useState<HTMLImageElement | null>(null)
+  const [sheetSvgViewBox, setSheetSvgViewBox] = useState("")
+
   const renderFlame: [(() => void ) | null] = [null]
   
   const imageSheets: DoubleTouple<number>[][] = []
@@ -19,6 +21,8 @@ export default () => {
     const canvas = canvasRef.current!
     const ctx = canvas.getContext('2d')!
     const pointerData: Record<string, DoubleTouple<number>[]> = {}
+
+    setSheetSvgViewBox(`0 0 ${scanedImage?.width} ${scanedImage?.height}`) // 被せるSVGのサイズ指定
     canvas.onpointerdown = evt => {
       pointerData[evt.pointerId] = []
     }
@@ -43,14 +47,14 @@ export default () => {
       if (scanedImage) {
         ctx.drawImage(scanedImage!, 0, 0)
       }
-      console.log(imageSheets)
-      for (const imageSheet of imageSheets) {
+      ctx.strokeStyle = "#f002"
+      ctx.lineWidth = 10
+      for (const imageSheet of [...imageSheets, ...Object.values(pointerData)]) {
+        ctx.beginPath()
         for (const position of imageSheet) {
-          ctx.beginPath()
-          ctx.arc(...position, 10, 0, Math.PI * 2)
-          ctx.fillStyle = "lightskyblue"
-          ctx.fill()
+          ctx.lineTo(...position)
         }
+        ctx.stroke()
       }
       if (renderFlame[0]) {
         window.requestAnimationFrame(renderFlame[0])
@@ -59,8 +63,8 @@ export default () => {
     renderFlame[0]()
   }, [scanedImage])
   return <>
-    <div className="w-full fixed z-20">
-      <div className="w-full h-screen">
+    <div className="w-full fixed z-20 ">
+      <div className="w-full h-screen bg-[#00000099]">
         <div className="flex justify-center items-center mx-auto my-auto ">
           <div className="bg-background p-4 border border-on-background rounded-xl text-on-background">
             <div>
@@ -90,7 +94,18 @@ export default () => {
                 }}>カメラを起動する</button>
               </div> }
               <div>
-                <canvas ref={canvasRef} />
+                <div className='relative'>
+                  <canvas ref={canvasRef} className="absolute" />
+                  <svg viewBox={sheetSvgViewBox} className='absolute' style={{
+                    //bottom: sheetSvgViewBox.replace(/.+ .+ .+ /, "")+  "px"
+                  }} >
+
+                  </svg>
+                </div>
+                <div style={{
+                  width: scanedImage?.width,
+                  height: scanedImage?.height
+                }}/>
                 {
                   scanedImage && <div>
                     <div className="flex justify-center">
