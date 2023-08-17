@@ -7,9 +7,9 @@ export default () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [scanedFile, setScanedFile] = useState<File | null>(null)
   const [scanedImage, setScanedImage] = useState<HTMLImageElement | null>(null)
-  const [renderFlame, setRenderFlame] = useState<(() => void ) | null>(null)
+  const renderFlame: [(() => void ) | null] = [null]
   
-  const [imageSheet, setImageSheet] = useState<DoubleTouple<number>[]>([])
+  const imageSheets: DoubleTouple<number>[][] = []
   const [paintTools, setPaintTools] = useState({
     pen: true,
     eraser: false,
@@ -18,22 +18,45 @@ export default () => {
   useEffect(() => {
     const canvas = canvasRef.current!
     const ctx = canvas.getContext('2d')!
-    
+    const pointerData: Record<string, DoubleTouple<number>[]> = {}
+    canvas.onpointerdown = evt => {
+      pointerData[evt.pointerId] = []
+    }
+    canvas.onpointermove = evt => {
+      if (pointerData[evt.pointerId]) {
+        const canvasRect = canvas.getBoundingClientRect()
+
+        const position: DoubleTouple<number> = [evt.clientX - canvasRect.left, evt.clientY - canvasRect.top]
+        pointerData[evt.pointerId].push(position)
+      }
+    }
+    canvas.onpointerup = evt => {
+      imageSheets.push(pointerData[evt.pointerId])
+      delete pointerData[evt.pointerId]
+    }
     if (scanedImage) {
       canvas.width = scanedImage.width
       canvas.height = scanedImage.height
     }
-    setRenderFlame(() => {
-      window.requestAnimationFrame(() => {
-        if (scanedImage) {
-          ctx.drawImage(scanedImage!, 0, 0)
+
+    renderFlame[0] = () => {
+      if (scanedImage) {
+        ctx.drawImage(scanedImage!, 0, 0)
+      }
+      console.log(imageSheets)
+      for (const imageSheet of imageSheets) {
+        for (const position of imageSheet) {
+          ctx.beginPath()
+          ctx.arc(...position, 10, 0, Math.PI * 2)
+          ctx.fillStyle = "lightskyblue"
+          ctx.fill()
         }
-        if (renderFlame) {
-          renderFlame()
-        }
-        
-      })
-    })
+      }
+      if (renderFlame[0]) {
+        window.requestAnimationFrame(renderFlame[0])
+      }
+    }
+    renderFlame[0]()
   }, [scanedImage])
   return <>
     <div className="w-full fixed z-20">
