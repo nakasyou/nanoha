@@ -23,12 +23,15 @@ export const TipTapPluginSheet = Mark.create({
       HTMLAttributes: {},
     }
   },
-  
+  // @ts-ignore
   parseHTML() {
     return [
       {
         tag: 'span',
         getAttrs: element => {
+          if (typeof element === "string") {
+            return false
+          }
           return "nanohasheet" in element.dataset
         }
       },

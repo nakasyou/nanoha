@@ -1,15 +1,20 @@
-import { IconBrush, IconBrushOff } from '@tabler/icons-react'
+import { IconBrush, IconBrushOff, IconEraser, IconEraserOff } from '@tabler/icons-react'
 import { useContext, useEffect, useRef, useState } from 'react'
+import range from '../utils/range'
 
+type DoubleTouple<T> = [T,T]
 export default () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [scanedFile, setScanedFile] = useState<File | null>(null)
   const [scanedImage, setScanedImage] = useState<HTMLImageElement | null>(null)
   const [renderFlame, setRenderFlame] = useState<(() => void ) | null>(null)
   
-  const paintTools = useState({
-    pen: false,
+  const [imageSheet, setImageSheet] = useState<DoubleTouple<number>[]>([])
+  const [paintTools, setPaintTools] = useState({
+    pen: true,
+    eraser: false,
   })
+
   useEffect(() => {
     const canvas = canvasRef.current!
     const ctx = canvas.getContext('2d')!
@@ -18,7 +23,6 @@ export default () => {
       canvas.width = scanedImage.width
       canvas.height = scanedImage.height
     }
-
     setRenderFlame(() => {
       window.requestAnimationFrame(() => {
         if (scanedImage) {
@@ -27,6 +31,7 @@ export default () => {
         if (renderFlame) {
           renderFlame()
         }
+        
       })
     })
   }, [scanedImage])
@@ -66,8 +71,21 @@ export default () => {
                 {
                   scanedImage && <div>
                     <div className="flex justify-center">
-                      <button className="filled-tonal-button">
+                      <button className="filled-tonal-button" onClick={() => {
+                        setPaintTools({
+                          pen: true,
+                          eraser: false,
+                        })
+                      }}>
                         { paintTools.pen ? <IconBrush /> : <IconBrushOff /> }
+                      </button>
+                      <button className="filled-tonal-button" onClick={() => {
+                        setPaintTools({
+                          pen: false,
+                          eraser: true,
+                        })
+                      }}>
+                        { paintTools.eraser ? <IconEraser /> : <IconEraserOff /> }
                       </button>
                     </div>
                   </div>
