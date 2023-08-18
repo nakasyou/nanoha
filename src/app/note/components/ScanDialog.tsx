@@ -96,6 +96,7 @@ export default () => {
                   input.accept = 'image/*'
                   //input.capture = 'environment'
                   input.onchange = (evt) => {
+                    alert('changed')
                     if (input.files) {
                       setScanedFile(input.files[0])
                       const image = new Image()   
@@ -113,7 +114,7 @@ export default () => {
               <div>
                 <div className='relative'>
                   <img ref={imageRef} className="absolute" />
-                  <svg viewBox={sheetSvgViewBox} className='absolute' ref={svgRef} style={{
+                  <svg viewBox={sheetSvgViewBox} className='absolute touch-none' ref={svgRef} style={{
                     //bottom: sheetSvgViewBox.replace(/.+ .+ .+ /, "")+  "px"
                   }} >
                     {
