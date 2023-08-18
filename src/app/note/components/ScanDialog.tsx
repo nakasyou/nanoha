@@ -3,64 +3,75 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import range from '../utils/range'
 
 type DoubleTouple<T> = [T,T]
+interface SvgPathCommand {
+  cmd: "M" | "L"
+  x: number
+  y: number
+}
 export default () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const imageRef = useRef<HTMLImageElement>(null)
+  const svgRef = useRef<SVGSVGElement>(null)
+
   const [scanedFile, setScanedFile] = useState<File | null>(null)
   const [scanedImage, setScanedImage] = useState<HTMLImageElement | null>(null)
   const [sheetSvgViewBox, setSheetSvgViewBox] = useState("")
 
+  const [sheetSvgPaths, setSheetSvgPaths] = useState<SvgPathCommand[][]>([[
+    { cmd: "M", x: 0, y: 0},
+    { cmd: "L", x: 100, y: 100}
+  ]])
   const renderFlame: [(() => void ) | null] = [null]
   
   const imageSheets: DoubleTouple<number>[][] = []
-  const [paintTools, setPaintTools] = useState({
-    pen: true,
-    eraser: false,
-  })
-
-  useEffect(() => {
-    const canvas = canvasRef.current!
-    const ctx = canvas.getContext('2d')!
-    const pointerData: Record<string, DoubleTouple<number>[]> = {}
-
-    setSheetSvgViewBox(`0 0 ${scanedImage?.width} ${scanedImage?.height}`) // 被せるSVGのサイズ指定
-    canvas.onpointerdown = evt => {
+  const [isPen, setIsPen] = useState(true)
+  const pointerData: Record<string, DoubleTouple<number>[]> = {}
+  const createSheetSvgData = () => {
+    const allRawSheetData = [...imageSheets, ...Object.values(pointerData)]
+    const result = allRawSheetData.map(rawSheetData => {
+      return rawSheetData.map((position, index): SvgPathCommand => {
+        const xy: { x: number, y: number } = { x: position[0], y: position[1] }
+        if (index === 0) {
+          return { ...xy, cmd: "M"}
+        }
+        return { ...xy, cmd: "L"}
+      })
+    })
+    setSheetSvgPaths(result)
+    console.log(result)
+  }
+  const setPointerEvents = () => {
+    const image = imageRef.current!
+    const svg = svgRef.current!
+    svg.onpointerdown = evt => {
       pointerData[evt.pointerId] = []
+      createSheetSvgData() 
     }
-    canvas.onpointermove = evt => {
+    svg.onpointermove = evt => {
       if (pointerData[evt.pointerId]) {
-        const canvasRect = canvas.getBoundingClientRect()
+        const canvasRect = image.getBoundingClientRect()
 
         const position: DoubleTouple<number> = [evt.clientX - canvasRect.left, evt.clientY - canvasRect.top]
         pointerData[evt.pointerId].push(position)
       }
+      createSheetSvgData()  
     }
-    canvas.onpointerup = evt => {
+    svg.onpointerup = evt => {
       imageSheets.push(pointerData[evt.pointerId])
       delete pointerData[evt.pointerId]
+      createSheetSvgData()
     }
-    if (scanedImage) {
-      canvas.width = scanedImage.width
-      canvas.height = scanedImage.height
-    }
+  }
+  useEffect(() => {
+    const svg = svgRef.current!
+    const image = imageRef.current!
 
-    renderFlame[0] = () => {
-      if (scanedImage) {
-        ctx.drawImage(scanedImage!, 0, 0)
-      }
-      ctx.strokeStyle = "#f002"
-      ctx.lineWidth = 10
-      for (const imageSheet of [...imageSheets, ...Object.values(pointerData)]) {
-        ctx.beginPath()
-        for (const position of imageSheet) {
-          ctx.lineTo(...position)
-        }
-        ctx.stroke()
-      }
-      if (renderFlame[0]) {
-        window.requestAnimationFrame(renderFlame[0])
-      }
+    setSheetSvgViewBox(`0 0 ${scanedImage?.width} ${scanedImage?.height}`) // 被せるSVGのサイズ指定
+    setPointerEvents()
+    if (scanedImage) {
+      image.width = scanedImage.width
+      image.height = scanedImage.height
+      image.src = URL.createObjectURL(scanedFile!)
     }
-    renderFlame[0]()
   }, [scanedImage])
   return <>
     <div className="w-full fixed z-20 ">
@@ -74,7 +85,6 @@ export default () => {
               <div>現実世界のノート、プリント等を取り込みましょう!</div>
               { !scanedImage && <div className="my-1">
                 <button className="outlined-button" onClick={() => {
-    alert("x")
                   const input = document.createElement("input")
                   input.type = 'file'
                   input.accept = 'image/*'
@@ -96,11 +106,17 @@ export default () => {
               </div> }
               <div>
                 <div className='relative'>
-                  <canvas ref={canvasRef} className="absolute" />
-                  <svg viewBox={sheetSvgViewBox} className='absolute' style={{
+                  <img ref={imageRef} className="absolute" />
+                  <svg viewBox={sheetSvgViewBox} className='absolute' ref={svgRef} style={{
                     //bottom: sheetSvgViewBox.replace(/.+ .+ .+ /, "")+  "px"
                   }} >
-
+                    {
+                      sheetSvgPaths.map((sheetSvgPath, index) => {
+                        return <path key={index} stroke="#f002" strokeWidth="20" fill="none" d={sheetSvgPath.map(({ cmd, x, y }) => {
+                          return `${cmd} ${x},${y}`
+                        }).join(' ')} />
+                      })
+                    }
                   </svg>
                 </div>
                 <div style={{
@@ -111,20 +127,14 @@ export default () => {
                   scanedImage && <div>
                     <div className="flex justify-center">
                       <button className="filled-tonal-button" onClick={() => {
-                        setPaintTools({
-                          pen: true,
-                          eraser: false,
-                        })
+                        setIsPen(true)
                       }}>
-                        { paintTools.pen ? <IconBrush /> : <IconBrushOff /> }
+                        { isPen ? <IconBrush /> : <IconBrushOff /> }
                       </button>
                       <button className="filled-tonal-button" onClick={() => {
-                        setPaintTools({
-                          pen: false,
-                          eraser: true,
-                        })
+                        setIsPen(false)
                       }}>
-                        { paintTools.eraser ? <IconEraser /> : <IconEraserOff /> }
+                        { !isPen ? <IconEraser /> : <IconEraserOff /> }
                       </button>
                     </div>
                   </div>
