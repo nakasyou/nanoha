@@ -92,6 +92,7 @@ export default () => {
               { !scanedImage && <div className="my-1">
                 <button className="outlined-button" onClick={() => {
                   const input = document.createElement("input")
+                  input.hidden = true
                   imageRef.current!.parentElement.append(input)
                   input.type = 'file'
                   input.accept = 'image/*'
