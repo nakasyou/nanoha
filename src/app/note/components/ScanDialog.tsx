@@ -39,6 +39,12 @@ export default () => {
     setSheetSvgPaths(result)
     console.log(result)
   }
+  const removePointerEvents = () => {
+    const svg = svgRef.current!
+    svg.onpointerdown = null
+    svg.onpointermove = null
+    svg.onpointerup = null
+  }
   const setPointerEvents = () => {
     const image = imageRef.current!
     const svg = svgRef.current!
@@ -133,6 +139,7 @@ export default () => {
                       </button>
                       <button className="filled-tonal-button" onClick={() => {
                         setIsPen(false)
+                        removePointerEvents()
                       }}>
                         { !isPen ? <IconEraser /> : <IconEraserOff /> }
                       </button>
