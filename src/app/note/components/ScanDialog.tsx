@@ -74,6 +74,7 @@ export default () => {
               <div>現実世界のノート、プリント等を取り込みましょう!</div>
               { !scanedImage && <div className="my-1">
                 <button className="outlined-button" onClick={() => {
+    alert("x")
                   const input = document.createElement("input")
                   input.type = 'file'
                   input.accept = 'image/*'
