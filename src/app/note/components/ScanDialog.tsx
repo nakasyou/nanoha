@@ -139,9 +139,9 @@ export default (props: Props) => {
                 {/*
                   scanedImage
                 */}
-                <div className='relative' style={{
-                  width: windowSize.innerHeight - 40,
-                  height: windowSize.innerHeight - 200, /*scanedImage.height > windowSize.innerHeight ? 0 : windowSize.innerHeight*/
+                <div className='relative w-screen h-screen' style={{
+                  maxWidth: windowSize.innerHeight - 40,
+                  maxHeight: windowSize.innerHeight - 200, /*scanedImage.height > windowSize.innerHeight ? 0 : windowSize.innerHeight*/
                 }}>
                   <img ref={imageRef} className="absolute w-full h-full object-contain" />
                   <svg viewBox={sheetSvgViewBox} className='absolute touch-none w-full h-full object-contain' ref={svgRef} style={{
