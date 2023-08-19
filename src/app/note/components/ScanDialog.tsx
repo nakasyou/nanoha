@@ -96,10 +96,10 @@ export default () => {
     }
   }, [scanedImage])
   return <>
-    <div className="w-full fixed z-20 ">
+    <div className="w-full fixed z-20">
       <div className="w-full h-screen bg-[#00000099]">
         <div className="flex justify-center items-center mx-auto my-auto ">
-          <div className="bg-background p-4 border border-on-background rounded-xl text-on-background">
+          <div className="bg-background p-4 border border-on-background rounded-xl text-on-background m-4">
             <div>
               <div className="text-2xl">スキャン</div>
             </div>
@@ -134,8 +134,8 @@ export default () => {
                   scanedImage
                 */}
                 <div className='relative' style={{
-                  width: windowSize.innerWidth,
-                  height: windowSize.innerHeight - 100, /*scanedImage.height > windowSize.innerHeight ? 0 : windowSize.innerHeight*/
+                  width: windowSize.innerHeight - 20,
+                  height: windowSize.innerHeight - 200, /*scanedImage.height > windowSize.innerHeight ? 0 : windowSize.innerHeight*/
                 }}>
                   <img ref={imageRef} className="absolute w-full h-full object-contain" />
                   <svg viewBox={sheetSvgViewBox} className='absolute touch-none w-full h-full object-contain' ref={svgRef} style={{
