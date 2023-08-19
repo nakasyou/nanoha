@@ -131,10 +131,10 @@ export default () => {
                     }
                   </svg>
                 </div>
-                <div style={{
+                {/*<div style={{
                   width: imageRect.width,
                   height: imageRect.height,
-                }}/>
+                }}/>*/}
                 {
                   scanedImage && <div>
                     <div className="flex justify-center">
