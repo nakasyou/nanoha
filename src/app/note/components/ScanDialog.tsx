@@ -98,7 +98,6 @@ export default () => {
                   input.accept = 'image/*'
                   input.capture = 'environment'
                   input.onchange = (evt) => {
-                    alert('changed')
                     if (input.files) {
                       setScanedFile(input.files[0])
                       const image = new Image()   
@@ -109,6 +108,7 @@ export default () => {
                     } else {
                       alert('データがありません。')
                     }
+                    input.remove()
                   }
                   input.click()
                 }}>カメラを起動する</button>
