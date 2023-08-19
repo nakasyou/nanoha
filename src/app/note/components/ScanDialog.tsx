@@ -1,6 +1,7 @@
 import { IconBrush, IconBrushOff, IconEraser, IconEraserOff } from '@tabler/icons-react'
 import { useContext, useEffect, useRef, useState } from 'react'
 import range from '../utils/range'
+import { useWindowSize } from '../utils/useWindowSize'
 
 type DoubleTouple<T> = [T,T]
 interface SvgPathCommand {
@@ -23,6 +24,8 @@ export default () => {
     { cmd: "L", x: 100, y: 100}
   ]])
   const renderFlame: [(() => void ) | null] = [null]
+
+  const windowSize = useWindowSize()
   
   const imageSheets: DoubleTouple<number>[][] = []
   const [isPen, setIsPen] = useState(true)
@@ -127,7 +130,10 @@ export default () => {
                 }}>カメラを起動する</button>
               </div> }
               <div>
-                <div className='relative w-full h-[70vh]'>
+                <div className='relative' style={{
+                  width: windowSize.width,
+                  height: windowSize.height
+                }}>
                   <img ref={imageRef} className="absolute w-full h-full object-contain" />
                   <svg viewBox={sheetSvgViewBox} className='absolute touch-none w-full h-full object-contain' ref={svgRef} style={{
                     //bottom: sheetSvgViewBox.replace(/.+ .+ .+ /, "")+  "px"
