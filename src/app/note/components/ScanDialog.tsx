@@ -39,7 +39,6 @@ export default () => {
       })
     })
     setSheetSvgPaths(result)
-    console.log(result)
   }
   const removePointerEvents = () => {
     const svg = svgRef.current!
@@ -47,8 +46,8 @@ export default () => {
     svg.onpointermove = null
     svg.onpointerup = null
     for (const element of svg.children) {
-      element.onclick = (evt) => {
-        evt.target.remove()
+      (element as SVGPathElement).onclick = (evt) => {
+        (element as SVGPathElement).setAttribute('display', 'none')
       }
     }
   }
@@ -56,7 +55,7 @@ export default () => {
     const image = imageRef.current!
     const svg = svgRef.current!
     for (const element of svg.children) {
-      element.onclick = null
+      (element as SVGPathElement).onclick = null
     }
     svg.onpointerdown = evt => {
       pointerData[evt.pointerId] = []
@@ -65,8 +64,11 @@ export default () => {
     svg.onpointermove = evt => {
       if (pointerData[evt.pointerId]) {
         const canvasRect = image.getBoundingClientRect()
+        const widthRatio = scanedImage!.width / canvasRect.width
+        const heightRaito = scanedImage!.height / canvasRect.height
 
-        const position: DoubleTouple<number> = [evt.clientX - canvasRect.left, evt.clientY - canvasRect.top]
+        console.log(widthRatio,heightRaito )
+        const position: DoubleTouple<number> = [widthRatio * (evt.clientX - canvasRect.left), heightRaito * (evt.clientY - canvasRect.top)]
         pointerData[evt.pointerId].push(position)
       }
       createSheetSvgData()  
@@ -104,7 +106,7 @@ export default () => {
                 <button className="outlined-button" onClick={() => {
                   const input = document.createElement("input")
                   input.hidden = true
-                  imageRef.current!.parentElement.append(input)
+                  imageRef.current!.parentElement!.append(input)
                   input.type = 'file'
                   input.accept = 'image/*'
                   input.capture = 'environment'

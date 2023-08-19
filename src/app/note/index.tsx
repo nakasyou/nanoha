@@ -7,7 +7,7 @@ import {
   IconScan,
   IconX,
 } from "@tabler/icons-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import classnames from "classnames"
 import ScanDialog from "./components/ScanDialog.tsx"
 
@@ -20,6 +20,17 @@ export default function(props: Props){
   
   const [plusFubActive, setPlusFubActive] = useState(false)
   const [isScanActive, setIsScanActive] = useState(false)
+  useEffect(() => {
+    console.log(
+      "%cここにコピペしろ",
+      "font-size: 4em; color: red; font-weight: bold;",
+    )
+    console.log(
+      "%cはすべて詐欺です",
+      "font-size: 4em; color: red; font-weight: bold;",
+      "\nここは開発者がウェブサイトを詳しく調べる場所です。ここに貼り付けることで、情報が抜き取られたりするかもしれません。"
+    )
+  }, [])
   return <>
     <div>
       { isScanActive && <ScanDialog /> }
