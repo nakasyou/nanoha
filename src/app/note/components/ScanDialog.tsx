@@ -16,6 +16,8 @@ export default () => {
   const [scanedImage, setScanedImage] = useState<HTMLImageElement | null>(null)
   const [sheetSvgViewBox, setSheetSvgViewBox] = useState("")
 
+  const [imageRect, setImageRect] = useState({})
+  
   const [sheetSvgPaths, setSheetSvgPaths] = useState<SvgPathCommand[][]>([[
     { cmd: "M", x: 0, y: 0},
     { cmd: "L", x: 100, y: 100}
@@ -70,13 +72,14 @@ export default () => {
   useEffect(() => {
     const svg = svgRef.current!
     const image = imageRef.current!
-
+    
     setSheetSvgViewBox(`0 0 ${scanedImage?.width} ${scanedImage?.height}`) // 被せるSVGのサイズ指定
     setPointerEvents()
     if (scanedImage) {
       image.width = scanedImage.width
       image.height = scanedImage.height
       image.src = URL.createObjectURL(scanedFile!)
+      setImageRect(image.getBoundingClientRect())
     }
   }, [scanedImage])
   return <>
@@ -129,8 +132,8 @@ export default () => {
                   </svg>
                 </div>
                 <div style={{
-                  width: scanedImage?.width,
-                  height: scanedImage?.height
+                  width: imageRect.width,
+                  height: imageRect.height,
                 }}/>
                 {
                   scanedImage && <div>
