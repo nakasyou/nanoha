@@ -127,7 +127,7 @@ export default () => {
                 }}>カメラを起動する</button>
               </div> }
               <div>
-                <div className='relative w-full h-[50vh]'>
+                <div className='relative w-full h-full max-h-[calc(100vh - 40px)]'>
                   <img ref={imageRef} className="absolute w-full h-full object-contain" />
                   <svg viewBox={sheetSvgViewBox} className='absolute touch-none w-full h-full object-contain' ref={svgRef} style={{
                     //bottom: sheetSvgViewBox.replace(/.+ .+ .+ /, "")+  "px"
