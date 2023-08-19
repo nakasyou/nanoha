@@ -46,10 +46,18 @@ export default () => {
     svg.onpointerdown = null
     svg.onpointermove = null
     svg.onpointerup = null
+    for (const element of svg.children) {
+      element.onclick = (evt) => {
+        evt.target.remove()
+      }
+    }
   }
   const setPointerEvents = () => {
     const image = imageRef.current!
     const svg = svgRef.current!
+    for (const element of svg.children) {
+      element.onclick = null
+    }
     svg.onpointerdown = evt => {
       pointerData[evt.pointerId] = []
       createSheetSvgData() 
@@ -140,6 +148,7 @@ export default () => {
                     <div className="flex justify-center">
                       <button className="filled-tonal-button" onClick={() => {
                         setIsPen(true)
+                        setPointerEvents()
                       }}>
                         { isPen ? <IconBrush /> : <IconBrushOff /> }
                       </button>
@@ -148,6 +157,12 @@ export default () => {
                         removePointerEvents()
                       }}>
                         { !isPen ? <IconEraser /> : <IconEraserOff /> }
+                      </button>
+                    </div>
+                    <div className="flex justify-center">
+                      <button className="outlined-button" onClick={() => {
+                      }}>
+                        完了
                       </button>
                     </div>
                   </div>
