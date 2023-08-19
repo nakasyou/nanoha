@@ -135,7 +135,7 @@ export default () => {
                 */}
                 <div className='relative' style={{
                   width: windowSize.innerWidth,
-                  height: windowSize.innerHeight - 100, /*scanedImage.height > windowSize.innerHeight ? 0 : windowSize.innerHeight*/,
+                  height: windowSize.innerHeight - 100, /*scanedImage.height > windowSize.innerHeight ? 0 : windowSize.innerHeight*/
                 }}>
                   <img ref={imageRef} className="absolute w-full h-full object-contain" />
                   <svg viewBox={sheetSvgViewBox} className='absolute touch-none w-full h-full object-contain' ref={svgRef} style={{
