@@ -9,7 +9,13 @@ interface SvgPathCommand {
   x: number
   y: number
 }
-export default () => {
+export interface ScanedData {
+  imageBlob: Blob
+}
+export interface Props {
+  onClose?: (data: ScanedData) => void
+}
+export default (props: Props) => {
   const imageRef = useRef<HTMLImageElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
 
@@ -134,7 +140,7 @@ export default () => {
                   scanedImage
                 */}
                 <div className='relative' style={{
-                  width: windowSize.innerHeight - 20,
+                  width: windowSize.innerHeight - 40,
                   height: windowSize.innerHeight - 200, /*scanedImage.height > windowSize.innerHeight ? 0 : windowSize.innerHeight*/
                 }}>
                   <img ref={imageRef} className="absolute w-full h-full object-contain" />
