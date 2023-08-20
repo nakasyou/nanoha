@@ -1,6 +1,7 @@
 //    <TextNote mode={mode} isView={isView} />
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
+import type { Editor } from "@tiptap/core"
 import { TipTapPluginSheet } from "../utils/tiptap-plugin-sheet.js"
 import {
   IconBold,
@@ -14,12 +15,14 @@ export interface Props {
   mode: "edit" | "play"
   isView: boolean
   defaultContent: string
+  setEditorState: (editor: Editor | null) => void
 }
 export default (props: Props) => {
   const editor = useEditor({
     extensions: [StarterKit, TipTapPluginSheet],
     content: props.defaultContent,
   })
+  props.setEditorState(editor)
   const viewEditorRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     for (const nanohaSheetElement of viewEditorRef?.current?.getElementsByClassName(

@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react"
 import classnames from "classnames"
 import ScanDialog from "./components/ScanDialog.tsx"
+import type { Editor } from "@tiptap/react"
 
 export interface Props {
   
@@ -20,6 +21,8 @@ export default function(props: Props){
   
   const [plusFubActive, setPlusFubActive] = useState(false)
   const [isScanActive, setIsScanActive] = useState(false)
+
+  const [editor, setEditor] = useState<Editor | null>(null)
   useEffect(() => {
     console.log(
       "%cここにコピペしろ",
@@ -33,7 +36,10 @@ export default function(props: Props){
   }, [])
   return <>
     <div>
-      { isScanActive && <ScanDialog /> }
+      { isScanActive && <ScanDialog onClose={(data) => {
+        data.imageBlob
+        
+      }} /> }
     </div>
     <div className="bg-background text-on-background min-h-screen">
       <div>This is app!</div>
@@ -46,7 +52,8 @@ export default function(props: Props){
         <p>「Scratchでプログラミングするように、視覚的にプログラミングすることを、<span data-nanohasheet="true">ビジュアルプログラミング</span>という」</p>
         <p>じゃーん。すごいでしょ。<b>こんなふうに太字</b>にしたり、<del>証拠隠滅</del>したりできます。</p>
         <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
-        `} />
+        `} 
+        setEditorState={(editor) => setEditor(editor)}/>
       </div>
       <div className="fixed bottom-0 w-full bg-secondary-container">
         {/* Navbar */}

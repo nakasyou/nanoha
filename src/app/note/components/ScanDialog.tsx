@@ -178,6 +178,11 @@ export default (props: Props) => {
                     </div>
                     <div className="flex justify-center">
                       <button className="outlined-button" onClick={() => {
+                        if (props.onClose) {
+                          props.onClose({
+                            imageBlob: scanedFile!
+                          })
+                        }
                       }}>
                         完了
                       </button>
