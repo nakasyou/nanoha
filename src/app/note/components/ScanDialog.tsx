@@ -20,7 +20,7 @@ export default (props: Props) => {
   const svgRef = useRef<SVGSVGElement>(null)
 
   const [scanedFile, setScanedFile] = useState<File | null>(null)
-  const [scanedImage, setScanedImage] = useState<HTMLImageElement | null>(null)
+  const [scanedImage, setScanedImage] = useState<HTMLImageElement>(new Image())
   const [sheetSvgViewBox, setSheetSvgViewBox] = useState("")
 
   const [imageRect, setImageRect] = useState({})
@@ -60,6 +60,33 @@ export default (props: Props) => {
       }
     }
   }
+  const getFitedSize = (image: HTMLImageElement): [number, number] => {
+    const parent = image.parentElement; // 親要素を取得
+
+    const containerWidth = parent!.clientWidth; // 親要素の幅
+    const containerHeight = parent!.clientHeight; // 親要素の高さ
+
+    const imageAspect = image.naturalWidth / image.naturalHeight; // 画像のアスペクト比
+    const containerAspect = containerWidth / containerHeight; // 親要素のアスペクト比
+
+    let imageWidth, imageHeight;
+
+    if (imageAspect > containerAspect) {
+      imageWidth = containerWidth;
+      imageHeight = containerWidth / imageAspect;
+    } else {
+      imageWidth = containerHeight * imageAspect;
+      imageHeight = containerHeight;
+    }
+    return [imageWidth,imageHeight ]//[(rect.width / image.naturalWidth),  (rect.height / image.naturalHeight)]
+  }
+  const getSizeRatio = (image: HTMLImageElement): [number, number] => {
+    const [fitedWidth, fitedHeight] = getFitedSize(image)
+    return [
+      image.width / fitedWidth,
+      image.height / fitedHeight
+    ]
+  }
   const setPointerEvents = () => {
     const image = imageRef.current!
     const svg = svgRef.current!
@@ -76,8 +103,11 @@ export default (props: Props) => {
         const widthRatio = scanedImage!.width / canvasRect.width
         const heightRaito = scanedImage!.height / canvasRect.height
 
-        console.log(widthRatio,heightRaito )
-        const position: DoubleTouple<number> = [widthRatio * (evt.clientX - canvasRect.left), heightRaito * (evt.clientY - canvasRect.top)]
+        console.log(widthRatio,heightRaito,canvasRect, getSizeRatio(image))
+        const position: DoubleTouple<number> = [
+          widthRatio * (evt.clientX - canvasRect.left),
+          widthRatio * (evt.clientY - canvasRect.top)
+        ]
         pointerData[evt.pointerId].push(position)
       }
       createSheetSvgData()  
@@ -94,7 +124,7 @@ export default (props: Props) => {
     
     setSheetSvgViewBox(`0 0 ${scanedImage?.width} ${scanedImage?.height}`) // 被せるSVGのサイズ指定
     setPointerEvents()
-    if (scanedImage) {
+    if (scanedImage && scanedFile) {
       image.width = scanedImage.width
       image.height = scanedImage.height
       image.src = URL.createObjectURL(scanedFile!)
@@ -111,7 +141,7 @@ export default (props: Props) => {
             </div>
             <div className="text-center">
               <div>現実世界のノート、プリント等を取り込みましょう!</div>
-              { !scanedImage && <div className="my-1">
+              { !scanedFile && <div className="my-1">
                 <button className="outlined-button" onClick={() => {
                   const input = document.createElement("input")
                   input.hidden = true
@@ -139,29 +169,31 @@ export default (props: Props) => {
                 {/*
                   scanedImage
                 */}
-                <div className='relative w-screen h-screen' style={{
-                  maxWidth: windowSize.innerHeight - 40,
-                  maxHeight: windowSize.innerHeight - 200, /*scanedImage.height > windowSize.innerHeight ? 0 : windowSize.innerHeight*/
-                }}>
-                  <img ref={imageRef} className="absolute w-full h-full object-contain" />
-                  <svg viewBox={sheetSvgViewBox} className='absolute touch-none w-full h-full object-contain' ref={svgRef} style={{
-                    //bottom: sheetSvgViewBox.replace(/.+ .+ .+ /, "")+  "px"
-                  }} >
-                    {
-                      sheetSvgPaths.map((sheetSvgPath, index) => {
-                        return <path key={index} stroke="#f002" strokeWidth="20" fill="none" d={sheetSvgPath.map(({ cmd, x, y }) => {
-                          return `${cmd} ${x},${y}`
-                        }).join(' ')} />
-                      })
-                    }
-                  </svg>
+                <div className='overflow-scroll'>
+                  <div className='relative w-screen h-screen' style={{
+                    width: windowSize.innerWidth - 40,
+                    height: (windowSize.innerWidth - 40) * (scanedImage!.height || 1) / scanedImage!.width //windowSize.innerHeight - 200, /*scanedImage.height > windowSize.innerHeight ? 0 : windowSize.innerHeight*/
+                  }}>
+                    <img ref={imageRef} className="absolute w-full h-full object-contain" />
+                    <svg viewBox={sheetSvgViewBox} className='absolute touch-none w-full h-full object-contain' ref={svgRef} style={{
+                      //bottom: sheetSvgViewBox.replace(/.+ .+ .+ /, "")+  "px"
+                    }} >
+                      {
+                        sheetSvgPaths.map((sheetSvgPath, index) => {
+                          return <path key={index} stroke="#f002" strokeWidth="20" fill="none" d={sheetSvgPath.map(({ cmd, x, y }) => {
+                            return `${cmd} ${x},${y}`
+                          }).join(' ')} />
+                        })
+                      }
+                    </svg>
+                  </div>
                 </div>
                 {/*<div style={{
                   width: imageRect.width,
                   height: imageRect.height,
                 }}/>*/}
                 {
-                  scanedImage && <div>
+                  scanedFile && <div>
                     <div className="flex justify-center">
                       <button className="filled-tonal-button" onClick={() => {
                         setIsPen(true)

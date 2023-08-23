@@ -1,12 +1,12 @@
 import { useLayoutEffect, useState } from 'react'
 
 export interface Size {
-  interWidth: number
+  innerWidth: number
   innerHeight: number
 }
 export const useWindowSize = (): Size => {
   const [size, setSize] = useState<Size>({
-    inneeWidth: 0,
+    innerWidth: 0,
     innerHeight: 0,
   })
   useLayoutEffect(() => {
