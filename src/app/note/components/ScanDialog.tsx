@@ -11,6 +11,7 @@ interface SvgPathCommand {
 }
 export interface ScanedData {
   imageBlob: Blob
+  paths: string[]
 }
 export interface Props {
   onClose?: (data: ScanedData) => void
@@ -243,11 +244,17 @@ export default (props: Props) => {
                     <div className="flex justify-center">
                       <button className="outlined-button" onClick={() => {
                         if (props.onClose) {
-                          for (const path of [...svgRef.current?.children!] as SVGPathElement[]) {
-                            
+                          const paths: string[] = []
+                          for (const pathElement of [...svgRef.current?.children!] as SVGPathElement[]) {
+                            if (pathElement.getAttribute('display') === 'none') {
+                              continue
+                            }
+                            const pathData = pathElement.getAttribute('d')
+                            paths.push(pathData)
                           }
                           props.onClose({
-                            imageBlob: scanedFile!
+                            imageBlob: scanedFile!,
+                            paths: paths,
                           })
                         }
                       }}>
