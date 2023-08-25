@@ -42,7 +42,7 @@ export default function(props: Props){
         const svg = `<svg>${data.paths.map(path => {
           return `<path class="nanoha-sheet" d="${path}"/>`
         }).join('')}</svg>`
-        editor?.commands.insertContent()
+        editor?.commands.insertContent(svg)
       }} /> }
     </div>
     <div className="bg-background text-on-background min-h-screen">
