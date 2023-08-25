@@ -39,7 +39,7 @@ export default function(props: Props){
       { isScanActive && <ScanDialog onClose={(data) => {
         console.log(data.imageBlob)
         setIsScanActive(false)
-        editor?.commands.insertContent(data.paths)
+        editor?.commands.insertContent(data.paths.join(' '))
       }} /> }
     </div>
     <div className="bg-background text-on-background min-h-screen">
