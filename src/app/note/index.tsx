@@ -39,7 +39,10 @@ export default function(props: Props){
       { isScanActive && <ScanDialog onClose={(data) => {
         console.log(data.imageBlob)
         setIsScanActive(false)
-        editor?.commands.insertContent(data.paths.join(' '))
+        const svg = `<svg>${data.paths.map(path => {
+          return `<path class="nanoha-sheet" d="${path}"/>`
+        }).join('')}</svg>`
+        editor?.commands.insertContent()
       }} /> }
     </div>
     <div className="bg-background text-on-background min-h-screen">
