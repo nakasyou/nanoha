@@ -175,33 +175,33 @@ export default (props: Props) => {
                   <div className='relative w-screen h-screen' style={{
                     ...(() => {
                       function calculateCoverImageSize(window_w: number, window_h: number, image_w: number, image_h: number): { width: number, height: number } {
-                        const windowAspectRatio = window_w / window_h;
-                        const imageAspectRatio = image_w / image_h;
+                        const windowAspectRatio = window_w / window_h
+                        const imageAspectRatio = image_w / image_h
                     
-                        let width, height;
+                        let width, height
                     
                         if (windowAspectRatio > imageAspectRatio) {
-                            width = window_w;
-                            height = window_w / imageAspectRatio;
+                            width = window_w
+                            height = window_w / imageAspectRatio
                         } else {
-                            height = window_h;
-                            width = window_h * imageAspectRatio;
+                            height = window_h
+                            width = window_h * imageAspectRatio
                         }
                     
                         // Adjust the calculated dimensions if they exceed the window size
                         if (width > window_w) {
-                            const scaleFactor = window_w / width;
+                            const scaleFactor = window_w / width
                             width *= scaleFactor;
-                            height *= scaleFactor;
+                            height *= scaleFactor
                         }
                     
                         if (height > window_h) {
-                            const scaleFactor = window_h / height;
-                            width *= scaleFactor;
-                            height *= scaleFactor;
+                            const scaleFactor = window_h / height
+                            width *= scaleFactor
+                            height *= scaleFactor
                         }
                     
-                        return { width, height };
+                        return { width, height }
                       }
                       const result = calculateCoverImageSize(windowSize.innerWidth - 90,windowSize.innerHeight - 200, (scanedImage!.width || 0), (scanedImage!.height || 0))
                       return result
@@ -255,6 +255,8 @@ export default (props: Props) => {
                           props.onClose({
                             imageBlob: scanedFile!,
                             paths: paths,
+                            width: scanedImage!.width,
+                            height: scanedImage!.height,
                           })
                         }
                       }}>
