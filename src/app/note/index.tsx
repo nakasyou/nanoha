@@ -39,9 +39,9 @@ export default function(props: Props){
       { isScanActive && <ScanDialog onClose={(data) => {
         console.log(data.imageBlob)
         setIsScanActive(false)
-        const svg = `<svg>${data.paths.map(path => {
+        const svg = `svg start<svg viewbox="0 0 ${data.width} ${data.height}">${data.paths.map(path => {
           return `<path class="nanoha-sheet" d="${path}"/>`
-        }).join('')}</svg>`
+        }).join('')}</svg>svg end`
         editor?.commands.insertContent(svg)
       }} /> }
     </div>
