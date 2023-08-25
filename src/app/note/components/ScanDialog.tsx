@@ -169,10 +169,42 @@ export default (props: Props) => {
                 {/*
                   scanedImage
                 */}
-                <div className='overflow-scroll'>
+
+                <div className='overflow-scroll' hidden={!scanedFile}>
                   <div className='relative w-screen h-screen' style={{
-                    width: windowSize.innerWidth - 40,
-                    height: (windowSize.innerWidth - 40) * (scanedImage!.height || 1) / scanedImage!.width //windowSize.innerHeight - 200, /*scanedImage.height > windowSize.innerHeight ? 0 : windowSize.innerHeight*/
+                    ...(() => {
+                      function calculateCoverImageSize(window_w: number, window_h: number, image_w: number, image_h: number): { width: number, height: number } {
+                        const windowAspectRatio = window_w / window_h;
+                        const imageAspectRatio = image_w / image_h;
+                    
+                        let width, height;
+                    
+                        if (windowAspectRatio > imageAspectRatio) {
+                            width = window_w;
+                            height = window_w / imageAspectRatio;
+                        } else {
+                            height = window_h;
+                            width = window_h * imageAspectRatio;
+                        }
+                    
+                        // Adjust the calculated dimensions if they exceed the window size
+                        if (width > window_w) {
+                            const scaleFactor = window_w / width;
+                            width *= scaleFactor;
+                            height *= scaleFactor;
+                        }
+                    
+                        if (height > window_h) {
+                            const scaleFactor = window_h / height;
+                            width *= scaleFactor;
+                            height *= scaleFactor;
+                        }
+                    
+                        return { width, height };
+                      }
+                      const result = calculateCoverImageSize(windowSize.innerWidth - 90,windowSize.innerHeight - 200, (scanedImage!.width || 0), (scanedImage!.height || 0))
+                      return result
+                    })(),
                   }}>
                     <img ref={imageRef} className="absolute w-full h-full object-contain" />
                     <svg viewBox={sheetSvgViewBox} className='absolute touch-none w-full h-full object-contain' ref={svgRef} style={{
@@ -211,6 +243,9 @@ export default (props: Props) => {
                     <div className="flex justify-center">
                       <button className="outlined-button" onClick={() => {
                         if (props.onClose) {
+                          for (const path of [...svgRef.current?.children!] as SVGPathElement[]) {
+                            
+                          }
                           props.onClose({
                             imageBlob: scanedFile!
                           })
