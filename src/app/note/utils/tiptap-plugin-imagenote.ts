@@ -1,7 +1,6 @@
 import {
   mergeAttributes,
   Node,
-  nodeInputRule,
 } from '@tiptap/core'
 
 export interface ImegeNoteOptions {
@@ -14,12 +13,11 @@ declare module '@tiptap/core' {
       /**
        * Add an image
        */
-      setImage: (options: { src: string, alt?: string, title?: string }) => ReturnType,
+      setImageNote: (options: { src: string, alt?: string, title?: string }) => ReturnType,
     }
   }
 }
 
-export const inputRegex = /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
 
 export const Image = Node.create<ImegeNoteOptions>({
   name: 'image',
@@ -35,12 +33,6 @@ export const Image = Node.create<ImegeNoteOptions>({
   addAttributes() {
     return {
       src: {
-        default: null,
-      },
-      alt: {
-        default: null,
-      },
-      title: {
         default: null,
       },
     }
@@ -61,31 +53,20 @@ export const Image = Node.create<ImegeNoteOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)]
+    return ['div', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+      children: [0],
+      'data-nanohaimagenote': true,
+    })]
   },
 
   addCommands() {
     return {
-      setImage: options => ({ commands }) => {
+      setImageNote: options => ({ commands }) => {
         return commands.insertContent({
           type: this.name,
           attrs: options,
         })
       },
     }
-  },
-
-  addInputRules() {
-    return [
-      nodeInputRule({
-        find: inputRegex,
-        type: this.type,
-        getAttributes: match => {
-          const [,, alt, src, title] = match
-
-          return { src, alt, title }
-        },
-      }),
-    ]
-  },
+  }
 })
