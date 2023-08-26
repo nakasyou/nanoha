@@ -24,8 +24,7 @@ export default function(props: Props){
 
   const [editor, setEditor] = useState<Editor | null>(null)
 
-  const [note, setNotes] = useState([])
-  setNotes([...note, <TextNote mode={mode} isView={isView} defaultContent="" />])
+  const [notes, setNotes] = useState([<TextNote mode={mode} isView={isView} defaultContent="" key={Math.random()} />])
   useEffect(() => {
     console.log(
       "%cここにコピペしろ",
@@ -63,6 +62,11 @@ export default function(props: Props){
         <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
         `} 
         setEditorState={(editor) => setEditor(editor)}/>
+        {
+          notes.map(note => {
+            return note
+          }
+        }
       </div>
       <div className="fixed bottom-0 w-full bg-secondary-container">
         {/* Navbar */}
