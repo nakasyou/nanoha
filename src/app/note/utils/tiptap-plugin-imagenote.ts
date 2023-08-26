@@ -19,7 +19,7 @@ declare module '@tiptap/core' {
 }
 
 
-export const Image = Node.create<ImegeNoteOptions>({
+export const TiptapPluginImageNote = Node.create<ImegeNoteOptions>({
   name: 'image',
 
   addOptions() {

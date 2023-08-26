@@ -2,7 +2,9 @@
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import type { Editor } from "@tiptap/core"
-import { TipTapPluginSheet } from "../utils/tiptap-plugin-sheet.js"
+import { TipTapPluginSheet } from "../utils/tiptap-plugin-sheet"
+import { TiptapPluginImageNote } from "../utils/tiptap-plugin-imagenote"
+
 import {
   IconBold,
   IconBoldOff,
@@ -19,7 +21,7 @@ export interface Props {
 }
 export default (props: Props) => {
   const editor = useEditor({
-    extensions: [StarterKit, TipTapPluginSheet],
+    extensions: [StarterKit, TipTapPluginSheet, TiptapPluginImageNote],
     content: props.defaultContent,
   })
   props.setEditorState(editor)
