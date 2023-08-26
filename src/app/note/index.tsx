@@ -43,6 +43,7 @@ export default function(props: Props){
           return `<path class="nanoha-sheet" d="${path}"/>`
         }).join('')}</svg>svg end</div>`
         editor?.commands.insertContent(svg)
+        editor?.commands.insertContent('<img src="https://github.com/nakasyou.png">')
       }} /> }
     </div>
     <div className="bg-background text-on-background min-h-screen">
