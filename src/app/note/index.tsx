@@ -23,6 +23,9 @@ export default function(props: Props){
   const [isScanActive, setIsScanActive] = useState(false)
 
   const [editor, setEditor] = useState<Editor | null>(null)
+
+  const [note, setNotes] = useState([])
+  setNotes([...note, <TextNote mode={mode} isView={isView} defaultContent="" />])
   useEffect(() => {
     console.log(
       "%cここにコピペしろ",
