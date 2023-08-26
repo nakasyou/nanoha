@@ -65,7 +65,7 @@ export default function(props: Props){
         {
           notes.map(note => {
             return note
-          }
+          })
         }
       </div>
       <div className="fixed bottom-0 w-full bg-secondary-container">
