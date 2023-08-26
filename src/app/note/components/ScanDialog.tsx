@@ -12,6 +12,8 @@ interface SvgPathCommand {
 export interface ScanedData {
   imageBlob: Blob
   paths: string[]
+  width: number
+  height: number
 }
 export interface Props {
   onClose?: (data: ScanedData) => void
@@ -250,7 +252,7 @@ export default (props: Props) => {
                               continue
                             }
                             const pathData = pathElement.getAttribute('d')
-                            paths.push(pathData)
+                            paths.push(pathData!)
                           }
                           props.onClose({
                             imageBlob: scanedFile!,

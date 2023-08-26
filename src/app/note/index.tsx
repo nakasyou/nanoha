@@ -44,6 +44,7 @@ export default function(props: Props){
         }).join('')}</svg>svg end</div>`
         editor?.commands.insertContent(svg)
         editor?.commands.insertContent('<img src="https://github.com/nakasyou.png">')
+        window.editor = editor
       }} /> }
     </div>
     <div className="bg-background text-on-background min-h-screen">
