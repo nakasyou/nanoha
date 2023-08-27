@@ -83,7 +83,7 @@ export default (props: Props) => {
           </div>
           <div>
             {/* コントロールパネル */}
-            <div className="flex justify-center items-center" hidden={editor?.view.dom !== document.activeElement}>
+            <div className="flex justify-center items-center" hidden={editor?.view?.dom !== document.activeElement}>
               <button
                 className="p-2 rounded-full border"
                 onClick={() => {
