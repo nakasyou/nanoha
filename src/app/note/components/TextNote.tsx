@@ -76,7 +76,7 @@ export default (props: Props) => {
   
   return (
     <>
-      <div className="mx-10">
+      <div className="mx-4">
         <div className={classNames({ hidden: userState.mode === "play" })}>
           {/* Edit Mode */}
           <div className="p-4 rounded-md border">
