@@ -69,13 +69,13 @@ export default function(props: Props){
       }} /> }
     </div>
     <div className="bg-background text-on-background min-h-screen">
-      <div>
+      <div className="p-4 flex gap-4 flex-col">
         <UserStateContext.Provider value={{
           mode,
           isView,
         }}>
           {
-            noteElements.map((noteElement, index) => <div key={index} className='my-2'>
+            noteElements.map((noteElement, index) => <div key={index} className=''>
               { noteElement }
             </div>)
           }
