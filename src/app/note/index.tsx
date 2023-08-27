@@ -63,7 +63,8 @@ export default function(props: Props){
       <div>
         { noteElements }
       </div>
-      <div className="sticky bottom-0 w-full bg-secondary-container">
+      <div className="h-24" />
+      <div className="fixed bottom-0 w-full bg-secondary-container h-24">
         {/* Navbar */}
         <div className="flex gap-4 justify-center items-center m-2">
           <div className="flex justify-center items-center bg-lime-50 rounded-full">
@@ -94,7 +95,7 @@ export default function(props: Props){
                 <button class="small-fab flex justify-center items-center" onClick={() => {
                   setNoteElements([
                     ...noteElements,
-                    <TextNote mode={mode} isView={isView} defaultContent="New Note" setEditorState={(editor) => setEditor(editor)}/>
+                    <TextNote mode={mode} isView={isView} defaultContent="New Note" setEditorState={(editor) => setEditor(editor)} />
                   ])
                 }}>
                   <IconPencil />
