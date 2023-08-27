@@ -29,6 +29,16 @@ export default (props: Props) => {
     content: props.defaultContent,
   })
   props.setEditorState(editor)
+  const classListAddAll = (element: Element, classes: string[]) => {
+    for (const className of classes) {
+      element.classList.add(className)
+    }
+  }
+  const classListRemoveAll = (element: Element, classes: string[]) => {
+    for (const className of classes) {
+      element.classList.remove(className)
+    }
+  }
   const viewEditorRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     for (const nanohaSheetElement of viewEditorRef?.current?.getElementsByClassName(
@@ -47,15 +57,15 @@ export default (props: Props) => {
       nanohaSheetElement.classList.add("select-none")
       const getIsView = (): boolean =>
         nanohaSheetElement.dataset.isview === "true"
+      const viewClasses = ['bg-red-100']
+      const hideClasses = ['bg-red-500', 'text-transparent']
       const reset = () => {
         if (getIsView()) {
-          nanohaSheetElement.classList.add("bg-red-100")
-          nanohaSheetElement.classList.remove("bg-red-500")
-          nanohaSheetElement.classList.remove("text-transparent")
+          classListAddAll(nanohaSheetElement, viewClasses)
+          classListRemoveAll(nanohaSheetElement, hideClasses)
         } else {
-          nanohaSheetElement.classList.remove("bg-red-100")
-          nanohaSheetElement.classList.add("bg-red-500")
-          nanohaSheetElement.classList.add("text-transparent")
+          classListRemoveAll(nanohaSheetElement, viewClasses)
+          classListAddAll(nanohaSheetElement, hideClasses)
         }
       }
       reset()
@@ -70,8 +80,6 @@ export default (props: Props) => {
   
   return (
     <>
-      { props.mode }
-      { modeData }
       <div className="mx-10">
         <div className={classNames({ hidden: modeData === "play" })}>
           {/* Edit Mode */}
