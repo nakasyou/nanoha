@@ -24,7 +24,16 @@ export default function(props: Props){
 
   const [editor, setEditor] = useState<Editor | null>(null)
 
-  const [noteElements, setNoteElements] = useState([<TextNote mode={mode} isView={isView} defaultContent="" />])
+  const [noteElements, setNoteElements] = useState([<TextNote mode={mode} isView={isView} defaultContent={`
+        <p>こんにちは！これはNanohaNoteです！</p>
+        <p>NanohaNoteは、「じぶん」で作る、学習用ノートブックです！</p>
+        <p>暗記をスムーズに行えます。</p>
+        <p>例えば、こんなことができちゃいます:</p>
+        <p>「Scratchでプログラミングするように、視覚的にプログラミングすることを、<span data-nanohasheet="true">ビジュアルプログラミング</span>という」</p>
+        <p>じゃーん。すごいでしょ。<b>こんなふうに太字</b>にしたり、<del>証拠隠滅</del>したりできます。</p>
+        <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
+        `} 
+        setEditorState={(editor) => setEditor(editor)}/>])
   useEffect(() => {
     console.log(
       "%cここにコピペしろ",
@@ -50,28 +59,8 @@ export default function(props: Props){
       }} /> }
     </div>
     <div className="bg-background text-on-background min-h-screen">
-      <div>This is app!</div>
       <div>
-        <TextNote mode={mode} isView={isView} defaultContent={`
-        <p>こんにちは！これはNanohaNoteです！</p>
-        <p>NanohaNoteは、「じぶん」で作る、学習用ノートブックです！</p>
-        <p>暗記をスムーズに行えます。</p>
-        <p>例えば、こんなことができちゃいます:</p>
-        <p>「Scratchでプログラミングするように、視覚的にプログラミングすることを、<span data-nanohasheet="true">ビジュアルプログラミング</span>という」</p>
-        <p>じゃーん。すごいでしょ。<b>こんなふうに太字</b>にしたり、<del>証拠隠滅</del>したりできます。</p>
-        <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
-        `} 
-        setEditorState={(editor) => setEditor(editor)}/>
-        <TextNote mode={mode} isView={isView} defaultContent={`
-        <p>こんにちは！これはNanohaNoteです！</p>
-        <p>NanohaNoteは、「じぶん」で作る、学習用ノートブックです！</p>
-        <p>暗記をスムーズに行えます。</p>
-        <p>例えば、こんなことができちゃいます:</p>
-        <p>「Scratchでプログラミングするように、視覚的にプログラミングすることを、<span data-nanohasheet="true">ビジュアルプログラミング</span>という」</p>
-        <p>じゃーん。すごいでしょ。<b>こんなふうに太字</b>にしたり、<del>証拠隠滅</del>したりできます。</p>
-        <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
-        `} 
-        setEditorState={(editor) => setEditor(editor)}/>
+        { noteElements }
       </div>
       <div className="fixed bottom-0 w-full bg-secondary-container">
         {/* Navbar */}
