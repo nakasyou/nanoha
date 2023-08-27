@@ -73,7 +73,7 @@ export default (props: Props) => {
       { props.mode }
       { modeData }
       <div className="mx-10">
-        <div className={classNames({ hidden: props.mode === "play" })}>
+        <div className={classNames({ hidden: modeData === "play" })}>
           {/* Edit Mode */}
           <div className="p-4 rounded-md border">
             <EditorContent editor={editor} />
@@ -100,7 +100,7 @@ export default (props: Props) => {
             </div>
           </div>
         </div>
-        <div className={classNames({ hidden: props.mode === "edit" })}>
+        <div className={classNames({ hidden: modeData === "edit" })}>
           {/* View Mode */}
           <div className="p-4 rounded-md border">
             <div
