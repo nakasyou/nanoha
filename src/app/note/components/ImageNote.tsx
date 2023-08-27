@@ -29,9 +29,9 @@ export default (props: Props) => {
   }
   image.src = blobUrl
   return <div>
-    <div className='relative'>
-      <img className='absolute top-0' src={ blobUrl } alt='Scaned Image' />
-      <svg className='absolute top-0' viewbox={ `0 0 ${imageSize.width} ${imageSize.height}` } width={imageSize.width} height={imageSize.height}>
+    <div className='relative w-full h-screen'>
+      <img className='absolute top-0 w-full h-full object-contain' src={ blobUrl } alt='Scaned Image' />
+      <svg className='absolute top-0 w-full h-full object-contain' viewbox={ `0 0 ${imageSize.width} ${imageSize.height}` } width={imageSize.width} height={imageSize.height}>
         {
           props.paths.map((path, index) => {
             return <path d={ path } key={ index } stroke="#f002" strokeWidth="20" fill="none" />
