@@ -33,7 +33,7 @@ export default (props: Props) => {
     image.src = blobUrl
   }, [])
 
-  return <div>
+  return <div className="p-4 rounded-md border">
     <div className='relative w-full h-screen'>
       <img className='absolute top-0 w-full h-full object-contain' src={ blobUrl } alt='Scaned Image' />
       <svg className='absolute top-0 w-full h-full object-contain' viewBox={ `0 0 ${imageSize.width} ${imageSize.height}` }>
