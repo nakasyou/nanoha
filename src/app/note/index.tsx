@@ -8,7 +8,7 @@ import {
   IconX,
   IconPencil,
 } from "@tabler/icons-react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, createContext } from "react"
 import classnames from "classnames"
 import ScanDialog from "./components/ScanDialog.tsx"
 import type { Editor } from "@tiptap/react"
@@ -16,6 +16,8 @@ import type { Editor } from "@tiptap/react"
 export interface Props {
   
 }
+export const ModeContext = createContext<"edit" | "play">('edit')
+
 export default function(props: Props){
   const [mode, setMode] = useState<"edit" | "play">("edit")
   const [isView, setIsView] = useState(false)
@@ -61,7 +63,9 @@ export default function(props: Props){
     </div>
     <div className="bg-background text-on-background min-h-screen">
       <div>
-        { noteElements }
+        <ModeContext.Provider value={mode}>
+          { noteElements }
+        </ModeContext.Provider>
       </div>
       <div className="h-24" />
       <div className="fixed bottom-0 w-full bg-secondary-container h-24">
