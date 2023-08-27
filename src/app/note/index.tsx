@@ -74,7 +74,11 @@ export default function(props: Props){
           mode,
           isView,
         }}>
-          { noteElements }
+          {
+            noteElements.map((noteElement, index) => <div key={index} className='my-2'>
+              { noteElement }
+            </div>)
+          }
         </UserStateContext.Provider>
       </div>
       <div className="h-24" />
