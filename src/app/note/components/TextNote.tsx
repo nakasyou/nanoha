@@ -23,6 +23,7 @@ export interface Props {
   setEditorState: (editor: Editor | null) => void
 }
 export default (props: Props) => {
+  alert('x')
   const userState = useContext(UserStateContext)
   alert(JSON.stringify(userState))
   const editor = useEditor({
