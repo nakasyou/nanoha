@@ -35,7 +35,7 @@ export default function(props: Props){
 
   const [editor, setEditor] = useState<Editor | null>(null)
 
-  const [noteElements, setNoteElements] = useState([<TextNote mode={mode} isView={isView} defaultContent={`
+  const [noteElements, setNoteElements] = useState([<TextNote defaultContent={`
         <p>こんにちは！これはNanohaNoteです！</p>
         <p>NanohaNoteは、「じぶん」で作る、学習用ノートブックです！</p>
         <p>暗記をスムーズに行えます。</p>
@@ -44,7 +44,7 @@ export default function(props: Props){
         <p>じゃーん。すごいでしょ。<b>こんなふうに太字</b>にしたり、<del>証拠隠滅</del>したりできます。</p>
         <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
         `} 
-        setEditorState={(editor) => setEditor(editor)}/>])
+        setEditorState={(editor) => null}/>])
   useEffect(() => {
     console.log(
       "%cここにコピペしろ",
@@ -59,15 +59,13 @@ export default function(props: Props){
   return <>
     <div>
       { isScanActive && <ScanDialog onClose={(data) => {
-        console.log(data.imageBlob)
+        if (!data.failed) {
+          const svg = `<div>svg start<svg viewbox="0 0 ${data.width} ${data.height}">${data.paths.map(path => {
+            return `<path class="nanoha-sheet" d="${path}"/>`
+          }).join('')}</svg>svg end</div>`
+          setNoteElements([...noteElements, <ImageNote imageBlob={data.imageBlob} paths={data.paths} />])
+        }
         setIsScanActive(false)
-        const svg = `<div>svg start<svg viewbox="0 0 ${data.width} ${data.height}">${data.paths.map(path => {
-          return `<path class="nanoha-sheet" d="${path}"/>`
-        }).join('')}</svg>svg end</div>`
-        editor?.commands.insertContent(svg)
-        editor?.commands.insertContent('<img src="https://github.com/nakasyou.png">')
-        window.editor = editor
-        setNoteElements([...noteElements, <ImageNote imageBlob={data.imageBlob} paths={data.paths} />])
       }} /> }
     </div>
     <div className="bg-background text-on-background min-h-screen">
@@ -112,10 +110,10 @@ export default function(props: Props){
                 <button className="small-fab flex justify-center items-center" onClick={() => setPlusFubActive(false)}>
                   <IconX />
                 </button>
-                <button class="small-fab flex justify-center items-center" onClick={() => {
+                <button className="small-fab flex justify-center items-center" onClick={() => {
                   setNoteElements([
                     ...noteElements,
-                    <TextNote mode={mode} isView={isView} defaultContent="New Note" setEditorState={(editor) => setEditor(editor)} />
+                    <TextNote defaultContent="New Note" setEditorState={(editor) => null} />
                   ])
                 }}>
                   <IconPencil />

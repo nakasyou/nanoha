@@ -9,14 +9,18 @@ interface SvgPathCommand {
   x: number
   y: number
 }
-export interface ScanedData {
+export interface ScanedDataSuccess {
   imageBlob: Blob
   paths: string[]
   width: number
   height: number
+  failed?: false
+}
+export interface ScanedDataFailed {
+  failed: true
 }
 export interface Props {
-  onClose?: (data: ScanedData) => void
+  onClose: (data: ScanedDataFailed | ScanedDataSuccess) => void
 }
 export default (props: Props) => {
   const imageRef = useRef<HTMLImageElement>(null)
@@ -139,9 +143,13 @@ export default (props: Props) => {
         <div className="flex justify-center items-center mx-auto my-auto ">
           <div className="bg-background p-4 border border-on-background rounded-xl text-on-background m-4">
             <div>
-              <div class="flex">
+              <div className="flex justify-between">
                 <div className="text-2xl">スキャン</div>
-                <button>
+                <button onClick={() => {
+                  props?.onClose({
+                    failed: true
+                  })
+                }}>
                   <IconX />
                 </button>
               </div>
