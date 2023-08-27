@@ -31,7 +31,7 @@ export default (props: Props) => {
   return <div>
     <div className='relative w-full h-screen'>
       <img className='absolute top-0 w-full h-full object-contain' src={ blobUrl } alt='Scaned Image' />
-      <svg className='absolute top-0 w-full h-full object-contain' viewbox={ `0 0 ${imageSize.width} ${imageSize.height}` } width={imageSize.width} height={imageSize.height}>
+      <svg className='absolute top-0 w-full h-full object-contain' viewbox={ `0 0 ${imageSize.width} ${imageSize.height}` }>
         {
           props.paths.map((path, index) => {
             return <path d={ path } key={ index } stroke="#f002" strokeWidth="20" fill="none" />
