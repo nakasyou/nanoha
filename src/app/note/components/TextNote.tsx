@@ -6,7 +6,7 @@ import { TipTapPluginSheet } from "../utils/tiptap-plugin-sheet"
 import { TiptapPluginImageNote } from "../utils/tiptap-plugin-imagenote"
 import { UserStateContext } from "../index.tsx"
 import { viewClasses, hideClasses } from '../const/sheetClasses.ts'
-
+import { classListAddAll, classListRemoveAll } from "../utils/classListAll.ts"
 import {
   IconBold,
   IconBoldOff,
@@ -27,16 +27,7 @@ export default (props: Props) => {
     content: props.defaultContent,
   })
   props.setEditorState(editor)
-  const classListAddAll = (element: Element, classes: string[]) => {
-    for (const className of classes) {
-      element.classList.add(className)
-    }
-  }
-  const classListRemoveAll = (element: Element, classes: string[]) => {
-    for (const className of classes) {
-      element.classList.remove(className)
-    }
-  }
+
   const viewEditorRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     for (const nanohaSheetElement of viewEditorRef?.current?.getElementsByClassName(
