@@ -70,12 +70,12 @@ export default function(props: Props){
     </div>
     <div className="bg-background text-on-background min-h-screen">
       <div>
-        <ModeContext.Provider value={{
+        <UserStateContext.Provider value={{
           mode,
           isView,
         }}>
           { noteElements }
-        </ModeContext.Provider>
+        </UserStateContext.Provider>
       </div>
       <div className="h-24" />
       <div className="fixed bottom-0 w-full bg-secondary-container h-24">
