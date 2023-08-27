@@ -62,6 +62,7 @@ export default function(props: Props){
         <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
         `} 
         setEditorState={(editor) => setEditor(editor)}/>
+        <TextNote mode={mode} isView={isView} defaultContent="" />
       </div>
       <div className="fixed bottom-0 w-full bg-secondary-container">
         {/* Navbar */}
