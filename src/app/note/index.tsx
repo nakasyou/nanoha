@@ -24,7 +24,7 @@ export default function(props: Props){
 
   const [editor, setEditor] = useState<Editor | null>(null)
 
-  const [notes, setNotes] = useState([<TextNote mode={mode} isView={isView} defaultContent="" key={Math.random()} />])
+  const [notes, setNotes] = useState([<TextNote mode={mode} isView={isView} defaultContent="" />])
   useEffect(() => {
     console.log(
       "%cここにコピペしろ",
