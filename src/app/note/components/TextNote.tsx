@@ -4,6 +4,7 @@ import StarterKit from "@tiptap/starter-kit"
 import type { Editor } from "@tiptap/core"
 import { TipTapPluginSheet } from "../utils/tiptap-plugin-sheet"
 import { TiptapPluginImageNote } from "../utils/tiptap-plugin-imagenote"
+import { ModeContext } from "../index.tsx"
 
 import {
   IconBold,
@@ -11,8 +12,9 @@ import {
   IconNote,
   IconNoteOff,
 } from "@tabler/icons-react"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useContext } from "react"
 import classNames from "classnames"
+
 export interface Props {
   mode: "edit" | "play"
   isView: boolean
@@ -63,9 +65,11 @@ export default (props: Props) => {
       nanohaSheetElement.onresetsheet = () => reset()
     }
   }, [props.mode])
+  const modeData = useContext(ModeContext)
   return (
     <>
       { props.mode }
+      { modeData }
       <div className="mx-10">
         <div className={classNames({ hidden: props.mode === "play" })}>
           {/* Edit Mode */}
