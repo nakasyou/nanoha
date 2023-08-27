@@ -6,6 +6,7 @@ import {
   IconPlus,
   IconScan,
   IconX,
+  IconPencil,
 } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import classnames from "classnames"
@@ -89,6 +90,14 @@ export default function(props: Props){
               plusFubActive && <>
                 <button className="small-fab flex justify-center items-center" onClick={() => setPlusFubActive(false)}>
                   <IconX />
+                </button>
+                <button class="small-fab flex justify-center items-center" onClick={() => {
+                  setNoteElements([
+                    ...noteElements,
+                    <TextNote mode={mode} isView={isView} defaultContent="New Note" setEditorState={(editor) => setEditor(editor)}/>
+                  ])
+                }}>
+                  <IconPencil />
                 </button>
                 <button className="small-fab flex justify-center items-center" onClick={() => {
                   setIsScanActive(true)
