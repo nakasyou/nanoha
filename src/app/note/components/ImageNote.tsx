@@ -15,7 +15,7 @@ export default (props: Props) => {
   const userState = useContext(UserStateContext)
   const blobUrl = URL.createObjectURL(props.imageBlob)
 
-  const [viewbox, setViewBox] = useState('0 0 0 0')
+  const [viewbox, setViewbox] = useState('0 0 0 0')
   
   const image = new Image()
   image.onload = () => {
