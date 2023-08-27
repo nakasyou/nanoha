@@ -5,3 +5,8 @@ import NanohaNoteApp from "../../app/note/index.tsx"
 <Base title="" description="nanohanote app">
   <NanohaNoteApp client:load />
 </Base>
+<script>
+window.addEventListener('error', evt => {
+  alert(`${evt.type}: ${evt.message}`)
+})
+</script>
