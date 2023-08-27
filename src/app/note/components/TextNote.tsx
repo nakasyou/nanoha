@@ -5,7 +5,6 @@ import type { Editor } from "@tiptap/core"
 import { TipTapPluginSheet } from "../utils/tiptap-plugin-sheet"
 import { TiptapPluginImageNote } from "../utils/tiptap-plugin-imagenote"
 import { ModeContext } from "../index.tsx"
-import { useActiveElement } from '../utils/useActiveElement.ts'
 
 import {
   IconBold,
@@ -69,8 +68,6 @@ export default (props: Props) => {
     }
   }, [modeData])
   
-  //const activeElement = useActiveElement()
-  
   return (
     <>
       { props.mode }
@@ -83,7 +80,7 @@ export default (props: Props) => {
           </div>
           <div>
             {/* コントロールパネル */}
-            <div className="flex justify-center items-center" hidden={editor?.view?.dom !== document.activeElement}>
+            <div className="flex justify-center items-center">
               <button
                 className="p-2 rounded-full border"
                 onClick={() => {
