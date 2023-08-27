@@ -22,6 +22,8 @@ export interface Props {
   setEditorState: (editor: Editor | null) => void
 }
 export default (props: Props) => {
+  const modeData = useContext(ModeContext)
+  
   const editor = useEditor({
     extensions: [StarterKit, TipTapPluginSheet, TiptapPluginImageNote],
     content: props.defaultContent,
@@ -64,8 +66,8 @@ export default (props: Props) => {
       }
       nanohaSheetElement.onresetsheet = () => reset()
     }
-  }, [props.mode])
-  const modeData = useContext(ModeContext)
+  }, [modeData])
+
   return (
     <>
       { props.mode }
