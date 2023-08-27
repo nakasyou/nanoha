@@ -15,17 +15,23 @@ export default (props: Props) => {
   const userState = useContext(UserStateContext)
   const blobUrl = URL.createObjectURL(props.imageBlob)
 
-  const [viewbox, setViewbox] = useState('0 0 0 0')
+  const [imageSize, setImageSize] = useState({
+    width: 1,
+    height: 1,
+  })
   
   const image = new Image()
   image.onload = () => {
-    setViewbox(`0 0 ${image.width} ${image.height}`)
+    setImageSize({
+      width: image.width,
+      height: image.height
+    })
   }
   image.src = blobUrl
   return <div>
     <div className='relative'>
       <img className='absolute top-0' src={ blobUrl } alt='Scaned Image' />
-      <svg className='absolute top-0' viewbox={ viewbox }>
+      <svg className='absolute top-0' viewbox={ `0 0 ${imageSize.width} ${imageSize.height}` } width={imageSize.width} height={imageSize.height}>
         {
           props.paths.map((path, index) => {
             return <path d={ path } key={ index } stroke="#f002" strokeWidth="20" fill="none" />
