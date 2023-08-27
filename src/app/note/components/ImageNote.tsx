@@ -11,7 +11,7 @@ export interface Props {
   imageBlob: Blob
   paths: string[]
 }
-export default const ImageNote = (props: Props) => {
+export default (props: Props) => {
   const userState = useContext(UserStateContext)
   const blobUrl = URL.createObjectURL(props.imageBlob)
 
