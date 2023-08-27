@@ -69,7 +69,7 @@ export default (props: Props) => {
     }
   }, [modeData])
   
-  const activeElement = useActiveElement()
+  //const activeElement = useActiveElement()
   
   return (
     <>
@@ -83,7 +83,7 @@ export default (props: Props) => {
           </div>
           <div>
             {/* コントロールパネル */}
-            <div className="flex justify-center items-center" hidden={editor?.view.dom !== activeElement}>
+            <div className="flex justify-center items-center" hidden={editor?.view.dom !== document.activeElement}>
               <button
                 className="p-2 rounded-full border"
                 onClick={() => {
