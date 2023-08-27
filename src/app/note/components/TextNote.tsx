@@ -4,7 +4,7 @@ import StarterKit from "@tiptap/starter-kit"
 import type { Editor } from "@tiptap/core"
 import { TipTapPluginSheet } from "../utils/tiptap-plugin-sheet"
 import { TiptapPluginImageNote } from "../utils/tiptap-plugin-imagenote"
-import { ModeContext } from "../index.tsx"
+import { UserStateContext } from "../index.tsx"
 import { viewClasses, hideClasses } from '../const/sheetClasses.ts'
 
 import {
@@ -23,7 +23,7 @@ export interface Props {
   setEditorState: (editor: Editor | null) => void
 }
 export default (props: Props) => {
-  const modeData = useContext(ModeContext)
+  const userState = useContext(UserStateContext)
   
   const editor = useEditor({
     extensions: [StarterKit, TipTapPluginSheet, TiptapPluginImageNote],
@@ -48,7 +48,7 @@ export default (props: Props) => {
       nanohaSheetElement.dataset.isview = props.isView
       nanohaSheetElement?.onresetsheet()
     }
-  }, [props.isView])
+  }, [userState.isView])
   useEffect(() => {
     for (const nanohaSheetElement of viewEditorRef?.current?.getElementsByClassName(
       "nanoha-sheet"
@@ -75,12 +75,12 @@ export default (props: Props) => {
       }
       nanohaSheetElement.onresetsheet = () => reset()
     }
-  }, [modeData])
+  }, [userState.mode])
   
   return (
     <>
       <div className="mx-10">
-        <div className={classNames({ hidden: modeData === "play" })}>
+        <div className={classNames({ hidden: userState.mode === "play" })}>
           {/* Edit Mode */}
           <div className="p-4 rounded-md border">
             <EditorContent editor={editor} />
@@ -107,7 +107,7 @@ export default (props: Props) => {
             </div>
           </div>
         </div>
-        <div className={classNames({ hidden: modeData === "edit" })}>
+        <div className={classNames({ hidden: userState.mode === "edit" })}>
           {/* View Mode */}
           <div className="p-4 rounded-md border">
             <div
