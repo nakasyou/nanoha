@@ -1,4 +1,4 @@
-import { IconBrush, IconBrushOff, IconEraser, IconEraserOff } from '@tabler/icons-react'
+import { IconBrush, IconBrushOff, IconEraser, IconEraserOff, IconX } from '@tabler/icons-react'
 import { useContext, useEffect, useRef, useState } from 'react'
 import range from '../utils/range'
 import { useWindowSize } from '../utils/useWindowSize'
@@ -140,7 +140,12 @@ export default (props: Props) => {
         <div className="flex justify-center items-center mx-auto my-auto ">
           <div className="bg-background p-4 border border-on-background rounded-xl text-on-background m-4">
             <div>
-              <div className="text-2xl">スキャン</div>
+              <div class="flex">
+                <div className="text-2xl">スキャン</div>
+                <button>
+                  <IconX />
+                </button>
+              </div>
             </div>
             <div className="text-center">
               <div>現実世界のノート、プリント等を取り込みましょう!</div>
