@@ -5,6 +5,7 @@ import type { Editor } from "@tiptap/core"
 import { TipTapPluginSheet } from "../utils/tiptap-plugin-sheet"
 import { TiptapPluginImageNote } from "../utils/tiptap-plugin-imagenote"
 import { ModeContext } from "../index.tsx"
+import { viewClasses, hideClasses } from '../const/sheetClasses.ts'
 
 import {
   IconBold,
@@ -57,8 +58,6 @@ export default (props: Props) => {
       nanohaSheetElement.classList.add("select-none")
       const getIsView = (): boolean =>
         nanohaSheetElement.dataset.isview === "true"
-      const viewClasses = ['bg-red-100']
-      const hideClasses = ['bg-red-500', 'text-transparent']
       const reset = () => {
         if (getIsView()) {
           classListAddAll(nanohaSheetElement, viewClasses)
