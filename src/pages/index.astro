@@ -1,12 +1,12 @@
 ---
 import PageLayout from '../layouts/Page.astro'
-import NanohaNoteLogo from '../assets/NanohaNote.svg'
+import NanohaNoteLogo from '../components/Logo.astro'
 ---
 <PageLayout title="NanohaNote" description="NanohaNote Top">
   <div class="">
     <div>
-      <div>
-        <img src={ NanohaNoteLogo } class="mx-auto" />
+      <div class="text-center">
+        <NanohaNoteLogo />
       </div>
       <div class="text-center">NanohaNoteは、「じぶん」で作る学習用ノートブックです。</div>
       <div class="flex justify-center m-2">
