@@ -42,7 +42,7 @@ export default (props: Props) => {
     for (const nanohaSheetElement of viewEditorRef?.current?.getElementsByClassName(
       "nanoha-sheet"
     ) || []) {
-      nanohaSheetElement.dataset.isview = props.isView
+      nanohaSheetElement.dataset.isview = userState.isView
       nanohaSheetElement?.onresetsheet()
     }
   }, [userState.isView])
