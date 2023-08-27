@@ -11,6 +11,7 @@ import {
 import { useEffect, useState, createContext } from "react"
 import classnames from "classnames"
 import ScanDialog from "./components/ScanDialog.tsx"
+import ImageNote from './components/ImageNote.tsx'
 import type { Editor } from "@tiptap/react"
 
 export interface Props {
@@ -66,6 +67,7 @@ export default function(props: Props){
         editor?.commands.insertContent(svg)
         editor?.commands.insertContent('<img src="https://github.com/nakasyou.png">')
         window.editor = editor
+        setNoteElements([...noteElements, <ImageNote imageBlob={data.imageBlob} paths={data.paths} />])
       }} /> }
     </div>
     <div className="bg-background text-on-background min-h-screen">
