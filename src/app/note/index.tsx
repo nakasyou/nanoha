@@ -16,7 +16,14 @@ import type { Editor } from "@tiptap/react"
 export interface Props {
   
 }
-export const ModeContext = createContext<"edit" | "play">('edit')
+export const UserStateContext = createContext<{
+  mode: "edit" | "play",
+  isView: boolean
+}>({
+  mode: 'edit',
+  isView: true,
+})
+    
 
 export default function(props: Props){
   const [mode, setMode] = useState<"edit" | "play">("edit")
@@ -63,7 +70,10 @@ export default function(props: Props){
     </div>
     <div className="bg-background text-on-background min-h-screen">
       <div>
-        <ModeContext.Provider value={mode}>
+        <ModeContext.Provider value={{
+          mode,
+          isView,
+        }}>
           { noteElements }
         </ModeContext.Provider>
       </div>
