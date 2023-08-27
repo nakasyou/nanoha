@@ -63,9 +63,7 @@ export default function(props: Props){
         `} 
         setEditorState={(editor) => setEditor(editor)}/>
         {
-          notes.map(note => {
-            return note
-          })
+          notes
         }
       </div>
       <div className="fixed bottom-0 w-full bg-secondary-container">
