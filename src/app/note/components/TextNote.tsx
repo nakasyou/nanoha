@@ -24,7 +24,7 @@ export interface Props {
 }
 export default (props: Props) => {
   const userState = useContext(UserStateContext)
-  
+  alert(JSON.stringify(userState))
   const editor = useEditor({
     extensions: [StarterKit, TipTapPluginSheet, TiptapPluginImageNote],
     content: props.defaultContent,
