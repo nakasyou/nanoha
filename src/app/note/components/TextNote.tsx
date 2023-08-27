@@ -17,15 +17,11 @@ import { useEffect, useRef, useContext } from "react"
 import classNames from "classnames"
 
 export interface Props {
-  mode: "edit" | "play"
-  isView: boolean
   defaultContent: string
   setEditorState: (editor: Editor | null) => void
 }
 export default (props: Props) => {
-  alert('x')
   const userState = useContext(UserStateContext)
-  alert(JSON.stringify(userState))
   const editor = useEditor({
     extensions: [StarterKit, TipTapPluginSheet, TiptapPluginImageNote],
     content: props.defaultContent,
