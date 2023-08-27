@@ -106,7 +106,6 @@ export default (props: Props) => {
         const widthRatio = scanedImage!.width / canvasRect.width
         const heightRaito = scanedImage!.height / canvasRect.height
 
-        console.log(widthRatio,heightRaito,canvasRect, getSizeRatio(image))
         const position: DoubleTouple<number> = [
           widthRatio * (evt.clientX - canvasRect.left),
           widthRatio * (evt.clientY - canvasRect.top)
