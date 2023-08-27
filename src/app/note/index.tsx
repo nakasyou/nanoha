@@ -63,7 +63,7 @@ export default function(props: Props){
       <div>
         { noteElements }
       </div>
-      <div className="fixed bottom-0 w-full bg-secondary-container">
+      <div className="sticky bottom-0 w-full bg-secondary-container">
         {/* Navbar */}
         <div className="flex gap-4 justify-center items-center m-2">
           <div className="flex justify-center items-center bg-lime-50 rounded-full">
