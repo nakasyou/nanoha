@@ -74,7 +74,7 @@ export default function(props: Props){
           mode,
           isView,
         }}>
-          { noteElements }
+          { 'noteElements' }
         </UserStateContext.Provider>
       </div>
       <div className="h-24" />
