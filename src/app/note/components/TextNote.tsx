@@ -101,7 +101,7 @@ export default (props: Props) => {
               <button
                 className="p-2 rounded-full border"
                 onClick={() => {
-                  props.removeThisNote()
+                  props.onRemove(noteIndex)
                 }}
               >
                 <IconX />
