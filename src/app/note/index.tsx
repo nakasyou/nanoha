@@ -34,18 +34,25 @@ export default function(props: Props){
   const [isScanActive, setIsScanActive] = useState(false)
 
   const [editor, setEditor] = useState<Editor | null>(null)
+  
+  const [noteElements, setNoteElements] = useState([])
+  
+  const createTextNote = (defaultContent: string) => {
+    setNoteElements([...noteElements, 
+                     <TextNote
+                       defaultContent={defaultContent}
+                       setEditorState={(editor) => null}} />
+                    ])
+  }
 
-  const [noteElements, setNoteElements] = useState([<TextNote defaultContent={`
-        <p>こんにちは！これはNanohaNoteです！</p>
+  useEffect(() => {
+    createTextNote(`<p>こんにちは！これはNanohaNoteです！</p>
         <p>NanohaNoteは、「じぶん」で作る、学習用ノートブックです！</p>
         <p>暗記をスムーズに行えます。</p>
         <p>例えば、こんなことができちゃいます:</p>
         <p>「Scratchでプログラミングするように、視覚的にプログラミングすることを、<span data-nanohasheet="true">ビジュアルプログラミング</span>という」</p>
         <p>じゃーん。すごいでしょ。<b>こんなふうに太字</b>にしたり、<del>証拠隠滅</del>したりできます。</p>
-        <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>
-        `} 
-        setEditorState={(editor) => null}/>])
-  useEffect(() => {
+        <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>`)
     console.log(
       "%cここにコピペしろ",
       "font-size: 4em; color: red; font-weight: bold;",
@@ -60,9 +67,6 @@ export default function(props: Props){
     <div>
       { isScanActive && <ScanDialog onClose={(data) => {
         if (!data.failed) {
-          const svg = `<div>svg start<svg viewbox="0 0 ${data.width} ${data.height}">${data.paths.map(path => {
-            return `<path class="nanoha-sheet" d="${path}"/>`
-          }).join('')}</svg>svg end</div>`
           setNoteElements([...noteElements, <ImageNote imageBlob={data.imageBlob} paths={data.paths} />])
         }
         setIsScanActive(false)
@@ -115,10 +119,7 @@ export default function(props: Props){
                   <IconX />
                 </button>
                 <button className="small-fab flex justify-center items-center" onClick={() => {
-                  setNoteElements([
-                    ...noteElements,
-                    <TextNote defaultContent="New Note" setEditorState={(editor) => null} />
-                  ])
+                  createTextNote("New Note")
                 }}>
                   <IconPencil />
                 </button>
