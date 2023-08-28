@@ -35,7 +35,7 @@ export default function(props: Props){
 
   const [editor, setEditor] = useState<Editor | null>(null)
   
-  const [noteElements, setNoteElements] = useState([])
+  const [noteElements, setNoteElements] = useState<JSX.Element[]>([])
   
   const createTextNote = (defaultContent: string) => {
     setNoteElements([...noteElements, 
@@ -43,10 +43,11 @@ export default function(props: Props){
                        defaultContent={defaultContent}
                        setEditorState={(editor) => null}
                        onRemove={index => {
-                         alert(index)
                          const newNoteElements = [...noteElements]
+                  
                          newNoteElements.splice(index, 1)
                          setNoteElements(newNoteElements)
+                         console.log(newNoteElements)
                        }}/>
                     ])
   }

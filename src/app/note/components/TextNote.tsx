@@ -20,7 +20,6 @@ import classNames from "classnames"
 export interface Props {
   defaultContent: string
   setEditorState: (editor: Editor | null) => void
-  index: number
   onRemove: (index: number) => void
 }
 export default (props: Props) => {
