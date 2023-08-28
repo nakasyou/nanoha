@@ -13,6 +13,7 @@ import classnames from "classnames"
 import ScanDialog from "./components/ScanDialog.tsx"
 import ImageNote from './components/ImageNote.tsx'
 import type { Editor } from "@tiptap/react"
+import { Container, Draggable } from 'react-smooth-dnd'
 
 export interface Props {
   
