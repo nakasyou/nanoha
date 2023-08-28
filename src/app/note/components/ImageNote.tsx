@@ -8,6 +8,24 @@ import { useEffect, useRef, useContext, useState } from "react"
 import classNames from "classnames"
 import { classListAddAll, classListRemoveAll } from "../utils/classListAll.ts"
 
+interface SheetProps {
+  path: string
+}
+const Sheet = (props: SheetProps) => {
+  return <path d={ props.path } stroke="#f002" strokeWidth="20" fill="none" onClick={(evt) => {
+    const pathElement: SVGPathElement = evt.target as SVGPathElement
+    const nextIsView = pathElement.dataset.isView !== 'true'
+    pathElement.dataset.isView = nextIsView.toString()
+    if (nextIsView) {
+      classListAddAll(pathElement, viewClasses)
+      classListRemoveAll(pathElement, hideClasses)
+    } else {
+      classListAddAll(pathElement, hideClasses)
+      classListRemoveAll(pathElement, viewClasses)
+    }
+   }} />
+}
+
 export interface Props {
   imageBlob: Blob
   paths: string[]
@@ -45,18 +63,7 @@ export default (props: Props) => {
       <svg className='absolute top-0 w-full h-full object-contain' viewBox={ `0 0 ${imageSize.width} ${imageSize.height}` } ref={svgRef}>
         {
           props.paths.map((path, index) => {
-            return <path d={ path } key={ index } stroke="#f002" strokeWidth="20" fill="none" onClick={(evt) => {
-              const pathElement: SVGPathElement = evt.target as SVGPathElement
-              const nextIsView = pathElement.dataset.isView !== 'true'
-              pathElement.dataset.isView = nextIsView.toString()
-              if (nextIsView) {
-                classListAddAll(pathElement, viewClasses)
-                classListRemoveAll(pathElement, hideClasses)
-              } else {
-                classListAddAll(pathElement, hideClasses)
-                classListRemoveAll(pathElement, viewClasses)
-              }
-            }}/>
+            return <Sheet path={path} />
           })
         }
       </svg>
