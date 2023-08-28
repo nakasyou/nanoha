@@ -10,5 +10,6 @@ module.exports = {
     mikanUI({
       seedColor: '#f0e22f',
     }),
+		require('@tailwindcss/typography')
   ],
 }

@@ -20,11 +20,9 @@ import classNames from "classnames"
 export interface Props {
   defaultContent: string
   setEditorState: (editor: Editor | null) => void
-  onRemove: (index: number) => void
 }
 export default (props: Props) => {
   const userState = useContext(UserStateContext)
-  const noteIndex = useContext(NoteIndexContext)
   
   const editor = useEditor({
     extensions: [StarterKit, TipTapPluginSheet, TiptapPluginImageNote],
@@ -71,7 +69,6 @@ export default (props: Props) => {
   
   return (
     <>
-      { noteIndex }
       <div className="mx-4">
         <div className={classNames({ hidden: userState.mode === "play" })}>
           {/* Edit Mode */}
@@ -97,14 +94,6 @@ export default (props: Props) => {
               >
                 {editor?.isActive("bold") ? <IconBold /> : <IconBoldOff />}
               </button>
-              <button
-                className="p-2 rounded-full border"
-                onClick={() => {
-                  props.onRemove(noteIndex)
-                }}
-              >
-                <IconX />
-              </button>
             </div>
           </div>
         </div>
@@ -116,6 +105,7 @@ export default (props: Props) => {
               dangerouslySetInnerHTML={{
                 __html: editor?.getHTML() as string,
               }}
+              className=""
             />
           </div>
         </div>

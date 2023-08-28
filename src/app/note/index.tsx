@@ -35,21 +35,22 @@ export default function(props: Props){
 
   const [editor, setEditor] = useState<Editor | null>(null)
   
-  const [noteElements, setNoteElements] = useState<JSX.Element[]>([])
+  const [noteElements, setNoteElements] = useState<{
+    element: JSX.Element
+    key: any
+  }[]>([])
   
   const createTextNote = (defaultContent: string) => {
-    setNoteElements([...noteElements, 
-                     <TextNote
-                       defaultContent={defaultContent}
-                       setEditorState={(editor) => null}
-                       onRemove={index => {
-                         const newNoteElements = [...noteElements]
-                  
-                         newNoteElements.splice(index, 1)
-                         setNoteElements(newNoteElements)
-                         console.log(newNoteElements)
-                       }}/>
-                    ])
+    setNoteElements([
+      ...noteElements,
+      {
+        element: <TextNote
+          defaultContent={defaultContent}
+          setEditorState={(editor) => null}
+         />,
+         key: Math.random()
+      }
+    ])
   }
 
   useEffect(() => {
@@ -74,7 +75,10 @@ export default function(props: Props){
     <div>
       { isScanActive && <ScanDialog onClose={(data) => {
         if (!data.failed) {
-          setNoteElements([...noteElements, <ImageNote imageBlob={data.imageBlob} paths={data.paths} />])
+          setNoteElements([...noteElements, {
+            element: <ImageNote imageBlob={data.imageBlob} paths={data.paths} />,
+            key: Math.random()
+          }])
         }
         setIsScanActive(false)
       }} /> }
@@ -85,12 +89,26 @@ export default function(props: Props){
           mode,
           isView,
         }}>
+          { (noteElements.length === 0) && <div className="text-center">
+            <div className="text-2xl">ここにはノートが一つもありません</div>
+            <div className="text-xl">右下の+を押して、ノートを追加しましょう!</div>
+          </div>}
           {
             noteElements.map((noteElement, index) => {
-              return <div key={index} className=''>
-                <NoteIndexContext.Provider value={index}>
-                  { noteElement }
-                </NoteIndexContext.Provider>
+              return <div key={noteElement.key} className=''>
+                <div className='text-right'>
+                  <button
+                    className="p-2 rounded-full border"
+                    onClick={() => {
+                      if (window.confirm('削除しますか?')){
+                        setNoteElements(noteElements.filter((_v, eachIndex) => index !== eachIndex))
+                      }
+                    }}
+                  >
+                    <IconX />
+                  </button>
+                </div>
+                { noteElement.element }
               </div>
             })
           }
