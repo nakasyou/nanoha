@@ -4,7 +4,7 @@ import StarterKit from "@tiptap/starter-kit"
 import type { Editor } from "@tiptap/core"
 import { TipTapPluginSheet } from "../utils/tiptap-plugin-sheet"
 import { TiptapPluginImageNote } from "../utils/tiptap-plugin-imagenote"
-import { UserStateContext } from "../index.tsx"
+import { UserStateContext, NoteIndexContext } from "../index.tsx"
 import { viewClasses, hideClasses } from '../const/sheetClasses.ts'
 import { classListAddAll, classListRemoveAll } from "../utils/classListAll.ts"
 import {
@@ -25,6 +25,8 @@ export interface Props {
 }
 export default (props: Props) => {
   const userState = useContext(UserStateContext)
+  const noteIndex = useContext(NoteIndexContext)
+  
   const editor = useEditor({
     extensions: [StarterKit, TipTapPluginSheet, TiptapPluginImageNote],
     content: props.defaultContent,
@@ -70,7 +72,7 @@ export default (props: Props) => {
   
   return (
     <>
-      { props.index }
+      { noteIndex }
       <div className="mx-4">
         <div className={classNames({ hidden: userState.mode === "play" })}>
           {/* Edit Mode */}
