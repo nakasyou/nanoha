@@ -10,19 +10,32 @@ import { classListAddAll, classListRemoveAll } from "../utils/classListAll.ts"
 
 interface SheetProps {
   path: string
+  userState: {
+    isView: string
+  }
 }
 const Sheet = (props: SheetProps) => {
-  return <path d={ props.path } stroke="#f002" strokeWidth="20" fill="none" onClick={(evt) => {
-    const pathElement: SVGPathElement = evt.target as SVGPathElement
-    const nextIsView = pathElement.dataset.isView !== 'true'
-    pathElement.dataset.isView = nextIsView.toString()
-    if (nextIsView) {
+  const ref = useRef(document.createElement(path))
+
+  const reset = () => {
+    const pathElement = ref.current
+    if (pathElement.dataset.isView === "true") {
       classListAddAll(pathElement, viewClasses)
       classListRemoveAll(pathElement, hideClasses)
     } else {
       classListAddAll(pathElement, hideClasses)
       classListRemoveAll(pathElement, viewClasses)
     }
+  }
+  useEffect(() => {
+    ref.current.dataset.isView = props.userState.isView
+    reset()
+  }, [props.userState.isView])
+  return <path d={ props.path } stroke="#f002" strokeWidth="20" fill="none" ref={ref} onClick={(evt) => {
+    const pathElement: SVGPathElement = evt.target as SVGPathElement
+    const nextIsView = pathElement.dataset.isView !== 'true'
+    pathElement.dataset.isView = nextIsView.toString()
+    reset()
    }} />
 }
 
