@@ -45,7 +45,8 @@ export default function(props: Props){
                        onRemove={index => {
                          alert(index)
                          const newNoteElements = [...noteElements]
-                         setNoteElements(newNoteElements.splice(index, 1))
+                         newNoteElements.splice(index, 1)
+                         setNoteElements(newNoteElements)
                        }}/>
                     ])
   }
