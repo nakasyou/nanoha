@@ -41,7 +41,10 @@ export default function(props: Props){
     setNoteElements([...noteElements, 
                      <TextNote
                        defaultContent={defaultContent}
-                       setEditorState={(editor) => null}} />
+                       setEditorState={(editor) => null}}
+                       onRemove={index => {
+                         setNoteElements([...noteElements.splice(index, 1)])
+                       }}/>
                     ])
   }
 
