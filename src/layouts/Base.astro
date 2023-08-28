@@ -2,6 +2,7 @@
 interface Props {
   title: string
   description: string
+  bodyClass?: string
 }
 ---
 
@@ -15,7 +16,7 @@ interface Props {
 		<meta name="generator" content={Astro.generator} />
 		<title>{Astro.props.title}</title>
 	</head>
-	<body>
+	<body class={ Astro.props.bodyClass || '' }>
 		<slot />
 	</body>
 </html>
