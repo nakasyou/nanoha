@@ -43,7 +43,7 @@ export default function(props: Props){
                        defaultContent={defaultContent}
                        setEditorState={(editor) => null}
                        onRemove={index => {
-                         alert(index8
+                         alert(index)
                          const newNoteElements = [...noteElements]
                          setNoteElements(newNoteElements.splice(index, 1))
                        }}/>
