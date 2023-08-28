@@ -12,6 +12,7 @@ import {
   IconBoldOff,
   IconNote,
   IconNoteOff,
+  IconX,
 } from "@tabler/icons-react"
 import { useEffect, useRef, useContext } from "react"
 import classNames from "classnames"
@@ -19,6 +20,8 @@ import classNames from "classnames"
 export interface Props {
   defaultContent: string
   setEditorState: (editor: Editor | null) => void
+  index: number
+  onRemove: (index: number) => void
 }
 export default (props: Props) => {
   const userState = useContext(UserStateContext)
@@ -67,6 +70,7 @@ export default (props: Props) => {
   
   return (
     <>
+      { props.index }
       <div className="mx-4">
         <div className={classNames({ hidden: userState.mode === "play" })}>
           {/* Edit Mode */}
@@ -91,6 +95,14 @@ export default (props: Props) => {
                 }}
               >
                 {editor?.isActive("bold") ? <IconBold /> : <IconBoldOff />}
+              </button>
+              <button
+                className="p-2 rounded-full border"
+                onClick={() => {
+                  props.removeThisNote()
+                }}
+              >
+                <IconX />
               </button>
             </div>
           </div>
