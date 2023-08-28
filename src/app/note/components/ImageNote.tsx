@@ -76,7 +76,7 @@ export default (props: Props) => {
       <svg className='absolute top-0 w-full h-full object-contain' viewBox={ `0 0 ${imageSize.width} ${imageSize.height}` } ref={svgRef}>
         {
           props.paths.map((path, index) => {
-            return <Sheet path={path} />
+            return <Sheet path={path} userState={userState} />
           })
         }
       </svg>
