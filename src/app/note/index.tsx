@@ -85,33 +85,40 @@ export default function(props: Props){
     </div>
     <div className="bg-background text-on-background min-h-screen">
       <div className="p-4 flex gap-4 flex-col">
-        <UserStateContext.Provider value={{
-          mode,
-          isView,
-        }}>
           { (noteElements.length === 0) && <div className="text-center">
             <div className="text-2xl">ここにはノートが一つもありません</div>
             <div className="text-xl">右下の+を押して、ノートを追加しましょう!</div>
           </div>}
-          {
-            noteElements.map((noteElement, index) => {
-              return <div key={noteElement.key} className=''>
-                <div className='text-right'>
-                  <button
-                    className="p-2 rounded-full border"
-                    onClick={() => {
-                      if (window.confirm('削除しますか?')){
-                        setNoteElements(noteElements.filter((_v, eachIndex) => index !== eachIndex))
-                      }
-                    }}
-                  >
-                    <IconX />
-                  </button>
-                </div>
-                { noteElement.element }
-              </div>
-            })
-          }
+        
+        <UserStateContext.Provider value={{
+          mode,
+          isView,
+        }}>
+          <Container onDrop={() => {
+            alert('Droped')
+          }}>
+            {
+              noteElements.map((noteElement, index) => {
+                return <Draggable>
+                    <div key={noteElement.key} className=''>
+                    <div className='text-right'>
+                      <button
+                        className="p-2 rounded-full border"
+                        onClick={() => {
+                          if (window.confirm('削除しますか?')){
+                            setNoteElements(noteElements.filter((_v, eachIndex) => index !== eachIndex))
+                          }
+                        }}
+                      >
+                        <IconX />
+                      </button>
+                    </div>
+                    { noteElement.element }
+                  </div>
+                </Draggable>
+              })
+            }
+          </Container>
         </UserStateContext.Provider>
       </div>
       <div className="h-24" />
