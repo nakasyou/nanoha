@@ -15,7 +15,7 @@ interface SheetProps {
   }
 }
 const Sheet = (props: SheetProps) => {
-  const ref = useRef(document.createElement(path))
+  const ref = useRef(document.createElement('path'))
 
   const reset = () => {
     const pathElement = ref.current
