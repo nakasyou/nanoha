@@ -20,6 +20,7 @@ export default (props: Props) => {
     height: 1,
   })
   const [blobUrl, setBlobUrl] = useState('')
+  const svgRef = useRef<SVGSVGElement>(null)
   useEffect(() => {
     const blobUrl = URL.createObjectURL(props.imageBlob)
     const image = new Image()
@@ -32,11 +33,16 @@ export default (props: Props) => {
     setBlobUrl(blobUrl)
     image.src = blobUrl
   }, [])
-
+  useEffect(() => {
+    for (const pathElement of svgRef.current.children) {
+      pathElement.dataset.isView = (!userState.isView).toString()
+      pathElement.click()
+    }
+  }, [userState.isView])
   return <div className="p-4 rounded-md border">
     <div className='relative w-full h-screen'>
       <img className='absolute top-0 w-full h-full object-contain' src={ blobUrl } alt='Scaned Image' />
-      <svg className='absolute top-0 w-full h-full object-contain' viewBox={ `0 0 ${imageSize.width} ${imageSize.height}` }>
+      <svg className='absolute top-0 w-full h-full object-contain' viewBox={ `0 0 ${imageSize.width} ${imageSize.height}` } ref={svgRef}>
         {
           props.paths.map((path, index) => {
             return <path d={ path } key={ index } stroke="#f002" strokeWidth="20" fill="none" onClick={(evt) => {
