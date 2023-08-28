@@ -75,7 +75,6 @@ export default function(props: Props){
         }}>
           {
             noteElements.map((noteElement, index) => {
-              noteElement.props.index = index
               return <div key={index} className=''>
                 { noteElement }
               </div>
