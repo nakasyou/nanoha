@@ -4,7 +4,7 @@ import Header from "../components/Header.astro"
 
 export type Props = Props
 ---
-<BaseLayout {...Astro.props}>
+<BaseLayout {...Astro.props} bodyClass="bg-background text-on-background">
   <div class="bg-background text-on-background">
     <Header />
     <slot />
