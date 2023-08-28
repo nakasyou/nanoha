@@ -36,7 +36,7 @@ export default (props: Props) => {
   useEffect(() => {
     for (const pathElement of svgRef.current.children) {
       pathElement.dataset.isView = (!userState.isView).toString()
-      pathElement.click()
+      pathElement.dispatchEvent(new MouseEvent('click'))
     }
   }, [userState.isView])
   return <div className="p-4 rounded-md border">
