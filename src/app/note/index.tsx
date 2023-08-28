@@ -24,6 +24,7 @@ export const UserStateContext = createContext<{
   mode: 'edit',
   isView: true,
 })
+export const NoteIndexContext = createContext(0)
 
 export default function(props: Props){
   const [mode, setMode] = useState<"edit" | "play">("edit")
@@ -76,7 +77,9 @@ export default function(props: Props){
           {
             noteElements.map((noteElement, index) => {
               return <div key={index} className=''>
-                { noteElement }
+                <NoteIndexContext.Provider value={index}>
+                  { noteElement }
+                </NoteIndexContext.Provider>
               </div>
             })
           }
