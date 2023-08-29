@@ -62,6 +62,7 @@
       "@astrojs/tailwind@^4.0.0": "@astrojs/tailwind@4.0.0_astro@2.8.1__@babel+core@7.22.10__vite@4.4.9_tailwindcss@3.3.3__postcss@8.4.27_postcss@8.4.27",
       "@material/material-color-utilities@^0.2.7": "@material/material-color-utilities@0.2.7",
       "@tabler/icons-react@^2.30.0": "@tabler/icons-react@2.30.0_react@18.2.0",
+      "@tailwindcss/typography@^0.5.9": "@tailwindcss/typography@0.5.9_tailwindcss@3.3.3__postcss@8.4.27",
       "@tiptap/core@^2.0.4": "@tiptap/core@2.0.4_@tiptap+pm@2.0.4__@tiptap+core@2.0.4__prosemirror-model@1.19.3__prosemirror-state@1.4.3__prosemirror-view@1.31.7",
       "@tiptap/pm@^2.0.4": "@tiptap/pm@2.0.4_@tiptap+core@2.0.4__@tiptap+pm@2.0.4_prosemirror-model@1.19.3_prosemirror-state@1.4.3_prosemirror-view@1.31.7",
       "@tiptap/react@^2.0.4": "@tiptap/react@2.0.4_@tiptap+core@2.0.4__@tiptap+pm@2.0.4___@tiptap+core@2.0.4___prosemirror-model@1.19.3___prosemirror-state@1.4.3___prosemirror-view@1.31.7_@tiptap+pm@2.0.4__@tiptap+core@2.0.4___@tiptap+pm@2.0.4__prosemirror-model@1.19.3__prosemirror-state@1.4.3__prosemirror-view@1.31.7_react@18.2.0_react-dom@18.2.0__react@18.2.0_@tiptap+pm@2.0.4__@tiptap+core@2.0.4___@tiptap+pm@2.0.4____@tiptap+core@2.0.4____prosemirror-model@1.19.3____prosemirror-state@1.4.3____prosemirror-view@1.31.7__@tiptap+core@2.0.4___@tiptap+pm@2.0.4____@tiptap+core@2.0.4_____@tiptap+pm@2.0.4____prosemirror-model@1.19.3____prosemirror-state@1.4.3____prosemirror-view@1.31.7___@tiptap+pm@2.0.4__prosemirror-model@1.19.3__prosemirror-state@1.4.3__prosemirror-view@1.31.7_@tiptap+core@2.0.4__@tiptap+pm@2.0.4___@tiptap+core@2.0.4____@tiptap+pm@2.0.4___prosemirror-model@1.19.3___prosemirror-state@1.4.3___prosemirror-view@1.31.7__@tiptap+pm@2.0.4___@tiptap+core@2.0.4____@tiptap+pm@2.0.4_____@tiptap+core@2.0.4_____prosemirror-model@1.19.3_____prosemirror-state@1.4.3_____prosemirror-view@1.31.7___@tiptap+core@2.0.4___prosemirror-model@1.19.3___prosemirror-state@1.4.3___prosemirror-view@1.31.7",
@@ -73,6 +74,7 @@
       "classnames@^2.3.2": "classnames@2.3.2",
       "mikanui@^0.1.11": "mikanui@0.1.11",
       "react-dom@^18.0.0": "react-dom@18.2.0_react@18.2.0",
+      "react-smooth-dnd@^0.11.1": "react-smooth-dnd@0.11.1_react@16.14.0",
       "react@^18.0.0": "react@18.2.0",
       "tailwindcss@^3.0.24": "tailwindcss@3.3.3_postcss@8.4.27"
     },
@@ -695,6 +697,16 @@
       "@tabler/icons@2.30.0": {
         "integrity": "sha512-tvtmkI4ALjKThVVORh++sB9JnkFY7eGInKxNy+Df7WVQiF7T85tlvGADzlgX4Ic+CK5MIUzZ0jhOlQ/RRlgXpg==",
         "dependencies": {}
+      },
+      "@tailwindcss/typography@0.5.9_tailwindcss@3.3.3__postcss@8.4.27": {
+        "integrity": "sha512-t8Sg3DyynFysV9f4JDOVISGsjazNb48AeIYQwcL+Bsq5uf4RYL75C1giZ43KISjeDGBaTN3Kxh7Xj/vRSMJUUg==",
+        "dependencies": {
+          "lodash.castarray": "lodash.castarray@4.4.0",
+          "lodash.isplainobject": "lodash.isplainobject@4.0.6",
+          "lodash.merge": "lodash.merge@4.6.2",
+          "postcss-selector-parser": "postcss-selector-parser@6.0.10",
+          "tailwindcss": "tailwindcss@3.3.3_postcss@8.4.27"
+        }
       },
       "@tiptap/core@2.0.4_@tiptap+pm@2.0.4__@tiptap+core@2.0.4___@tiptap+pm@2.0.4__prosemirror-model@1.19.3__prosemirror-state@1.4.3__prosemirror-view@1.31.7": {
         "integrity": "sha512-2YOMjRqoBGEP4YGgYpuPuBBJHMeqKOhLnS0WVwjVP84zOmMgZ7A8M6ILC9Xr7Q/qHZCvyBGWOSsI7+3HsEzzYQ==",
@@ -2515,6 +2527,18 @@
           "p-locate": "p-locate@5.0.0"
         }
       },
+      "lodash.castarray@4.4.0": {
+        "integrity": "sha512-aVx8ztPv7/2ULbArGJ2Y42bG1mEQ5mGjpdvrbJcJFU3TbYybe+QlLS4pst9zV52ymy2in1KpFPiZnAOATxD4+Q==",
+        "dependencies": {}
+      },
+      "lodash.isplainobject@4.0.6": {
+        "integrity": "sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==",
+        "dependencies": {}
+      },
+      "lodash.merge@4.6.2": {
+        "integrity": "sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==",
+        "dependencies": {}
+      },
       "log-symbols@5.1.0": {
         "integrity": "sha512-l0x2DvrW294C9uDCoQe1VSU4gf529FkSZ6leBl4TiqZH/e+0R7hSfHQBNut2mNygDgHwvYHfFLn6Oxb3VWj2rA==",
         "dependencies": {
@@ -3236,6 +3260,13 @@
           "postcss-selector-parser": "postcss-selector-parser@6.0.13"
         }
       },
+      "postcss-selector-parser@6.0.10": {
+        "integrity": "sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==",
+        "dependencies": {
+          "cssesc": "cssesc@3.0.0",
+          "util-deprecate": "util-deprecate@1.0.2"
+        }
+      },
       "postcss-selector-parser@6.0.13": {
         "integrity": "sha512-EaV1Gl4mUEV4ddhDnv/xtj7sxwrwxdetHdWUGnT4VJQf+4d05v6lHYZr8N573k5Z0BViss7BDhfWtKS3+sfAqQ==",
         "dependencies": {
@@ -3463,6 +3494,22 @@
       "react-is@16.13.1": {
         "integrity": "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==",
         "dependencies": {}
+      },
+      "react-smooth-dnd@0.11.1_react@16.14.0": {
+        "integrity": "sha512-+lVWQwPlK980VbFLtMSKfAJBt5ep37H/rVm3OnFiTpMFAghB9YQmrj3MnoIZ8tF+/niM/FFLpnSo8IgnbEY4Kg==",
+        "dependencies": {
+          "prop-types": "prop-types@15.8.1",
+          "react": "react@16.14.0",
+          "smooth-dnd": "smooth-dnd@0.12.1"
+        }
+      },
+      "react@16.14.0": {
+        "integrity": "sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==",
+        "dependencies": {
+          "loose-envify": "loose-envify@1.4.0",
+          "object-assign": "object-assign@4.1.1",
+          "prop-types": "prop-types@15.8.1"
+        }
       },
       "react@18.2.0": {
         "integrity": "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==",
@@ -3706,6 +3753,10 @@
       },
       "sisteransi@1.0.5": {
         "integrity": "sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==",
+        "dependencies": {}
+      },
+      "smooth-dnd@0.12.1": {
+        "integrity": "sha512-Dndj/MOG7VP83mvzfGCLGzV2HuK1lWachMtWl/Iuk6zV7noDycIBnflwaPuDzoaapEl3Pc4+ybJArkkx9sxPZg==",
         "dependencies": {}
       },
       "source-map-js@1.0.2": {

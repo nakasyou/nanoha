@@ -41,6 +41,9 @@ dependencies:
   '@types/react-dom':
     specifier: ^18.0.6
     version: 18.2.7
+  array-move:
+    specifier: ^4.0.0
+    version: 4.0.0
   astro:
     specifier: ^2.10.4
     version: 2.10.7
@@ -56,9 +59,6 @@ dependencies:
   react-dom:
     specifier: ^18.0.0
     version: 18.2.0(react@18.2.0)
-  react-smooth-dnd:
-    specifier: ^0.11.1
-    version: 0.11.1(react@18.2.0)
   tailwindcss:
     specifier: ^3.0.24
     version: 3.3.3
@@ -1436,6 +1436,11 @@ packages:
 
   /array-iterate@2.0.1:
     resolution: {integrity: sha512-I1jXZMjAgCMmxT4qxXfPXa6SthSoE8h6gkSI9BGGNv8mP8G/v0blc+qFnZu6K42vTOiuME596QaLO0TP3Lk0xg==}
+    dev: false
+
+  /array-move@4.0.0:
+    resolution: {integrity: sha512-+RY54S8OuVvg94THpneQvFRmqWdAHeqtMzgMW6JNurHxe8rsS07cHQdfGkXnTUXiBcyZ0j3SiDIxxj0RPiqCkQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dev: false
 
   /astro@2.10.7:
@@ -3808,16 +3813,6 @@ packages:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
 
-  /react-smooth-dnd@0.11.1(react@18.2.0):
-    resolution: {integrity: sha512-+lVWQwPlK980VbFLtMSKfAJBt5ep37H/rVm3OnFiTpMFAghB9YQmrj3MnoIZ8tF+/niM/FFLpnSo8IgnbEY4Kg==}
-    peerDependencies:
-      react: ^16.3.0
-    dependencies:
-      prop-types: 15.8.1
-      react: 18.2.0
-      smooth-dnd: 0.12.1
-    dev: false
-
   /react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
     engines: {node: '>=0.10.0'}
@@ -4081,10 +4076,6 @@ packages:
 
   /sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
-    dev: false
-
-  /smooth-dnd@0.12.1:
-    resolution: {integrity: sha512-Dndj/MOG7VP83mvzfGCLGzV2HuK1lWachMtWl/Iuk6zV7noDycIBnflwaPuDzoaapEl3Pc4+ybJArkkx9sxPZg==}
     dev: false
 
   /source-map-js@1.0.2:
