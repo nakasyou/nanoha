@@ -15,6 +15,7 @@ import classnames from "classnames"
 import ScanDialog from "./components/ScanDialog.tsx"
 import ImageNote from './components/ImageNote.tsx'
 import type { Editor } from "@tiptap/react"
+import { arrayMoveImmutable } from 'array-move'
 
 export interface Props {
   
@@ -112,10 +113,7 @@ export default function(props: Props){
                       <button
                         className="p-2 rounded-full border"
                         onClick={() => {
-                          const newNoteElements = [...noteElements]
-                          const removeElement = newNoteElements.splice(index, 1)
-                          removeElement.splice(index - 1, 0, removeElement)
-                          setNoteElements(removeElement)
+                          setNoteElements(arrayMoveImmutable(noteElements, index, index+1))
                         }}
                       ><IconArrowNarrowDown /></button>
                       <button
