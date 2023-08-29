@@ -115,29 +115,9 @@ export default function(props: Props){
                           const newNoteElements = [...noteElements]
                           const removeElement = newNoteElements.splice(index, 1)
                           removeElement.splice(index - 1, 0, removeElement)
-                          setNoteElements(noteElements.filter((_v, eachIndex) => index !== eachIndex))
+                          setNoteElements(removeElement)
                         }}
                       ><IconArrowNarrowDown /></button>
-                      <button
-                        className="p-2 rounded-full border"
-                        onClick={() => {
-                          if (window.confirm('削除しますか?')){
-                            setNoteElements(noteElements.filter((_v, eachIndex) => index !== eachIndex))
-                          }
-                        }}
-                      >
-                        <IconX />
-                      </button>
-                      <button
-                        className="p-2 rounded-full border"
-                        onClick={() => {
-                          if (window.confirm('削除しますか?')){
-                            setNoteElements(noteElements.filter((_v, eachIndex) => index !== eachIndex))
-                          }
-                        }}
-                      >
-                        <IconX />
-                      </button>
                       <button
                         className="p-2 rounded-full border"
                         onClick={() => {
