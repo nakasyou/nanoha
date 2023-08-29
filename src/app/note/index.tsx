@@ -13,7 +13,6 @@ import classnames from "classnames"
 import ScanDialog from "./components/ScanDialog.tsx"
 import ImageNote from './components/ImageNote.tsx'
 import type { Editor } from "@tiptap/react"
-import { Container, Draggable } from 'react-smooth-dnd'
 
 export interface Props {
   
@@ -95,12 +94,9 @@ export default function(props: Props){
           mode,
           isView,
         }}>
-          <Container onDrop={() => {
-            alert('Droped')
-          }}>
             {
               noteElements.map((noteElement, index) => {
-                return <Draggable>
+                return (
                     <div key={noteElement.key} className=''>
                     <div className='text-right'>
                       <button
@@ -116,10 +112,9 @@ export default function(props: Props){
                     </div>
                     { noteElement.element }
                   </div>
-                </Draggable>
+                  )
               })
             }
-          </Container>
         </UserStateContext.Provider>
       </div>
       <div className="h-24" />
