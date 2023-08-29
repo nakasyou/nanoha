@@ -105,9 +105,7 @@ export default function(props: Props){
                       <button
                         className="p-2 rounded-full border"
                         onClick={() => {
-                          if (window.confirm('削除しますか?')){
-                            setNoteElements(noteElements.filter((_v, eachIndex) => index !== eachIndex))
-                          }
+                          setNoteElements(arrayMoveImmutable(noteElements, index, index - 1))
                         }}
                       ><IconArrowNarrowUp /></button>
                       <button
