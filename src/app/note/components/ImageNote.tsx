@@ -37,12 +37,13 @@ const Sheet = (props: SheetProps) => {
     ref.current.dataset.isView = 'true'
     reset()
   }, [ref])
-
   return <path d={ props.path } stroke="#f002" strokeWidth="20" fill="none" ref={ref} onClick={(evt) => {
-    const pathElement: SVGPathElement = evt.target as SVGPathElement
-    const nextIsView = pathElement.dataset.isView !== 'true'
-    pathElement.dataset.isView = nextIsView.toString()
-    reset()
+    if (props.userState.mode === 'play') {     
+      const pathElement: SVGPathElement = evt.target as SVGPathElement
+      const nextIsView = pathElement.dataset.isView !== 'true'
+      pathElement.dataset.isView = nextIsView.toString()
+      reset()
+    }
    }} />
 }
 
