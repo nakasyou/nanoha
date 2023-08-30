@@ -100,7 +100,7 @@ export default (props: Props) => {
         }}/>
       }
       <div className='relative w-full h-screen'  onClick={() => {
-        setIsRescan(true)
+        setIsRescan(userState.mode === 'edit')
       }}>
         <img className='absolute top-0 w-full h-full object-contain' src={ blobUrl } alt='Scaned Image' />
         <svg className='absolute top-0 w-full h-full object-contain' viewBox={ `0 0 ${imageSize.width} ${imageSize.height}` } ref={svgRef}>
