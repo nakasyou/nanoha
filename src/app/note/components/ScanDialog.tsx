@@ -4,7 +4,7 @@ import range from '../utils/range'
 import { useWindowSize } from '../utils/useWindowSize'
 
 type DoubleTouple<T> = [T,T]
-interface SvgPathCommand {
+export interface SvgPathCommand {
   cmd: "M" | "L"
   x: number
   y: number
@@ -15,12 +15,14 @@ export interface ScanedDataSuccess {
   width: number
   height: number
   failed?: false
+  sheetSvgPaths: SvgPathCommand[][]
 }
 export interface ScanedDataFailed {
   failed: true
 }
 export interface Props {
   onClose: (data: ScanedDataFailed | ScanedDataSuccess) => void
+  data?: ScanedDataSuccess
 }
 export default (props: Props) => {
   const imageRef = useRef<HTMLImageElement>(null)
@@ -32,10 +34,7 @@ export default (props: Props) => {
 
   const [imageRect, setImageRect] = useState({})
   
-  const [sheetSvgPaths, setSheetSvgPaths] = useState<SvgPathCommand[][]>([[
-    { cmd: "M", x: 0, y: 0},
-    { cmd: "L", x: 100, y: 100}
-  ]])
+  const [sheetSvgPaths, setSheetSvgPaths] = useState<SvgPathCommand[][]>([])
   const renderFlame: [(() => void ) | null] = [null]
 
   const windowSize = useWindowSize()
@@ -54,7 +53,10 @@ export default (props: Props) => {
         return { ...xy, cmd: "L"}
       })
     })
-    setSheetSvgPaths(result)
+    setSheetSvgPaths([
+      //...(props.data ? props.data.sheetSvgPaths : []),
+      ...result
+    ])
   }
   const removePointerEvents = () => {
     const svg = svgRef.current!
@@ -129,7 +131,18 @@ export default (props: Props) => {
     const image = imageRef.current!
     
     setSheetSvgViewBox(`0 0 ${scanedImage?.width} ${scanedImage?.height}`) // 被せるSVGのサイズ指定
+
+    if (props.data) {
+      for (const sheetSvgPath of props.data.sheetSvgPaths) {
+        imageSheets.push(sheetSvgPath.map((path) => {
+          return [path.x, path.y]
+        }))
+      }
+      createSheetSvgData()
+    }
+
     setPointerEvents()
+
     if (scanedImage && scanedFile) {
       image.width = scanedImage.width
       image.height = scanedImage.height
@@ -137,8 +150,18 @@ export default (props: Props) => {
       setImageRect(image.getBoundingClientRect())
     }
   }, [scanedImage])
+  useEffect(() => {
+    if (props.data) {
+      setScanedFile(new File([props.data.imageBlob], 'a'))
+      const image = new Image()   
+      image.onload = () => {
+        setScanedImage(image)
+      }
+      image.src = URL.createObjectURL(props.data.imageBlob)
+    }
+  }, [])
   return <>
-    <div className="w-full fixed z-20">
+    <div className="w-full fixed z-20 top-0 left-0">
       <div className="w-full h-screen bg-[#00000099]">
         <div className="flex justify-center items-center mx-auto my-auto ">
           <div className="bg-background p-4 border border-on-background rounded-xl text-on-background m-4">
@@ -266,11 +289,29 @@ export default (props: Props) => {
                             const pathData = pathElement.getAttribute('d')
                             paths.push(pathData!)
                           }
+                          const svgPaths = []
+                          for (const path of paths) {
+                            const xs = []
+                            let tmp = {}
+                            for (const data of path.split(" ")) {
+                              if (data === 'M' || data === 'L') {
+                                tmp = {}
+                                tmp.cmd = data
+                              } else {
+                                tmp.x = parseFloat(data.split(',')[0])
+                                tmp.y = parseFloat(data.split(',')[1])
+                                xs.push(tmp)
+                              }
+                              svgPaths.push(xs)
+                            }
+                          }
+                          
                           props.onClose({
                             imageBlob: scanedFile!,
                             paths: paths,
                             width: scanedImage!.width,
                             height: scanedImage!.height,
+                            sheetSvgPaths: svgPaths
                           })
                         }
                       }}>

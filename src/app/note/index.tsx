@@ -79,7 +79,7 @@ export default function(props: Props){
       { isScanActive && <ScanDialog onClose={(data) => {
         if (!data.failed) {
           setNoteElements([...noteElements, {
-            element: <ImageNote imageBlob={data.imageBlob} paths={data.paths} />,
+            element: <ImageNote imageBlob={data.imageBlob} paths={data.paths} sheetSvgPaths={data.sheetSvgPaths} />,
             key: Math.random()
           }])
         }
