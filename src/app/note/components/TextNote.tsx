@@ -13,6 +13,7 @@ import {
   IconNote,
   IconNoteOff,
   IconX,
+  IconUnderline,
 } from "@tabler/icons-react"
 import { useEffect, useRef, useContext } from "react"
 import classNames from "classnames"
@@ -93,6 +94,16 @@ export default (props: Props) => {
                 }}
               >
                 {editor?.isActive("bold") ? <IconBold /> : <IconBoldOff />}
+              </button>
+              <button
+                className={classNames("p-2 rounded-full border", classNames({
+                  'bg-gray-200': editor?.isActive("underline")
+                }))}
+                onClick={() => {
+                  editor?.chain().focus().toggleUnderline().run()
+                }}
+              >
+                <IconUnderline />
               </button>
             </div>
           </div>
