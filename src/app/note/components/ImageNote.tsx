@@ -1,17 +1,19 @@
 import { UserStateContext } from "../index.tsx"
 import { viewClasses, hideClasses } from '../const/sheetClasses.ts'
-
+import ScanDialog from "./ScanDialog.tsx"
 import {
 
 } from "@tabler/icons-react"
 import { useEffect, useRef, useContext, useState } from "react"
 import classNames from "classnames"
 import { classListAddAll, classListRemoveAll } from "../utils/classListAll.ts"
+import type { SvgPathCommand } from "./ScanDialog.tsx"
 
 interface SheetProps {
   path: string
   userState: {
-    isView: string
+    isView: boolean
+    mode: 'edit' | 'play'
   }
 }
 const Sheet = (props: SheetProps) => {
@@ -28,13 +30,14 @@ const Sheet = (props: SheetProps) => {
     }
   }
   useEffect(() => {
-    ref.current.dataset.isView = props.userState.isView
+    ref.current.dataset.isView = props.userState.isView.toString()
     reset()
   }, [props.userState.isView])
   useEffect(() => {
     ref.current.dataset.isView = 'true'
     reset()
   }, [ref])
+
   return <path d={ props.path } stroke="#f002" strokeWidth="20" fill="none" ref={ref} onClick={(evt) => {
     const pathElement: SVGPathElement = evt.target as SVGPathElement
     const nextIsView = pathElement.dataset.isView !== 'true'
@@ -46,6 +49,7 @@ const Sheet = (props: SheetProps) => {
 export interface Props {
   imageBlob: Blob
   paths: string[]
+  sheetSvgPaths: SvgPathCommand[][]
 }
 export default (props: Props) => {
   const userState = useContext(UserStateContext)
@@ -56,6 +60,7 @@ export default (props: Props) => {
   })
   const [blobUrl, setBlobUrl] = useState('')
   const svgRef = useRef<SVGSVGElement>(null)
+  const [isRescan, setIsRescan] = useState(false)
   useEffect(() => {
     const blobUrl = URL.createObjectURL(props.imageBlob)
     const image = new Image()
@@ -69,21 +74,44 @@ export default (props: Props) => {
     image.src = blobUrl
   }, [])
   useEffect(() => {
-    for (const pathElement of svgRef.current.children) {
+    for (const pathElement of [...svgRef.current!.children] as SVGPathElement[]) {
       pathElement.dataset.isView = (!userState.isView).toString()
       pathElement.dispatchEvent(new MouseEvent('click'))
     }
   }, [userState.isView])
-  return <div className="p-4 rounded-md border">
-    <div className='relative w-full h-screen'>
-      <img className='absolute top-0 w-full h-full object-contain' src={ blobUrl } alt='Scaned Image' />
-      <svg className='absolute top-0 w-full h-full object-contain' viewBox={ `0 0 ${imageSize.width} ${imageSize.height}` } ref={svgRef}>
-        {
-          props.paths.map((path, index) => {
-            return <Sheet path={path} userState={userState} />
-          })
-        }
-      </svg>
+
+  const [sheetSvgPaths, setSheetSvgPaths] = useState(props.sheetSvgPaths)
+  const [paths, setPaths] = useState(props.paths)
+  return <>
+    <div className="p-4 rounded-md border">
+      {
+        isRescan && <ScanDialog onClose={(data) => {
+          if (!data.failed) {
+            console.log(data.sheetSvgPaths, )
+            setSheetSvgPaths(data.sheetSvgPaths)
+            setPaths(data.paths)
+          }
+          setIsRescan(false)
+        }} data={{
+          imageBlob: props.imageBlob,
+          paths: paths,
+          width: 0,
+          height: 0,
+          sheetSvgPaths: sheetSvgPaths
+        }}/>
+      }
+      <div className='relative w-full h-screen'  onClick={() => {
+        setIsRescan(true)
+      }}>
+        <img className='absolute top-0 w-full h-full object-contain' src={ blobUrl } alt='Scaned Image' />
+        <svg className='absolute top-0 w-full h-full object-contain' viewBox={ `0 0 ${imageSize.width} ${imageSize.height}` } ref={svgRef}>
+          {
+            paths.map((path, index) => {
+              return <Sheet path={path} userState={userState} key={index} />
+            })
+          }
+        </svg>
+      </div>
     </div>
-  </div>
+  </>
 }
