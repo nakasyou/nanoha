@@ -85,7 +85,7 @@ export default (props: Props) => {
   return <>
     <div className="p-4 rounded-md border">
       {
-        (props.userState.mode === 'edit') && isRescan && <ScanDialog onClose={(data) => {
+        ((userState.mode === 'edit') && isRescan) && <ScanDialog onClose={(data) => {
           if (!data.failed) {
             setSheetSvgPaths(data.sheetSvgPaths)
             setPaths(data.paths)
