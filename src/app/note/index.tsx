@@ -90,6 +90,24 @@ export default function(props: Props){
         setIsScanActive(false)
       }} /> }
     </div>
+    <div>
+      {
+        menu && <div class='w-screen h-screen fixed top-0 bottom-0'>
+          <div className='flex'>
+            <div>Menu</div>
+            <button onClick={setMenu(false)}>
+              <IconX />
+            </button>
+          </div>
+          <div>
+            <div className='outlined-button my-2'>保存する</div>
+            <div className='outlined-button my-2'>読み込む</div> 
+
+
+          </div>
+        </div>
+      }
+    </div>
     <div className="bg-background text-on-background min-h-screen">
       <div className="p-4 flex gap-4 flex-col">
           { (noteElements.length === 0) && <div className="text-center">
@@ -148,7 +166,7 @@ export default function(props: Props){
               <IconPlayerPlay />
             </button>
           </div>
-          <button onClick={() => setMenu(true)} className="filled-tonal-button ">
+          <button onClick={() => setMenu(true)} className="filled-button ">
             <IconMenu2 />
           </button>
         </div>
