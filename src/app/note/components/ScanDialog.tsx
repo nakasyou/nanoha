@@ -289,23 +289,28 @@ export default (props: Props) => {
                             const pathData = pathElement.getAttribute('d')
                             paths.push(pathData!)
                           }
-                          const svgPaths = []
-                          for (const path of paths) {
-                            const xs = []
-                            let tmp = {}
-                            for (const data of path.split(" ")) {
+                          const svgPaths = paths.map(path => {
+                            const splited = path.split(' ')
+                            
+                            const result = []
+                            let tmp: {
+                              cmd?: 'M' | 'L',
+                              x?: number
+                              y?: number
+                            } = {}
+                            for (const data of splited) {
                               if (data === 'M' || data === 'L') {
                                 tmp = {}
                                 tmp.cmd = data
                               } else {
-                                tmp.x = parseFloat(data.split(',')[0])
-                                tmp.y = parseFloat(data.split(',')[1])
-                                xs.push(tmp)
+                                const position = data.split(',').map(parseFloat)
+                                tmp.x = position
+                                tmp.y = position
+                                result.push(tmp)
                               }
-                              svgPaths.push(xs)
                             }
-                          }
-                          
+                            return result
+                          })
                           props.onClose({
                             imageBlob: scanedFile!,
                             paths: paths,

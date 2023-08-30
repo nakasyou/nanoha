@@ -87,7 +87,6 @@ export default (props: Props) => {
       {
         isRescan && <ScanDialog onClose={(data) => {
           if (!data.failed) {
-            console.log(data.sheetSvgPaths, )
             setSheetSvgPaths(data.sheetSvgPaths)
             setPaths(data.paths)
           }
