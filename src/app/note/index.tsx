@@ -9,6 +9,7 @@ import {
   IconPencil,
   IconArrowNarrowUp,
   IconArrowNarrowDown,
+  IconMenu2,
 } from "@tabler/icons-react"
 import { useEffect, useState, createContext } from "react"
 import classnames from "classnames"
@@ -41,21 +42,24 @@ export default function(props: Props){
   const [noteElements, setNoteElements] = useState<{
     element: JSX.Element
     key: any
+    data: [any]
   }[]>([])
   
   const createTextNote = (defaultContent: string) => {
+    const data = [{}]
     setNoteElements([
       ...noteElements,
       {
         element: <TextNote
           defaultContent={defaultContent}
           setEditorState={(editor) => null}
+          data={data}
          />,
          key: Math.random()
       }
     ])
   }
-
+  const [menu, setMenu] = useState(false)
   useEffect(() => {
     createTextNote(`<p>こんにちは！これはNanohaNoteです！</p>
         <p>NanohaNoteは、「じぶん」で作る、学習用ノートブックです！</p>
@@ -144,6 +148,9 @@ export default function(props: Props){
               <IconPlayerPlay />
             </button>
           </div>
+          <button onClick={() => setMenu(true)} className="filled-tonal-button ">
+            <IconMenu2 />
+          </button>
         </div>
       </div>
       <div className="fixed bottom-10 right-4">
