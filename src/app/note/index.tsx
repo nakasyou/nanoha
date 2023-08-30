@@ -137,10 +137,10 @@ export default function(props: Props){
         {/* Navbar */}
         <div className="flex gap-4 justify-center items-center m-2">
           <div className="flex justify-center items-center bg-lime-50 rounded-full">
-            <button onClick={()=>setMode("edit")} className={classnames("p-4 rounded-full", { "bg-lime-300": mode === "edit" })}>
+            <button onClick={()=>setMode("edit")} className={classnames("p-4 rounded-full", { "bg-secondary text-on-secondary": mode === "edit" })}>
               <IconEdit />
             </button>
-            <button onClick={()=>setMode("play")} className={classnames("p-4 rounded-full", { "bg-lime-300": mode === "play" })}>
+            <button onClick={()=>setMode("play")} className={classnames("p-4 rounded-full", { "bg-secondary text-on-secondary": mode === "play" })}>
               <IconPlayerPlay />
             </button>
           </div>
