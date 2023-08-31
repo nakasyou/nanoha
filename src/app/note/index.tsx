@@ -44,7 +44,10 @@ export default function(props: Props){
   const [noteElements, setNoteElements] = useState<{
     element: JSX.Element
     key: any
-    data: [any]
+    data: [{
+      data: any
+      blobs: Record<string, Blob>
+    }]
   }[]>([])
   
   const createTextNote = (defaultContent: string) => {
