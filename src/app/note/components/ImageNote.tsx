@@ -89,9 +89,10 @@ export default (props: Props) => {
   const [paths, setPaths] = useState(props.paths)
 
   useEffect(() => {
-    props.data[0].paths = paths
-    props.data[0].sheetSvgPaths = sheetSvgPaths
+    //props.data[0].paths = paths
+    //props.data[0].sheetSvgPaths = sheetSvgPaths
   }, [paths, sheetSvgPaths])
+  
   return <>
     <div className="p-4 rounded-md border">
       {
