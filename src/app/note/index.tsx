@@ -57,7 +57,8 @@ export default function(props: Props){
           setEditorState={(editor) => null}
           data={data}
          />,
-         key: Math.random()
+         key: Math.random(),
+         data,
       }
     ])
   }
@@ -101,7 +102,11 @@ export default function(props: Props){
             </button>
           </div>
           <div className='flex flex-wrap justify-center'>
-            <button className='outlined-button my-2'>保存する</button>
+            <button className='outlined-button my-2' onClick={() => {
+              noteElements.map(noteElement => {
+                alert(noteElement.data[0])
+              })
+            }}>保存する</button>
             <button className='outlined-button my-2'>読み込む</button> 
           </div>
         </div>
