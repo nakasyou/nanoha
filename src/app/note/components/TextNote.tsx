@@ -21,6 +21,7 @@ import classNames from "classnames"
 export interface Props {
   defaultContent: string
   setEditorState: (editor: Editor | null) => void
+  data: [any]
 }
 export default (props: Props) => {
   const userState = useContext(UserStateContext)
@@ -30,7 +31,9 @@ export default (props: Props) => {
     content: props.defaultContent,
   })
   props.setEditorState(editor)
-
+  
+  props.data[0] = 'Hello'
+  
   const viewEditorRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     for (const nanohaSheetElement of viewEditorRef?.current?.getElementsByClassName(
