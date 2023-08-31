@@ -21,7 +21,10 @@ import classNames from "classnames"
 export interface Props {
   defaultContent: string
   setEditorState: (editor: Editor | null) => void
-  data: [any]
+  data: [{
+    data: any
+    blobs: Record<string, Blob>
+  }]
 }
 export default (props: Props) => {
   const userState = useContext(UserStateContext)
