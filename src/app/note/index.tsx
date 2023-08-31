@@ -51,7 +51,10 @@ export default function(props: Props){
   }[]>([])
   
   const createTextNote = (defaultContent: string) => {
-    const data = [{}]
+    const data = [{
+      data: {},
+      blobs: []
+    }]
     setNoteElements([
       ...noteElements,
       {
