@@ -32,8 +32,6 @@ export default (props: Props) => {
   })
   props.setEditorState(editor)
   
-  props.data[0] = 'Hello'
-  
   const viewEditorRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     for (const nanohaSheetElement of viewEditorRef?.current?.getElementsByClassName(
@@ -70,6 +68,10 @@ export default (props: Props) => {
       nanohaSheetElement.onresetsheet = () => reset()
     }
   }, [userState.mode])
+  
+  useState(() => {
+    props.data[0] = editor?.getHTML()
+  }, [editor?.getHTML()])
   
   return (
     <>
