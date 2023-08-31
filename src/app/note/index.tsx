@@ -39,6 +39,8 @@ export default function(props: Props){
 
   const [editor, setEditor] = useState<Editor | null>(null)
   
+  const [isMenuActive, setIsMenuActive] = useState(false)
+  
   const [noteElements, setNoteElements] = useState<{
     element: JSX.Element
     key: any
@@ -59,7 +61,6 @@ export default function(props: Props){
       }
     ])
   }
-  const [menu, setMenu] = useState(false)
   useEffect(() => {
     createTextNote(`<p>こんにちは！これはNanohaNoteです！</p>
         <p>NanohaNoteは、「じぶん」で作る、学習用ノートブックです！</p>
@@ -90,10 +91,10 @@ export default function(props: Props){
         setIsScanActive(false)
       }} /> }
     </div>
-    { menu.toString() }
+    <button onClick={() => setIsMenuActive(true)}>{ isMenuActive.toString() }</button>
     <div>
       {
-        menu && <div class='w-screen h-screen fixed top-0 bottom-0'>
+        isMenuActive && <div class='w-screen h-screen fixed top-0 bottom-0'>
           <div className='flex'>
             <div>Menu</div>
             <button onClick={setMenu(false)}>
@@ -167,7 +168,7 @@ export default function(props: Props){
               <IconPlayerPlay />
             </button>
           </div>
-          <button onClick={() => setMenu(true)} className="filled-button ">
+          <button onClick={() => setIsMenuActive(true)} className="filled-button ">
             <IconMenu2 />
           </button>
         </div>
