@@ -91,13 +91,13 @@ export default function(props: Props){
         setIsScanActive(false)
       }} /> }
     </div>
-    <button onClick={() => setIsMenuActive(true)}>{ isMenuActive.toString() }</button>
+    <button>{ isMenuActive.toString() }</button>
     <div>
       {
         isMenuActive && <div class='w-screen h-screen fixed top-0 bottom-0'>
           <div className='flex'>
             <div>Menu</div>
-            <button onClick={setIsMenuActive(true)}>
+            <button>
               <IconX />
             </button>
           </div>
