@@ -94,7 +94,7 @@ export default function(props: Props){
     </div>
     <div>
       {
-        isMenuActive && <div class='w-screen h-screen fixed top-0 bottom-0 bg-background text-background z-20'>
+        isMenuActive && <div class='w-screen h-screen fixed top-0 bottom-0 bg-background text-on+background z-20'>
           <div className='flex'>
             <div>Menu</div>
             <button>
