@@ -91,21 +91,18 @@ export default function(props: Props){
         setIsScanActive(false)
       }} /> }
     </div>
-    <button>{ isMenuActive.toString() }</button>
     <div>
       {
-        isMenuActive && <div class='w-screen h-screen fixed top-0 bottom-0'>
+        isMenuActive && <div class='w-screen h-screen fixed top-0 bottom-0 bg-on-primary text-on-primary'>
           <div className='flex'>
             <div>Menu</div>
             <button>
               <IconX />
             </button>
           </div>
-          <div>
-            <div className='outlined-button my-2'>保存する</div>
-            <div className='outlined-button my-2'>読み込む</div> 
-
-
+          <div className='flex flex-wrap justify-center'>
+            <button className='outlined-button my-2'>保存する</button>
+            <button className='outlined-button my-2'>読み込む</button> 
           </div>
         </div>
       }
