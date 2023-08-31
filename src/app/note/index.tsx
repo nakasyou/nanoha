@@ -97,7 +97,7 @@ export default function(props: Props){
         isMenuActive && <div class='w-screen h-screen fixed top-0 bottom-0'>
           <div className='flex'>
             <div>Menu</div>
-            <button onClick={setIsMenuActive(false)}>
+            <button onClick={setIsMenuActive(true)}>
               <IconX />
             </button>
           </div>
