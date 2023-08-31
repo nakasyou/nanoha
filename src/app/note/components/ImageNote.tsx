@@ -51,6 +51,10 @@ export interface Props {
   imageBlob: Blob
   paths: string[]
   sheetSvgPaths: SvgPathCommand[][]
+  data: [{
+    blobs: Record<string, Blob>
+    data: any
+  }]
 }
 export default (props: Props) => {
   const userState = useContext(UserStateContext)
@@ -83,6 +87,11 @@ export default (props: Props) => {
 
   const [sheetSvgPaths, setSheetSvgPaths] = useState(props.sheetSvgPaths)
   const [paths, setPaths] = useState(props.paths)
+
+  useEffect(() => {
+    props.data[0].paths = paths
+    props.data[0].sheetSvgPaths = sheetSvgPaths
+  }, [paths, sheetSvgPaths])
   return <>
     <div className="p-4 rounded-md border">
       {
