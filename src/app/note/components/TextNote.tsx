@@ -73,7 +73,7 @@ export default (props: Props) => {
   }, [userState.mode])
   
   useEffect(() => {
-    props.data[0] = editor?.getHTML()
+    props.data[0].data = editor?.getHTML()
   }, [editor?.getHTML()])
   
   return (
