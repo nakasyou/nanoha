@@ -49,6 +49,7 @@ export default function(props: Props){
     element: JSX.Element
     key: any
     data: NoteData
+    type: 'text' | 'image'
   }[]>([])
   
   const createTextNote = (defaultContent: string) => {
@@ -66,6 +67,7 @@ export default function(props: Props){
          />,
          key: Math.random(),
          data,
+         type: 'text',
       }
     ])
   }
@@ -104,6 +106,7 @@ export default function(props: Props){
               />,
             key: Math.random(),
             data: noteData,
+            type: 'image',
           }])
         }
         setIsScanActive(false)
@@ -120,9 +123,19 @@ export default function(props: Props){
           </div>
           <div className='flex flex-wrap justify-center'>
             <button className='outlined-button my-2' onClick={() => {
-              noteElements.map(noteElement => {
-                alert(JSON.stringify(noteElement.data[0]))
-              })
+              const rotate = a => a[0].map((_, c) => a.map(r => r[c])).reverse();
+          
+              const [objectData, blobDatasArr] = rotate(noteElements.map((noteElement, index) => {
+                const thisNoteData = noteElement.data[0]
+                const rawObject = thisNoteData.data
+                const blobs = Object.fromEntries(Object.entries(thisNoteData.blobs).map(([key, blob]) => [index + '-' + key, blob]))
+
+                const serializeData: string = JSON.stringify(rawObject)
+
+                return [serializeData, blobs]
+              }))
+              const blobDatas = Object.assign(...blobDatasArr)
+              
             }}>保存する</button>
             <button className='outlined-button my-2'>読み込む</button> 
           </div>
