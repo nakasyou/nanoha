@@ -30,6 +30,10 @@ export const UserStateContext = createContext<{
 })
 export const NoteIndexContext = createContext(0)
 
+type NoteData = [{
+  data: any
+  blobs: Record<string, Blob>
+}]
 export default function(props: Props){
   const [mode, setMode] = useState<"edit" | "play">("edit")
   const [isView, setIsView] = useState(false)
@@ -44,10 +48,7 @@ export default function(props: Props){
   const [noteElements, setNoteElements] = useState<{
     element: JSX.Element
     key: any
-    data: [{
-      data: any
-      blobs: Record<string, Blob>
-    }]
+    data: NoteData
   }[]>([])
   
   const createTextNote = (defaultContent: string) => {
@@ -90,13 +91,19 @@ export default function(props: Props){
     <div>
       { isScanActive && <ScanDialog onClose={(data) => {
         if (!data.failed) {
-          const data = [{
+          const noteData: NoteData = [{
             data: {},
-            blobs: []
+            blobs: {}
           }]
           setNoteElements([...noteElements, {
-            element: <ImageNote imageBlob={data.imageBlob} paths={data.paths} sheetSvgPaths={data.sheetSvgPaths} data={data} />,
-            key: Math.random()
+            element: <ImageNote
+              imageBlob={data.imageBlob}
+              paths={data.paths}
+              sheetSvgPaths={data.sheetSvgPaths}
+              data={noteData}
+              />,
+            key: Math.random(),
+            data: noteData,
           }])
         }
         setIsScanActive(false)

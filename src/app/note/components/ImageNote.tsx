@@ -38,7 +38,7 @@ const Sheet = (props: SheetProps) => {
     reset()
   }, [ref])
   return <path d={ props.path } stroke="#f002" strokeWidth="20" fill="none" ref={ref} onClick={(evt) => {
-    if (props.userState.mode === 'play') {     
+    if (props.userState.mode === 'play') {
       const pathElement: SVGPathElement = evt.target as SVGPathElement
       const nextIsView = pathElement.dataset.isView !== 'true'
       pathElement.dataset.isView = nextIsView.toString()
@@ -89,8 +89,8 @@ export default (props: Props) => {
   const [paths, setPaths] = useState(props.paths)
 
   useEffect(() => {
-    //props.data[0].paths = paths
-    //props.data[0].sheetSvgPaths = sheetSvgPaths
+    props.data[0].data.paths = paths
+    props.data[0].data.sheetSvgPaths = sheetSvgPaths
   }, [paths, sheetSvgPaths])
   
   return <>
@@ -115,7 +115,7 @@ export default (props: Props) => {
       }}>
         <img className='absolute top-0 w-full h-full object-contain' src={ blobUrl } alt='Scaned Image' />
         <svg className='absolute top-0 w-full h-full object-contain' viewBox={ `0 0 ${imageSize.width} ${imageSize.height}` } ref={svgRef}>
-          {
+          {  
             paths.map((path, index) => {
               return <Sheet path={path} userState={userState} key={index} />
             })
