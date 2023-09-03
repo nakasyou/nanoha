@@ -137,6 +137,8 @@ export default function(props: Props){
                 return [serializeData, blobs]
               }))
               const blobDatas = Object.fromEntries(await Promise.all(Object.entries(Object.assign(...blobDatasArr)).map(async ([path, blob]) => {
+                alert(path)
+                alert(blob)
                 const buff = await blob.arrayBuffer()
                 return [path, new Uint8Array(buff)]
               })))
