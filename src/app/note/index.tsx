@@ -149,7 +149,14 @@ export default function(props: Props){
               }
           
               const noteFile = fflate.zipSync(filesData)
-              alert(noteFile)
+              const noteFileBlob = new Blob([noteFile], {
+                type: 'application/x.nanohanote.nnote'
+              })
+              const url = URL.createObjectURL(noteFileBlob)
+              const a = document.createElement('a')
+              a.href = url
+              a.download = 'note.nnote'
+              a.click()
             } catch(e) {
               alert(e)
             }
