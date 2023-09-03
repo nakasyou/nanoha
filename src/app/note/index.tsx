@@ -123,7 +123,7 @@ export default function(props: Props){
             </button>
           </div>
           <div className='flex flex-wrap justify-center'>
-            <button className='outlined-button my-2' onClick={() => {
+            <button className='outlined-button my-2' onClick={async () => {
               const rotate = a => a[0].map((_, c) => a.map(r => r[c])).reverse();
           
               const [objectData, blobDatasArr] = rotate(noteElements.map((noteElement, index) => {
