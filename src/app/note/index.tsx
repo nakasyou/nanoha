@@ -135,10 +135,10 @@ export default function(props: Props){
 
                 return [serializeData, blobs]
               }))
-              const blobDatas = Object.fromEntries(Object.entries(Object.assign(...blobDatasArr)).map(([path, blob]) => {
+              const blobDatas = Object.fromEntries(await Promise.all(Object.entries(Object.assign(...blobDatasArr)).map(async ([path, blob]) => {
                 const buff = await blob.arrayBuffer()
                 return [path, new Uint8Array(buff)]
-              }))
+              })))
 
               const filesData = {
                 'note.json': new TextEncoder().encode(JSON.stringify({
