@@ -135,7 +135,7 @@ export default function(props: Props){
                 return [serializeData, blobs]
               }))
               const blobDatas = Object.assign(...blobDatasArr)
-              
+              alert(objectData)
             }}>保存する</button>
             <button className='outlined-button my-2'>読み込む</button> 
           </div>
