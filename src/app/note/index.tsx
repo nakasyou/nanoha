@@ -17,6 +17,7 @@ import ScanDialog from "./components/ScanDialog.tsx"
 import ImageNote from './components/ImageNote.tsx'
 import type { Editor } from "@tiptap/react"
 import { arrayMoveImmutable } from 'array-move'
+import * as fflate from 'fflate'
 
 export interface Props {
   
@@ -128,14 +129,26 @@ export default function(props: Props){
               const [objectData, blobDatasArr] = rotate(noteElements.map((noteElement, index) => {
                 const thisNoteData = noteElement.data[0]
                 const rawObject = thisNoteData.data
-                const blobs = Object.fromEntries(Object.entries(thisNoteData.blobs).map(([key, blob]) => [index + '-' + key, blob]))
+                const blobs = Object.fromEntries(Object.entries(thisNoteData.blobs).map(([key, blob]) => ['blobs/' + index + '/' + key, blob]))
 
                 const serializeData: string = JSON.stringify(rawObject)
 
                 return [serializeData, blobs]
               }))
-              const blobDatas = Object.assign(...blobDatasArr)
-              alert(objectData)
+              const blobDatas = Object.fromEntries(Object.entries(Object.assign(...blobDatasArr)).map(([path, blob]) => {
+                const buff = await blob.arrayBuffer()
+                return [path, new Uint8Array(buff)]
+              }))
+
+              const filesData = {
+                'note.json': new TextEncoder().encode(JSON.stringify({
+                  notes: objectData,
+                })),
+                ...blobDatas,
+              }
+          
+              const noteFile = fflate.zipSync(filesData)
+              alert(noteFile)
             }}>保存する</button>
             <button className='outlined-button my-2'>読み込む</button> 
           </div>
