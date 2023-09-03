@@ -50,6 +50,9 @@ dependencies:
   classnames:
     specifier: ^2.3.2
     version: 2.3.2
+  fflate:
+    specifier: ^0.8.0
+    version: 0.8.0
   mikanui:
     specifier: ^0.1.11
     version: 0.1.11
@@ -2308,6 +2311,10 @@ packages:
     resolution: {integrity: sha512-wBrocU2LCXXa+lWBt8RoIRD89Fi8OdABODa/kEnyeyjS5aZO5/GNvI5sEINADqP/h8M29UHTHUb53sUu5Ihqdw==}
     dependencies:
       reusify: 1.0.4
+    dev: false
+
+  /fflate@0.8.0:
+    resolution: {integrity: sha512-FAdS4qMuFjsJj6XHbBaZeXOgaypXp8iw/Tpyuq/w3XA41jjLHT8NPA+n7czH/DDhdncq0nAyDZmPeWXh2qmdIg==}
     dev: false
 
   /fill-range@7.0.1:
