@@ -124,6 +124,7 @@ export default function(props: Props){
           </div>
           <div className='flex flex-wrap justify-center'>
             <button className='outlined-button my-2' onClick={async () => {
+            try {
               const rotate = a => a[0].map((_, c) => a.map(r => r[c])).reverse();
           
               const [objectData, blobDatasArr] = rotate(noteElements.map((noteElement, index) => {
@@ -139,7 +140,7 @@ export default function(props: Props){
                 const buff = await blob.arrayBuffer()
                 return [path, new Uint8Array(buff)]
               })))
-
+              
               const filesData = {
                 'note.json': new TextEncoder().encode(JSON.stringify({
                   notes: objectData,
@@ -149,6 +150,9 @@ export default function(props: Props){
           
               const noteFile = fflate.zipSync(filesData)
               alert(noteFile)
+            } catch(e) {
+              alert(e)
+            }
             }}>保存する</button>
             <button className='outlined-button my-2'>読み込む</button> 
           </div>
