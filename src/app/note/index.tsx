@@ -132,10 +132,10 @@ export default function(props: Props){
                 const rawObject = thisNoteData.data
                 const blobs = Object.fromEntries(Object.entries(thisNoteData.blobs).map(([key, blob]) => ['blobs/' + index + '/' + key, blob]))
 
-                const serializeData: string = JSON.stringify({
+                const serializeData: string = {
                   data: rawObject,
                   type: noteElement.type,
-                })
+                }
 
                 return [serializeData, blobs]
               }))
@@ -180,7 +180,7 @@ export default function(props: Props){
                 }
                 const noteData = JSON.parse(new TextDecoder().decode(files['note.json']))
                 for (const note of noteData.notes) {
-                  alert(note)
+                  console.log(note)
                 }
               }
               input.click()
