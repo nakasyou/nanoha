@@ -178,7 +178,9 @@ export default function(props: Props){
                 } catch (_error) {
                   alert('ファイルの解凍に失敗しました。おそらくファイルの形式が違います。')
                 }
+                
                 const noteData = JSON.parse(new TextDecoder().decode(files['note.json']))
+                setNoteElements([])
                 for (const note of noteData.notes) {
                   switch (note.type) {
                     case 'text': {
