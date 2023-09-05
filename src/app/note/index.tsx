@@ -132,7 +132,10 @@ export default function(props: Props){
                 const rawObject = thisNoteData.data
                 const blobs = Object.fromEntries(Object.entries(thisNoteData.blobs).map(([key, blob]) => ['blobs/' + index + '/' + key, blob]))
 
-                const serializeData: string = JSON.stringify(rawObject)
+                const serializeData: string = JSON.stringify({
+                  data: rawObject,
+                  type: noteElement.type,
+                })
 
                 return [serializeData, blobs]
               }))
@@ -176,7 +179,7 @@ export default function(props: Props){
                   alert('ファイルの解凍に失敗しました。おそらくファイルの形式が違います。')
                 }
                 const noteData = new TextDecoder().decode(files['note.json'])
-                alert(noteData)
+                buff
               }
               input.click()
             }}>読み込む</button> 
