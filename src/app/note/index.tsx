@@ -166,13 +166,12 @@ export default function(props: Props){
               input.type = 'file'
               input.oninput = async (evt) => {
                 const file = evt.target.files[0]
-                alert(file)
-                const buff = await fflate.arrayBuffer()
+                const buff = await file.arrayBuffer()
                 const uint8array = new Uint8Array(buff)
 
                 let files
                 try {
-                  files = await unzipSync(uint8array)
+                  files = await fflate.unzipSync(uint8array)
                 } catch (_error) {
                   alert('ファイルの解凍に失敗しました。おそらくファイルの形式が違います。')
                 }
