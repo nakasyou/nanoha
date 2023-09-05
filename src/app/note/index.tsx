@@ -161,7 +161,26 @@ export default function(props: Props){
               alert(e)
             }
             }}>保存する</button>
-            <button className='outlined-button my-2'>読み込む</button> 
+            <button className='outlined-button my-2' onClick={() => {
+              const input = document.createElement('input')
+              input.type = 'file'
+              input.onchange = async (evt) => {
+                const file = evt.target.files[0]
+                
+                const buff = await fflate.arrayBuffer()
+                const uint8array = new Uint8Array(buff)
+
+                let files
+                try {
+                  files = await unzipSync(uint8array)
+                } catch (_error) {
+                  alert('ファイルの解凍に失敗しました。おそらくファイルの形式が違います。')
+                }
+                const noteData = new TextDecoder().decode(files['note.json'])
+                alert(noteData)
+              }
+              input.click()
+            }}>読み込む</button> 
           </div>
         </div>
       }
