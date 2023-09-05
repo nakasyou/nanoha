@@ -178,8 +178,10 @@ export default function(props: Props){
                 } catch (_error) {
                   alert('ファイルの解凍に失敗しました。おそらくファイルの形式が違います。')
                 }
-                const noteData = new TextDecoder().decode(files['note.json'])
-                buff
+                const noteData = JSON.parse(new TextDecoder().decode(files['note.json']))
+                for (const note of noteData.notes) {
+                  alert(note)
+                }
               }
               input.click()
             }}>読み込む</button> 
