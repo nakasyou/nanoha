@@ -164,9 +164,9 @@ export default function(props: Props){
             <button className='outlined-button my-2' onClick={() => {
               const input = document.createElement('input')
               input.type = 'file'
-              input.onchange = async (evt) => {
+              input.oninput = async (evt) => {
                 const file = evt.target.files[0]
-                
+                alert(file)
                 const buff = await fflate.arrayBuffer()
                 const uint8array = new Uint8Array(buff)
 
