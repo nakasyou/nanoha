@@ -186,7 +186,7 @@ export default (props: Props) => {
                   imageRef.current!.parentElement!.append(input)
                   input.type = 'file'
                   input.accept = 'image/*'
-                  input.capture = 'environment'
+                  //input.capture = 'environment'
                   input.onchange = (evt) => {
                     if (input.files) {
                       setScanedFile(input.files[0])
