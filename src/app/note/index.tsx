@@ -118,7 +118,7 @@ export default function(props: Props){
         isMenuActive && <div className='w-screen h-screen fixed top-0 bottom-0 bg-background text-on+background z-20'>
           <div className='flex justify-between items-center mx-5'>
             <div className='text-2xl'>Menu</div>
-            <button>
+            <button onClick={() => setIsMenuActive(false)}>
               <IconX />
             </button>
           </div>
