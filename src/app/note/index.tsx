@@ -180,7 +180,13 @@ export default function(props: Props){
                 }
                 const noteData = JSON.parse(new TextDecoder().decode(files['note.json']))
                 for (const note of noteData.notes) {
-                  console.log(note)
+                  switch (note.type) {
+                    case 'text': {
+                      createTextNote(note.data)
+                      break
+                    }
+                    default:
+                  }
                 }
               }
               input.click()
