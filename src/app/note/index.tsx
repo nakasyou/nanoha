@@ -14,7 +14,7 @@ import {
 import { useEffect, useState, createContext } from "react"
 import classnames from "classnames"
 import ScanDialog from "./components/ScanDialog.tsx"
-import ImageNote from './components/ImageNote.tsx'
+import ImageNote, { type ImageNoteData } from './components/ImageNote.tsx'
 import type { Editor } from "@tiptap/react"
 import { arrayMoveImmutable } from 'array-move'
 import * as fflate from 'fflate'
@@ -95,9 +95,14 @@ export default function(props: Props){
     <div>
       { isScanActive && <ScanDialog onClose={(data) => {
         if (!data.failed) {
-          const noteData: NoteData = {
-            data: {},
-            blobs: {}
+          const noteData: ImageNoteData = {
+            data: {
+              paths: data.paths,
+              sheetSvgPaths: data.sheetSvgPaths
+            },
+            blobs: {
+              image: data.imageBlob
+            }
           }
           setNoteElements([...noteElements, {
             element: <ImageNote

@@ -47,14 +47,20 @@ const Sheet = (props: SheetProps) => {
    }} />
 }
 
+export interface ImageNoteData {
+  blobs: {
+    image: Blob
+  }
+  data: {
+    paths: string
+    sheetSvgPaths: any
+  }
+}
 export interface Props {
   imageBlob: Blob
   paths: string[]
   sheetSvgPaths: SvgPathCommand[][]
-  data: [{
-    blobs: Record<string, Blob>
-    data: any
-  }]
+  data: ImageNoteData
 }
 export default (props: Props) => {
   const userState = useContext(UserStateContext)
