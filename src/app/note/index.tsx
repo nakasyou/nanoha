@@ -184,6 +184,7 @@ export default function(props: Props){
                 }
                 
                 const noteData = JSON.parse(new TextDecoder().decode(files['note.json']))
+                alert(noteData)
                 const newNoteElements = []
 
                 for (const note of noteData.notes) {
