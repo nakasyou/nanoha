@@ -31,10 +31,16 @@ export const UserStateContext = createContext<{
 })
 export const NoteIndexContext = createContext(0)
 
-type NoteData = [{
+interface NoteData {
   data: any
   blobs: Record<string, Blob>
-}]
+}
+interface NoteElement {
+    element: JSX.Element
+    key: any
+    data: NoteData
+    type: 'text' | 'image'
+}
 export default function(props: Props){
   const [mode, setMode] = useState<"edit" | "play">("edit")
   const [isView, setIsView] = useState(false)
@@ -46,40 +52,35 @@ export default function(props: Props){
   
   const [isMenuActive, setIsMenuActive] = useState(false)
   
-  const [noteElements, setNoteElements] = useState<{
-    element: JSX.Element
-    key: any
-    data: NoteData
-    type: 'text' | 'image'
-  }[]>([])
+  const [noteElements, setNoteElements] = useState<NoteElement[]>([])
   
-  const createTextNote = (defaultContent: string) => {
-    const data = [{
-      data: {},
+  const createTextNote = (defaultContent: string): NoteElement => {
+    const data: NoteData = {
+      data: {
+        html: defaultContent,
+      },
       blobs: []
-    }]
-    setNoteElements([
-      ...noteElements,
-      {
-        element: <TextNote
-          defaultContent={defaultContent}
-          setEditorState={(editor) => null}
-          data={data}
-         />,
-         key: Math.random(),
-         data,
-         type: 'text',
-      }
-    ])
+    }
+    return {
+      element: <TextNote data={data} />,
+      key: Math.random(),
+      data,
+      type: 'text',
+    }
   }
   useEffect(() => {
-    createTextNote(`<p>こんにちは！これはNanohaNoteです！</p>
+    setNoteElements([])
+    const defaultNote = createTextNote(`<p>こんにちは！これはNanohaNoteです！</p>
         <p>NanohaNoteは、「じぶん」で作る、学習用ノートブックです！</p>
         <p>暗記をスムーズに行えます。</p>
         <p>例えば、こんなことができちゃいます:</p>
         <p>「Scratchでプログラミングするように、視覚的にプログラミングすることを、<span data-nanohasheet="true">ビジュアルプログラミング</span>という」</p>
         <p>じゃーん。すごいでしょ。<b>こんなふうに太字</b>にしたり、<del>証拠隠滅</del>したりできます。</p>
         <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>`)
+    setNoteElements([
+      defaultNote
+    ])
+    
     console.log(
       "%cここにコピペしろ",
       "font-size: 4em; color: red; font-weight: bold;",
@@ -180,16 +181,18 @@ export default function(props: Props){
                 }
                 
                 const noteData = JSON.parse(new TextDecoder().decode(files['note.json']))
-                setNoteElements([])
+                const newNoteElements = []
+
                 for (const note of noteData.notes) {
                   switch (note.type) {
                     case 'text': {
-                      createTextNote(note.data)
+                      newNoteElements.push(createTextNote(note.data.html))
                       break
                     }
                     default:
                   }
                 }
+                setNoteElements(newNoteElements)
               }
               input.click()
             }}>読み込む</button> 
