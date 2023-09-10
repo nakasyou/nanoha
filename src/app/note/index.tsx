@@ -59,7 +59,7 @@ export default function(props: Props){
       data: {
         html: defaultContent,
       },
-      blobs: []
+      blobs: {}
     }
     return {
       element: <TextNote data={data} />,
@@ -95,10 +95,10 @@ export default function(props: Props){
     <div>
       { isScanActive && <ScanDialog onClose={(data) => {
         if (!data.failed) {
-          const noteData: NoteData = [{
+          const noteData: NoteData = {
             data: {},
             blobs: {}
-          }]
+          }
           setNoteElements([...noteElements, {
             element: <ImageNote
               imageBlob={data.imageBlob}

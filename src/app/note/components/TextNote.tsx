@@ -31,7 +31,7 @@ export default (props: Props) => {
   
   const editor = useEditor({
     extensions: [StarterKit, TipTapPluginSheet, TiptapPluginImageNote],
-    content: props.defaultContent,
+    content: props.data.data.html,
   })
   
   const viewEditorRef = useRef<HTMLDivElement>(null)
