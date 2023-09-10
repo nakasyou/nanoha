@@ -53,13 +53,10 @@ export interface ImageNoteData {
   }
   data: {
     paths: string
-    sheetSvgPaths: any
+    sheetSvgPaths: SvgPathCommand[][]
   }
 }
 export interface Props {
-  imageBlob: Blob
-  paths: string[]
-  sheetSvgPaths: SvgPathCommand[][]
   data: ImageNoteData
 }
 export default (props: Props) => {
@@ -73,7 +70,7 @@ export default (props: Props) => {
   const svgRef = useRef<SVGSVGElement>(null)
   const [isRescan, setIsRescan] = useState(false)
   useEffect(() => {
-    const blobUrl = URL.createObjectURL(props.imageBlob)
+    const blobUrl = URL.createObjectURL(props.data.blobs.image)
     const image = new Image()
     image.onload = () => {
       setImageSize({
@@ -91,13 +88,13 @@ export default (props: Props) => {
     }
   }, [userState.isView])
 
-  const [sheetSvgPaths, setSheetSvgPaths] = useState(props.sheetSvgPaths)
-  const [paths, setPaths] = useState(props.paths)
+  const [sheetSvgPaths, setSheetSvgPaths] = useState(props.data.data.sheetSvgPaths)
+  const [paths, setPaths] = useState(props.data.data.paths)
 
   useEffect(() => {
     props.data.data.paths = paths
     props.data.data.sheetSvgPaths = sheetSvgPaths
-    props.data.blobs.image = props.imageBlob
+    props.data.blobs.image = props.data.blobs.image
   }, [paths, sheetSvgPaths])
   
   return <>
@@ -110,7 +107,7 @@ export default (props: Props) => {
           }
           setIsRescan(false)
         }} data={{
-          imageBlob: props.imageBlob,
+          imageBlob: props.data.blobs.image,
           paths: paths,
           width: 0,
           height: 0,

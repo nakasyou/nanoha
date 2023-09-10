@@ -106,9 +106,6 @@ export default function(props: Props){
           }
           setNoteElements([...noteElements, {
             element: <ImageNote
-              imageBlob={data.imageBlob}
-              paths={data.paths}
-              sheetSvgPaths={data.sheetSvgPaths}
               data={noteData}
               />,
             key: Math.random(),
