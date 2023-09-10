@@ -168,10 +168,10 @@ export default function(props: Props){
             }
             }}>保存する</button>
             <button className='outlined-button my-2' onClick={() => {
-            try {
               const input = document.createElement('input')
               input.type = 'file'
               input.oninput = async (evt) => {
+              try {
                 const file = evt.target.files[0]
                 const buff = await file.arrayBuffer()
                 const uint8array = new Uint8Array(buff)
@@ -200,11 +200,11 @@ export default function(props: Props){
                   }
                 }
                 setNoteElements(newNoteElements)
+              } catch(e) {
+                alert(e)
+              }
               }
               input.click()
-            } catch (e) {
-              alert(e)
-            }
             }}>読み込む</button> 
           </div>
         </div>
