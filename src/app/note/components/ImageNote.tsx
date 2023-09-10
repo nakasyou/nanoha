@@ -95,9 +95,9 @@ export default (props: Props) => {
   const [paths, setPaths] = useState(props.paths)
 
   useEffect(() => {
-    props.data[0].data.paths = paths
-    props.data[0].data.sheetSvgPaths = sheetSvgPaths
-    props.data[0].blobs.image = props.imageBlob
+    props.data.data.paths = paths
+    props.data.data.sheetSvgPaths = sheetSvgPaths
+    props.data.blobs.image = props.imageBlob
   }, [paths, sheetSvgPaths])
   
   return <>
