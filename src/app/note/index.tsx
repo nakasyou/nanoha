@@ -129,11 +129,11 @@ export default function(props: Props){
               const rotate = a => a[0].map((_, c) => a.map(r => r[c])).reverse();
           
               const [blobDatasArr, objectData] = rotate(noteElements.map((noteElement, index) => {
-                const thisNoteData = noteElement.data[0]
+                const thisNoteData = noteElement.data
                 const rawObject = thisNoteData.data
                 const blobs = Object.fromEntries(Object.entries(thisNoteData.blobs).map(([key, blob]) => ['blobs/' + index + '/' + key, blob]))
 
-                const serializeData: string = {
+                const serializeData = {
                   data: rawObject,
                   type: noteElement.type,
                 }
