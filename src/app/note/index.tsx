@@ -184,13 +184,16 @@ export default function(props: Props){
                 }
                 
                 const noteData = JSON.parse(new TextDecoder().decode(files['note.json']))
-                alert(noteData)
                 const newNoteElements = []
 
                 for (const note of noteData.notes) {
+                  alert(JSON.stringify(note))
                   switch (note.type) {
                     case 'text': {
                       newNoteElements.push(createTextNote(note.data.html))
+                      break
+                    }
+                    case 'image': {
                       break
                     }
                     default:
