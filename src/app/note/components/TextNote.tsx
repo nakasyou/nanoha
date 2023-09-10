@@ -19,12 +19,12 @@ import { useEffect, useRef, useContext } from "react"
 import classNames from "classnames"
 
 export interface Props {
-  defaultContent: string
-  setEditorState: (editor: Editor | null) => void
-  data: [{
-    data: any
+  data: {
+    data: {
+      html: string
+    }
     blobs: Record<string, Blob>
-  }]
+  }
 }
 export default (props: Props) => {
   const userState = useContext(UserStateContext)
@@ -73,7 +73,7 @@ export default (props: Props) => {
   }, [userState.mode])
   
   useEffect(() => {
-    props.data[0].data = editor?.getHTML()
+    props.data.data.html = editor?.getHTML()
   }, [editor?.getHTML()])
   
   return (
