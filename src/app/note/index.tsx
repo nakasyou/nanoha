@@ -14,7 +14,7 @@ import {
 import { useEffect, useState, createContext } from "react"
 import classnames from "classnames"
 import ScanDialog from "./components/ScanDialog.tsx"
-import ImageNote from './components/ImageNote.tsx'
+import ImageNote, { type ImageNoteData } from './components/ImageNote.tsx'
 import type { Editor } from "@tiptap/react"
 import { arrayMoveImmutable } from 'array-move'
 import * as fflate from 'fflate'
@@ -31,10 +31,16 @@ export const UserStateContext = createContext<{
 })
 export const NoteIndexContext = createContext(0)
 
-type NoteData = [{
+interface NoteData {
   data: any
   blobs: Record<string, Blob>
-}]
+}
+interface NoteElement {
+    element: JSX.Element
+    key: any
+    data: NoteData
+    type: 'text' | 'image'
+}
 export default function(props: Props){
   const [mode, setMode] = useState<"edit" | "play">("edit")
   const [isView, setIsView] = useState(false)
@@ -46,40 +52,35 @@ export default function(props: Props){
   
   const [isMenuActive, setIsMenuActive] = useState(false)
   
-  const [noteElements, setNoteElements] = useState<{
-    element: JSX.Element
-    key: any
-    data: NoteData
-    type: 'text' | 'image'
-  }[]>([])
+  const [noteElements, setNoteElements] = useState<NoteElement[]>([])
   
-  const createTextNote = (defaultContent: string) => {
-    const data = [{
-      data: {},
-      blobs: []
-    }]
-    setNoteElements([
-      ...noteElements,
-      {
-        element: <TextNote
-          defaultContent={defaultContent}
-          setEditorState={(editor) => null}
-          data={data}
-         />,
-         key: Math.random(),
-         data,
-         type: 'text',
-      }
-    ])
+  const createTextNote = (defaultContent: string): NoteElement => {
+    const data: NoteData = {
+      data: {
+        html: defaultContent,
+      },
+      blobs: {}
+    }
+    return {
+      element: <TextNote data={data} />,
+      key: Math.random(),
+      data,
+      type: 'text',
+    }
   }
   useEffect(() => {
-    createTextNote(`<p>こんにちは！これはNanohaNoteです！</p>
+    setNoteElements([])
+    const defaultNote = createTextNote(`<p>こんにちは！これはNanohaNoteです！</p>
         <p>NanohaNoteは、「じぶん」で作る、学習用ノートブックです！</p>
         <p>暗記をスムーズに行えます。</p>
         <p>例えば、こんなことができちゃいます:</p>
         <p>「Scratchでプログラミングするように、視覚的にプログラミングすることを、<span data-nanohasheet="true">ビジュアルプログラミング</span>という」</p>
         <p>じゃーん。すごいでしょ。<b>こんなふうに太字</b>にしたり、<del>証拠隠滅</del>したりできます。</p>
         <p>さあ、あなたの思いのままのノートにしましょう！この説明を消してもいいですよ〜</p>`)
+    setNoteElements([
+      defaultNote
+    ])
+    
     console.log(
       "%cここにコピペしろ",
       "font-size: 4em; color: red; font-weight: bold;",
@@ -94,15 +95,17 @@ export default function(props: Props){
     <div>
       { isScanActive && <ScanDialog onClose={(data) => {
         if (!data.failed) {
-          const noteData: NoteData = [{
-            data: {},
-            blobs: {}
-          }]
+          const noteData: ImageNoteData = {
+            data: {
+              paths: data.paths,
+              sheetSvgPaths: data.sheetSvgPaths
+            },
+            blobs: {
+              image: data.imageBlob
+            }
+          }
           setNoteElements([...noteElements, {
             element: <ImageNote
-              imageBlob={data.imageBlob}
-              paths={data.paths}
-              sheetSvgPaths={data.sheetSvgPaths}
               data={noteData}
               />,
             key: Math.random(),
@@ -128,11 +131,11 @@ export default function(props: Props){
               const rotate = a => a[0].map((_, c) => a.map(r => r[c])).reverse();
           
               const [blobDatasArr, objectData] = rotate(noteElements.map((noteElement, index) => {
-                const thisNoteData = noteElement.data[0]
+                const thisNoteData = noteElement.data
                 const rawObject = thisNoteData.data
                 const blobs = Object.fromEntries(Object.entries(thisNoteData.blobs).map(([key, blob]) => ['blobs/' + index + '/' + key, blob]))
 
-                const serializeData: string = {
+                const serializeData = {
                   data: rawObject,
                   type: noteElement.type,
                 }
@@ -168,6 +171,7 @@ export default function(props: Props){
               const input = document.createElement('input')
               input.type = 'file'
               input.oninput = async (evt) => {
+              try {
                 const file = evt.target.files[0]
                 const buff = await file.arrayBuffer()
                 const uint8array = new Uint8Array(buff)
@@ -175,21 +179,52 @@ export default function(props: Props){
                 let files
                 try {
                   files = await fflate.unzipSync(uint8array)
-                } catch (_error) {
+                  if (!files) {
+                    throw new Error()
+                  }
+                } catch (error) {
                   alert('ファイルの解凍に失敗しました。おそらくファイルの形式が違います。')
+                  throw error
                 }
                 
                 const noteData = JSON.parse(new TextDecoder().decode(files['note.json']))
-                setNoteElements([])
+                const newNoteElements = []
+
+                let index = 0
                 for (const note of noteData.notes) {
                   switch (note.type) {
                     case 'text': {
-                      createTextNote(note.data)
+                      newNoteElements.push(createTextNote(note.data.html))
+                      break
+                    }
+                    case 'image': {
+                      const noteData: ImageNoteData = {
+                        data: {
+                          paths: note.data.paths,
+                          sheetSvgPaths: note.data.sheetSvgPaths
+                        },
+                        blobs: {
+                          image: new Blob([files[`blobs/${index}/image`]])
+                        }
+                      }
+                      newNoteElements.push({
+                        element: <ImageNote
+                          data={noteData}
+                          />,
+                        key: Math.random(),
+                        data: noteData,
+                        type: 'image',
+                      })
                       break
                     }
                     default:
                   }
+                  index ++
                 }
+                setNoteElements(newNoteElements)
+              } catch(e) {
+                alert(e)
+              }
               }
               input.click()
             }}>読み込む</button> 
@@ -276,7 +311,7 @@ export default function(props: Props){
                   <IconX />
                 </button>
                 <button className="small-fab flex justify-center items-center" onClick={() => {
-                  createTextNote("New Note")
+                  setNoteElements([...noteElements, createTextNote("New Note")])
                 }}>
                   <IconPencil />
                 </button>
