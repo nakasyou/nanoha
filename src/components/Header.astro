@@ -1,13 +1,20 @@
 ---
 import Icon from "../assets/icon.svg"
 ---
-<header class="w-full flex drop-shadow-xl top-0 sticky">
-  <div class="mx-5 flex items-center">
-    <a href="/">
-      <img src={ Icon } alt="NanohaNote icon" class="w-8 h-8" />
-    </a>
+<header class="w-full flex drop-shadow-xl top-0 sticky bg-white dark:bg-slate-950 dark:text-white">
+  <div class="mx-5 my-2 grid grid-cols-2">
+    <div class="flex items-center">
+      <a href="/">
+        <img src={ Icon } alt="NanohaNote icon" class="w-10 h-10" />
+      </a>
+      <div>
+        <div class="text-xl">NanohaNote</div>
+      </div>
+    </div>
     <div>
-      <div class="text-xl font-bold">NanohaNote</div>
+      <div>
+        <a htef='https://github.com/nakasyou/NanohaNote'>⭐️Star on GitHub</a>
+      </div>
     </div>
   </div>
 </header>
