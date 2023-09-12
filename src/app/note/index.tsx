@@ -161,7 +161,7 @@ export default function(props: Props){
               const url = URL.createObjectURL(noteFileBlob)
               const a = document.createElement('a')
               a.href = url
-              a.download = 'note.nnote'
+              a.download = prompt('ファイル名を入力') + '.nnote'
               a.click()
             } catch(e) {
               alert(e)
