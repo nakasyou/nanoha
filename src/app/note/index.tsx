@@ -179,25 +179,47 @@ export default function(props: Props){
                 let files
                 try {
                   files = await fflate.unzipSync(uint8array)
-                } catch (_error) {
+                  if (!files) {
+                    throw new Error()
+                  }
+                } catch (error) {
                   alert('ファイルの解凍に失敗しました。おそらくファイルの形式が違います。')
+                  throw error
                 }
                 
                 const noteData = JSON.parse(new TextDecoder().decode(files['note.json']))
                 const newNoteElements = []
 
+                let index = 0
                 for (const note of noteData.notes) {
-                  alert(JSON.stringify(note))
                   switch (note.type) {
                     case 'text': {
                       newNoteElements.push(createTextNote(note.data.html))
                       break
                     }
                     case 'image': {
+                      const noteData: ImageNoteData = {
+                        data: {
+                          paths: note.data.paths,
+                          sheetSvgPaths: note.data.sheetSvgPaths
+                        },
+                        blobs: {
+                          image: new Blob([files[`blobs/${index}/image`]])
+                        }
+                      }
+                      newNoteElements.push({
+                        element: <ImageNote
+                          data={noteData}
+                          />,
+                        key: Math.random(),
+                        data: noteData,
+                        type: 'image',
+                      })
                       break
                     }
                     default:
                   }
+                  index ++
                 }
                 setNoteElements(newNoteElements)
               } catch(e) {
@@ -289,7 +311,7 @@ export default function(props: Props){
                   <IconX />
                 </button>
                 <button className="small-fab flex justify-center items-center" onClick={() => {
-                  createTextNote("New Note")
+                  setNoteElements([...noteElements, createTextNote("New Note")])
                 }}>
                   <IconPencil />
                 </button>
