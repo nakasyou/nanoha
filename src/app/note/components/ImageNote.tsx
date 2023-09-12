@@ -88,8 +88,8 @@ export default (props: Props) => {
     }
   }, [userState.isView])
 
-  const [sheetSvgPaths, setSheetSvgPaths] = useState(props.data.data.sheetSvgPaths)
-  const [paths, setPaths] = useState(props.data.data.paths)
+  const [sheetSvgPaths, setSheetSvgPaths] = useState(structuredClone(props.data.data.sheetSvgPaths))
+  const [paths, setPaths] = useState(structuredClone(props.data.data.paths))
 
   useEffect(() => {
     props.data.data.paths = paths
