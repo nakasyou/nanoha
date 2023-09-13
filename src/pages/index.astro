@@ -1,31 +1,65 @@
 ---
 import PageLayout from '../layouts/Page.astro'
 import NanohaNoteLogo from '../components/Logo.astro'
+import nanohaNotePlayingImage from '../assets/home/nanohanote-playing.png'
 ---
 <PageLayout title="NanohaNote" description="NanohaNote Top">
   <div class="">
     <div>
-      <div class="flex justify-center">
-        <NanohaNoteLogo />
+      <div class="grid grid-cols-1 md:grid-cols-2 w-screen h-screen items-center px-10">
+        <div class="text-4xl font-bold">
+          <div>完璧な'暗記'を</div>
+          <div>あなたへ</div>
+          <div class="text-primary">NanohaNote</div>
+          <div class="text-base">「じぶん」で作る学習用ノートブック</div>
+        </div>
+        <div class="hidden md:flex p-10 w-full h-full justify-center items-center">
+          <img src={nanohaNotePlayingImage} class="object-cover m-5" />
+        </div>
       </div>
-      <div class="text-center">NanohaNoteは、「じぶん」で作る学習用ノートブックです。</div>
-      <div class="flex justify-center m-2">
-        <a href="/create-note" class="outlined-button">ノートを作成する</a>
+    
+      <div class="my-2 px-4 w-screen bg-slate-100 h-screen p-2">
+        <div>
+          <div class="text-2xl font-bold">Do you <span class="text-primary">hate</span> <span class="text-primary">暗記</span>?</div>
+          <div class="my-5">
+            <p class="my-2">テスト前の暗記という、退屈な作業。
+               <br />暗記を、簡単に、素早く行いましょう！
+               <br />暗記ツールであるNanohaNoteを使えば、すぐに覚えられるかも?</p>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="mx-4 flex flex-col gap-4">
-      <div>
-        <div class="text-2xl">暗記、辛いですか？</div>
-        <p>テスト前の暗記という(人によっては)退屈な作業。<br />暗記を、簡単に、素早く行いましょう！</p>
+      <div class="my-2 px-4 w-screen h-screen p-2">
+        <div>
+          <div class="text-2xl font-bold">Study <span class="text-primary">anywhere</span></div>
+          <div class="my-5">
+            <p class="my-2">つまらない親戚同士の話をしている時に勉強したい？
+               <br />通学中に勉強したい？
+               <br />移動中の車内で勉強したい？</p>
+            <p class="my-2">NanohaNoteは、スマホの上で動作します！
+               <br />インターネット環境とスマホ(あと充電)さえあれば、どこでも勉強することができます！
+               <br />暗記をどこでもしましょう！</p>
+          </div>
+        </div>
       </div>
-      <div>
-        <div class="text-2xl">NanohaNoteとは？</div>
-        <p>
-          一言で言えば、デジタル赤シートです。<br />
-          二言で言えば、「じぶん」でつくる、暗記用デジタルノートブックです。<br />
-          あなたの暗記をサポートします！
-        </p>
+      <div class="my-2 px-4 w-screen bg-slate-100 h-screen p-2">
+        <div>
+          <div class="text-2xl font-bold">Don't need <span class="text-primary">paper</span>!</div>
+          <div class="my-5">
+            <p class="my-2">ノートを持ち運ぶのが大変？
+               <br />大丈夫。NanohaNoteなら</p>
+            <p class="my-2">NanohaNoteは、インターネット接続されたデバイスとブラウザさえあれば動作します！
+               <br />それだけで、自分の作ったノートをプレイすることができます！
+               <br />しかも！現実世界のノートをスキャンして、NanohaNoteで使うことができます！
+               <br />暗記に紙なんか要りません、NanohaNoteなら</p>
+          </div>
+        </div>
       </div>
+      <div class="my-2">
+        <div class="text-2xl">さあ！始めよう！</div>
+          <div class="flex justify-center m-2">
+            <a href="/create-note" class="outlined-button">ノートを作成する</a>
+          </div>
+        </div>
     </div>
   </div>
 </PageLayout>
