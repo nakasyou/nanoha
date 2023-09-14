@@ -90,10 +90,10 @@ export default (props: Props) => {
           </div>
           <div>
             {/* コントロールパネル */}
-            <div className={classNames("flex justify-center items-center top-0", {
+            <div className={classNames("flex justify-center items-center bottom-24 w-full", {
               'fixed': (
                 (0 < rect.bottom && rect.top < window.innerHeight) && // 少しでも要素が中に入っている
-                (rect.bottom > window.innerHeight)
+                (rect.bottom > window.innerHeight - 26*4)
               )
             })}>
               <button
