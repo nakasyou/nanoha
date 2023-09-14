@@ -78,7 +78,9 @@ export default (props: Props) => {
   const rootRef = useRef(null)
   const [rect, setRect] = useState<DOMRect>(new DOMRect(0, 0, 0, 0))
   window.addEventListener('scroll', () => {
-    setRect(rootRef.current.getBoundingClientRect())
+    if (rootRef) {
+      setRect(rootRef.current.getBoundingClientRect())
+    }
   })
   return (
     <>
