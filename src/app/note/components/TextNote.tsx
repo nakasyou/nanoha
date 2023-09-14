@@ -75,9 +75,14 @@ export default (props: Props) => {
     props.data.data.html = editor?.getHTML()
   }, [editor?.getHTML()])
   
+  const rootRef = useRef(null)
+  const [rect, setRect] = useState<DOMRect>(new DOMRect(0, 0, 0, 0))
+  window.addEventListener('scroll', () => {
+    setRect(rootRef.current.getBoundingClientRect())
+  })
   return (
     <>
-      <div className="mx-4">
+      <div className="mx-4" ref={rootRef}>
         <div className={classNames({ hidden: userState.mode === "play" })}>
           {/* Edit Mode */}
           <div className="p-4 rounded-md border">
@@ -85,7 +90,12 @@ export default (props: Props) => {
           </div>
           <div>
             {/* コントロールパネル */}
-            <div className="flex justify-center items-center">
+            <div className={classNames("flex justify-center items-center top-0", {
+              'fixed': (
+                (0 < rect.bottom && rect.top < window.innerHeight) && // 少しでも要素が中に入っている
+                (rect.bottom > window.innerHeight)
+              )
+            })}>
               <button
                 className="p-2 rounded-full border"
                 onClick={() => {
