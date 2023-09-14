@@ -15,7 +15,7 @@ import {
   IconX,
   IconUnderline,
 } from "@tabler/icons-react"
-import { useEffect, useRef, useContext } from "react"
+import { useEffect, useRef, useContext, useState } from "react"
 import classNames from "classnames"
 
 export interface Props {
