@@ -1,7 +1,9 @@
 ---
 import PageLayout from '../layouts/Page.astro'
 import NanohaNoteLogo from '../components/Logo.astro'
+
 import nanohaNotePlayingImage from '../assets/home/nanohanote-playing.png'
+import ankiImage from '../assets/home/anki-image.svg'
 ---
 <PageLayout title="NanohaNote" description="NanohaNote は、じぶんで作る暗記用ノートブックです。">
   <div class="">
@@ -24,10 +26,15 @@ import nanohaNotePlayingImage from '../assets/home/nanohanote-playing.png'
       <div class="my-2 px-4 w-screen bg-slate-100 h-screen p-2">
         <div>
           <div class="text-2xl font-bold">Do you <span class="text-primary">hate</span> <span class="text-primary">暗記</span>?</div>
-          <div class="my-5">
-            <p class="my-2">テスト前の暗記という、退屈な作業。
-               <br />暗記を、簡単に、素早く行いましょう！
-               <br />暗記ツールであるNanohaNoteを使えば、すぐに覚えられるかも?</p>
+          <div class="grid-rows-2 md:grid-cols-2 md:grid-rows-1 w-full h-full">
+            <div class="my-5">
+              <p class="my-2">テスト前の暗記という、退屈な作業。
+                 <br />暗記を、簡単に、素早く行いましょう！
+                 <br />暗記ツールであるNanohaNoteを使えば、すぐに覚えられるかも?</p>
+            </div>
+            <div class="flex justify-center items-center w-full h-full">
+              <img src={ankiImage}/>
+            </div>
           </div>
         </div>
       </div>
