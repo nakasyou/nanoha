@@ -5,6 +5,7 @@ import NanohaNoteLogo from '../components/Logo.astro'
 import nanohaNotePlayingImage from '../assets/home/nanohanote-playing.png'
 import ankiImage from '../assets/home/anki-image.svg'
 import mujintoStudy from '../assets/home/munjinto-study.svg'
+import noPaperImage from '../assets/home/no-paper.svg'
 ---
 <PageLayout title="NanohaNote" description="NanohaNote は、じぶんで作る暗記用ノートブックです。">
   <div class="">
@@ -55,7 +56,7 @@ import mujintoStudy from '../assets/home/munjinto-study.svg'
           </div>
         </div>
       </div>
-      <div class="my-2 px-4 w-screen bg-slate-100 p-2">
+      <div class="my-2 px-4 w-screen bg-slate-100 p-2 grid grid-rows-2 md:grid-cols-2 md:grid-rows-1">
         <div>
           <div class="text-2xl font-bold">Don't need <span class="text-primary">paper</span>!</div>
           <div class="my-5">
@@ -65,6 +66,9 @@ import mujintoStudy from '../assets/home/munjinto-study.svg'
                <br />それだけで、自分の作ったノートをプレイすることができます！
                <br />しかも！現実世界のノートをスキャンして、NanohaNoteで使うことができます！
                <br />暗記に紙なんか要りません、NanohaNoteなら</p>
+          </div>
+          <div class="flex items-center justify-center">
+            <img src={noPaperImage} />
           </div>
         </div>
       </div>
