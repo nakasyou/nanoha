@@ -18,7 +18,7 @@ import ImageNote, { type ImageNoteData } from './components/ImageNote.tsx'
 import type { Editor } from "@tiptap/react"
 import { arrayMoveImmutable } from 'array-move'
 import * as fflate from 'fflate'
-
+import { createSignal } from 'solid-js'
 export interface Props {
   
 }
@@ -48,7 +48,7 @@ export default function(props: Props){
   const [plusFubActive, setPlusFubActive] = useState(false)
   const [isScanActive, setIsScanActive] = useState(false)
 
-  const [editor, setEditor] = useState<Editor | null>(null)
+  const [editor, setEditor] = createSignal<Editor | null>(null)
   
   const [isMenuActive, setIsMenuActive] = useState(false)
   
