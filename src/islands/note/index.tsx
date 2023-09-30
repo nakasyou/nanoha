@@ -11,7 +11,7 @@ import {
   IconArrowNarrowDown,
   IconMenu2,
 } from "@tabler/icons-react"
-import { useEffect, useState, createContext } from "react"
+import { useEffect, createContext } from "react"
 import classnames from "classnames"
 import ScanDialog from "./components/ScanDialog.tsx"
 import ImageNote, { type ImageNoteData } from './components/ImageNote.tsx'
@@ -42,17 +42,15 @@ interface NoteElement {
     type: 'text' | 'image'
 }
 export default function(props: Props){
-  const [mode, setMode] = useState<"edit" | "play">("edit")
-  const [isView, setIsView] = useState(false)
+  const [mode, setMode] = createSignal<"edit" | "play">("edit")
+  const [isView, setIsView] = createSignal(false)
   
-  const [plusFubActive, setPlusFubActive] = useState(false)
-  const [isScanActive, setIsScanActive] = useState(false)
-
-  const [editor, setEditor] = createSignal<Editor | null>(null)
+  const [plusFubActive, setPlusFubActive] = createSignal(false)
+  const [isScanActive, setIsScanActive] = createSignal(false)
   
-  const [isMenuActive, setIsMenuActive] = useState(false)
+  const [isMenuActive, setIsMenuActive] = createSignal(false)
   
-  const [noteElements, setNoteElements] = useState<NoteElement[]>([])
+  const [noteElements, setNoteElements] = createSignal<NoteElement[]>([])
   
   const createTextNote = (defaultContent: string): NoteElement => {
     const data: NoteData = {
@@ -93,7 +91,7 @@ export default function(props: Props){
   }, [])
   return <>
     <div>
-      { isScanActive && <ScanDialog onClose={(data) => {
+      { isScanActive() && <ScanDialog onClose={(data) => {
         if (!data.failed) {
           const noteData: ImageNoteData = {
             data: {
@@ -104,7 +102,7 @@ export default function(props: Props){
               image: data.imageBlob
             }
           }
-          setNoteElements([...noteElements, {
+          setNoteElements([...noteElements(), {
             element: <ImageNote
               data={noteData}
               />,
@@ -118,7 +116,7 @@ export default function(props: Props){
     </div>
     <div>
       {
-        isMenuActive && <div className='w-screen h-screen fixed top-0 bottom-0 bg-background text-on+background z-20'>
+        isMenuActive() && <div className='w-screen h-screen fixed top-0 bottom-0 bg-background text-on+background z-20'>
           <div className='flex justify-between items-center mx-5'>
             <div className='text-2xl'>Menu</div>
             <button onClick={() => setIsMenuActive(false)}>
@@ -130,7 +128,7 @@ export default function(props: Props){
             try {
               const rotate = a => a[0].map((_, c) => a.map(r => r[c])).reverse();
           
-              const [blobDatasArr, objectData] = rotate(noteElements.map((noteElement, index) => {
+              const [blobDatasArr, objectData] = rotate(noteElements().map((noteElement, index) => {
                 const thisNoteData = noteElement.data
                 const rawObject = thisNoteData.data
                 const blobs = Object.fromEntries(Object.entries(thisNoteData.blobs).map(([key, blob]) => ['blobs/' + index + '/' + key, blob]))
@@ -234,37 +232,37 @@ export default function(props: Props){
     </div>
     <div className="bg-background text-on-background min-h-screen">
       <div className="p-4 flex gap-4 flex-col">
-          { (noteElements.length === 0) && <div className="text-center">
+          { (noteElements().length === 0) && <div className="text-center">
             <div className="text-2xl">ここにはノートが一つもありません</div>
             <div className="text-xl">右下の+を押して、ノートを追加しましょう!</div>
           </div>}
         
         <UserStateContext.Provider value={{
           mode,
-          isView,
+          isView: isView(),
         }}>
             {
-              noteElements.map((noteElement, index) => {
+              noteElements().map((noteElement, index) => {
                 return (
                     <div key={noteElement.key} className=''>
                     <div className='text-right'>
                       <button
                         className="p-2 rounded-full border"
                         onClick={() => {
-                          setNoteElements(arrayMoveImmutable(noteElements, index, index - 1))
+                          setNoteElements(arrayMoveImmutable(noteElements(), index, index - 1))
                         }}
                       ><IconArrowNarrowUp /></button>
                       <button
                         className="p-2 rounded-full border"
                         onClick={() => {
-                          setNoteElements(arrayMoveImmutable(noteElements, index, index+1))
+                          setNoteElements(arrayMoveImmutable(noteElements(), index, index+1))
                         }}
                       ><IconArrowNarrowDown /></button>
                       <button
                         className="p-2 rounded-full border"
                         onClick={() => {
                           if (window.confirm('削除しますか?')){
-                            setNoteElements(noteElements.filter((_v, eachIndex) => index !== eachIndex))
+                            setNoteElements(noteElements().filter((_v, eachIndex) => index !== eachIndex))
                           }
                         }}
                       >
@@ -298,7 +296,7 @@ export default function(props: Props){
       <div className="fixed bottom-10 right-4">
         {/* 重要ボタンとか言うやつ */}
         { mode === "play" && <div className="flex justify-center items-center gap-2">
-          <button className="fab" onClick={()=>setIsView(!isView)}>
+          <button className="fab" onClick={()=>setIsView(!isView())}>
             <IconEye />
           </button>
         </div> }
@@ -306,12 +304,12 @@ export default function(props: Props){
         { mode === "edit" && <>
           <div className="flex justify-center items-center gap-2 flex-col">
             {
-              plusFubActive && <>
+              plusFubActive() && <>
                 <button className="small-fab flex justify-center items-center" onClick={() => setPlusFubActive(false)}>
                   <IconX />
                 </button>
                 <button className="small-fab flex justify-center items-center" onClick={() => {
-                  setNoteElements([...noteElements, createTextNote("New Note")])
+                  setNoteElements([...noteElements(), createTextNote("New Note")])
                 }}>
                   <IconPencil />
                 </button>
@@ -323,7 +321,7 @@ export default function(props: Props){
               </>
             }
             <button className="fab" onClick={() => {
-              setPlusFubActive(!plusFubActive)
+              setPlusFubActive(!plusFubActive())
             }}>
               <IconPlus />
             </button>

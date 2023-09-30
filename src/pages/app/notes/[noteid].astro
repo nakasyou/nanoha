@@ -1,0 +1,13 @@
+---
+import Base from "../../../layouts/Base.astro"
+import NanohaNoteApp from "../../../islands/note-x"
+---
+<Base title="" description="nanohanote app">
+  <NanohaNoteApp client:load />
+</Base>
+<script>
+
+window.addEventListener('error', evt => {
+  alert(`${evt.type}: ${evt.message}`)
+})
+</script>
