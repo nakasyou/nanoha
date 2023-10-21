@@ -1,7 +1,7 @@
 {
     "deno.enable": false,
     "[astro]": {
-        
+        "editor.tabSize": 2
     },
     "[svelte]": {
         "editor.tabSize": 2

@@ -2,7 +2,13 @@
 import BaseLayout from '../layouts/Base.astro'
 
 import type { APIRoute } from 'astro';
-
+const res = new Response(null, {
+    status: 302,
+    headers: {
+        Location: "/app/notes/" + crypto.randomUUID(),
+    }
+})
+return res
 ---
 <BaseLayout title="Creating" description='nanohanote'>
   <div>Creating...</div>

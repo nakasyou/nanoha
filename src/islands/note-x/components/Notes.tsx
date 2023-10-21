@@ -1,8 +1,8 @@
-import { For, createSignal } from "solid-js"
-import type { Accessor, Setter, JSX } from 'solid-js'
-import type { SetStoreFunction } from "solid-js/store"
+import { createSignal, type Accessor, type Setter, type JSX } from 'solid-js'
+import { Key } from '@solid-primitives/keyed'
+import { type SetStoreFunction, createStore } from "solid-js/store"
 
-export interface NoteData {
+export interface NoteData <CanToJsonData extends any = any> {
   /**
    * ノートのファイルストア
    */
@@ -10,48 +10,39 @@ export interface NoteData {
   /**
    * `JSON.parse`ができるデータ
    */
-  canToJsonData: any
+  canToJsonData: CanToJsonData
 }
-export interface Note {
-  /**
-   * ノートのデータ。このデータが同じノートは、内容が同じでないといけない。
-   */
+export type NoteComponent<CanToJsonData extends any = any> = (props: {
+  noteData: NoteData<CanToJsonData>
+  setNoteData: SetStoreFunction<NoteData<CanToJsonData>>
+}) => JSX.Element
+
+export interface Note <CanToJsonData = any> {
+  id: string
+  Component: NoteComponent<CanToJsonData>
   noteData: NoteData
-  /**
-   * ノートのデータをセットする
-   */
-  setNoteData: SetStoreFunction<NoteData>
-  /**
-   * ノートのエレメント
-   */
-  element: JSX.Element
+  setNoteData: SetStoreFunction<NoteData<CanToJsonData>>
 }
-export interface NotesData {
+export const createNotes = (): {
   notes: Accessor<Note[]>
   setNotes: Setter<Note[]>
-}
-export const createNotes = (): NotesData => {
+} => {
   const [notes, setNotes] = createSignal<Note[]>([])
-  
   return {
     notes,
-    setNotes,
+    setNotes
   }
 }
 
-export interface Props {
-  notes: NotesData
-}
-const Notes = (props: Props) => {
-  
-  return <div>
-    <For each={props.notes.notes()}>{(note) => {
+export default (props: {
+  notes: Note[]
+}) => {
+  return <Key each={props.notes} by={note => note.id}>
+    {(note) => {
+      const NoteComponent = note().Component
       return <div>
-        {
-          note.element
-        }
+        <NoteComponent noteData={note().noteData} setNoteData={note().setNoteData}/>
       </div>
-    }}</For>
-  </div>
+    }}
+  </Key>
 }
-export default Notes

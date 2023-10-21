@@ -1,4 +1,5 @@
-import { defineConfig, passthroughImageService } from 'astro/config';
+import { defineConfig, squooshImageService, passthroughImageService } from 'astro/config';
+
 import deno from "@astrojs/deno";
 import tailwind from "@astrojs/tailwind";
 import solidJs from "@astrojs/solid-js";
