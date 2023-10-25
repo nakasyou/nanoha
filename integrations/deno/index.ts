@@ -13,10 +13,10 @@ export default (): AstroIntegration => {
         buildConfig = config.build
         setAdapter({
           name: "deno-adapter",
-          serverEntrypoint: "./integrations/deno/server/server.js",
+          serverEntrypoint: "./integrations/deno/server/server.ts",
           supportedAstroFeatures: {
             staticOutput: "stable",
-
+            serverOutput: "stable",
           },
         })
       },
@@ -37,8 +37,10 @@ export default (): AstroIntegration => {
           ],
           plugins: [],
           minify: false,
+          alias: {
+            'hono': 'https://deno.land/x/hono@v3.8.3/mod.ts'
+          }
         })
-        console.log(entryPath)
       }
     },
   }
