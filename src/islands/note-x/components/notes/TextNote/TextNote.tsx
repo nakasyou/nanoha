@@ -4,8 +4,9 @@ import { createEditorTransaction, createTiptapEditor } from 'solid-tiptap'
 import StarterKit from '@tiptap/starter-kit'
 import type { TextNoteData } from "./types"
 import { ExtensionSheet } from "./tiptap/PluginSheet"
-import type { AnyExtension, Editor } from "@tiptap/core"
-import { createEffect } from "solid-js"
+import { Show } from "solid-js"
+import { removeIconSize } from "../../../utils/icon/removeIconSize"
+import IconNote from '@tabler/icons/note.svg?raw'
 
 export interface Props {
   noteData: TextNoteData
@@ -26,19 +27,20 @@ export const TextNote = ((props: Props) => {
     ],
     content: props.noteData.canToJsonData.html,
   }))
-  const isBold = createEditorTransaction(
+  const isFocused = createEditorTransaction(
     editor, // Editor instance from createTiptapEditor
-    (editor) => editor?.isActive('bold'), 
+    (editor) => editor?.isFocused, 
   )
-  createEffect(() => {
-    console.log(isBold())
-  })
   return <div>
     <div>
       <div id="editor" ref={ref} class="bg-on-tertiary p-2 rounded my-2 border boader-outlined" />
     </div>
-    <div>
-      
-    </div>
+    <Show when={isFocused()}>
+      <div class="flex justify-center">
+        <div>
+          <div innerHTML={removeIconSize(IconNote)} class="w-8 h-8" />
+        </div>
+      </div>
+    </Show>
   </div>
 }) satisfies NoteComponent

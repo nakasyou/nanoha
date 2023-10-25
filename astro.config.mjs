@@ -2,10 +2,7 @@ import { defineConfig, squooshImageService, passthroughImageService } from 'astr
 import tailwind from "@astrojs/tailwind";
 import solidJs from "@astrojs/solid-js";
 import svelte from "@astrojs/svelte";
-import node from "@astrojs/node";
-import vercel from "@astrojs/vercel/serverless";
 import deno from './integrations/deno';
-import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
