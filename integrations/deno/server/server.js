@@ -5,7 +5,7 @@ import { App } from 'astro/app';
  */
 export function start(manifest) {
   const app = new App(manifest);
-  console.log(manifest.routes)
+  console.log(manifest)
   Deno.serve((request) => {
     return app.render(request)
   })

@@ -25,7 +25,7 @@ export default (): AstroIntegration => {
         const entryPath = fileURLToPath(entryUrl)
         await build({
           target: "esnext",
-          platform: 'browser',
+          platform: 'node',
           bundle: true,
           allowOverwrite: true,
           entryPoints: [entryPath],
@@ -36,12 +36,10 @@ export default (): AstroIntegration => {
             "@astrojs/markdown-remark",
           ],
           plugins: [],
-          minify: true,
+          minify: false,
         })
         console.log(entryPath)
       }
     },
   }
 }
-import type {SSRManifest} from 'astro'
-co

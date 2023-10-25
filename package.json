@@ -43,6 +43,7 @@
   "devDependencies": {
     "@astrojs/solid-js": "^3.0.1",
     "bun-types": "^1.0.7",
-    "esbuild": "^0.19.5"
+    "esbuild": "^0.19.5",
+    "hono": "^3.8.3"
   }
 }
