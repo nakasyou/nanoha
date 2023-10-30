@@ -1,6 +1,7 @@
 import { createSignal, type Accessor, type Setter, type JSX } from 'solid-js'
 import { Key } from '@solid-primitives/keyed'
 import { type SetStoreFunction, createStore } from "solid-js/store"
+import { moveArray } from '../utils/array/moveArray'
 
 export interface NoteData <CanToJsonData extends any = any> {
   /**
@@ -12,16 +13,35 @@ export interface NoteData <CanToJsonData extends any = any> {
    */
   canToJsonData: CanToJsonData
 }
-export type NoteComponent<CanToJsonData extends any = any> = (props: {
+export interface NoteComponentProps <CanToJsonData extends any = any> {
   noteData: NoteData<CanToJsonData>
-  setNoteData: SetStoreFunction<NoteData<CanToJsonData>>
-}) => JSX.Element
 
+  focus (): void
+  on <EventType extends keyof NoteEvents>(type: EventType, listenter: (evt: NoteEventArgs[EventType]) => void): void
+  removeNote (): void
+
+  up (): void
+  down (): void
+
+  index: number
+  notes: Note[]
+}
+export type NoteComponent<CanToJsonData extends any = any> = (props: NoteComponentProps<CanToJsonData>) => JSX.Element
+
+export interface NoteEvents {
+  focus?: ((evt: NoteEventArgs['focus']) => void)[]
+}
+export interface NoteEventArgs {
+  focus: {
+    isActive: boolean
+  }
+}
 export interface Note <CanToJsonData = any> {
   id: string
   Component: NoteComponent<CanToJsonData>
   noteData: NoteData
-  setNoteData: SetStoreFunction<NoteData<CanToJsonData>>
+
+  events: NoteEvents
 }
 export const createNotes = (): {
   notes: Accessor<Note[]>
@@ -35,13 +55,50 @@ export const createNotes = (): {
 }
 
 export default (props: {
-  notes: Note[]
+  notes: Note[],
+  setNotes: Setter<Note[]>
 }) => {
   return <Key each={props.notes} by={note => note.id}>
-    {(note) => {
+    {(note, index) => {
       const NoteComponent = note().Component
       return <div>
-        <NoteComponent noteData={note().noteData} setNoteData={note().setNoteData}/>
+        <NoteComponent
+          noteData={note().noteData}
+
+          focus={() => {
+            for (const eachNote of props.notes) {
+              for (const focusEventListener of (eachNote.events.focus || [])) {
+                focusEventListener({
+                  isActive: eachNote.id === note().id
+                })
+              }
+            }
+          }}
+
+          on={(type, listener) => {
+            const thisNote = props.notes[index()]
+            if (!thisNote.events[type]) {
+              thisNote.events[type] = []
+            }
+            thisNote.events[type]?.push(listener)
+          }}
+
+          removeNote={() => {
+            const newNotes = [...props.notes]
+            newNotes.splice(index(), 1)
+            props.setNotes(newNotes)
+          }}
+
+          up={() => {
+            props.setNotes(moveArray(props.notes, index(), index() - 1))
+          }}
+          down={() => {
+            props.setNotes(moveArray(props.notes, index(), index() + 1))
+          }}
+
+          index={index()}
+          notes={props.notes}
+          />
       </div>
     }}
   </Key>

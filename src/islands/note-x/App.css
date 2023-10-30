@@ -1,0 +1,6 @@
+.nanoha-sheet-playing {
+    @apply select-none bg-primary-container;
+}
+.nanoha-sheet-playing[data-is-hidden="true"] {
+    @apply text-transparent bg-primary;
+}
