@@ -28,6 +28,7 @@ jobs:
         run: bun i
       - name: Build Astro from Bun
         run: bun run build
+      - run: cp ./dist/client ./dist/dist/client
       - name: Deploy Astro Website
         uses: denoland/deployctl@v1
         with:
