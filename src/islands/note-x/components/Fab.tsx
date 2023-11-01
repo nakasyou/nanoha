@@ -7,6 +7,7 @@ import Pencil from '@tabler/icons/pencil.svg?raw'
 
 export interface Props {
   onAddTextNote?: () =>  void
+  onAddImageNote?: () =>  void
 }
 
 
@@ -22,7 +23,7 @@ export default (props: Props) => {
         <div class="small-fab flex justify-center items-center" onClick={() => props.onAddTextNote && props.onAddTextNote()}>
           <div innerHTML={removeIconSize(IconNote)} class="w-5 h-5" />
         </div>
-        <div class="small-fab flex justify-center items-center" onClick={() => props.onAddTextNote && props.onAddTextNote()}>
+        <div class="small-fab flex justify-center items-center" onClick={() => props.onAddImageNote && props.onAddImageNote()}>
           <div innerHTML={removeIconSize(IconNote)} class="w-5 h-5" />
         </div>
       </div>

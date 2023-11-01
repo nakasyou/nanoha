@@ -2,16 +2,20 @@ import IconX from '@tabler/icons/x.svg?raw'
 import { removeIconSize } from '../../utils/icon/removeIconSize'
 import { createSignal } from 'solid-js'
 
-export type DialogStyle = 'confirm'
+export type DialogStyle = 'confirm' | 'custom'
+
 /**
  * ダイアログ
  * @param props 
  * @returns 
  */
-export const Dialog = <T extends DialogStyle,> (props: {
-  children: import('solid-js').JSX.Element | undefined
+export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
+  children: T extends 'custom' ?
+    (close: (result: U) => void) => import('solid-js').JSX.Element :
+    import('solid-js').JSX.Element | undefined
   onClose (result: ({
     confirm: boolean
+    custom: U | false
   })[T]): void
   type: T
 
@@ -46,11 +50,21 @@ export const Dialog = <T extends DialogStyle,> (props: {
         </div>
       </div>
       <div class="mx-4">
-        { props.children }
+        {
+          props.type === 'custom' && (props.children as (close: (result: U) => void) => import('solid-js').JSX.Element)(result => 
+            // @ts-expect-error
+            props.onClose(result))
+        }
+        {
+          props.type !== 'custom' && (props.children as import('solid-js').JSX.Element)
+        }
       </div>
-      <div>
+      {
+        props.type === 'confirm' &&  <div>
         <div class="flex justify-center items-center gap-2 flex-wrap mx-5">
-          <button class="outlined-button" onClick={() => close(true)}>
+          <button class="outlined-button" onClick={() => close(
+            // @ts-expect-error
+            true)}>
             はい
           </button>
           <button class="outlined-button" onClick={() => close(false)}>
@@ -58,6 +72,8 @@ export const Dialog = <T extends DialogStyle,> (props: {
           </button>
         </div>
       </div>
+      }
+      
     </div>
   </div>
 }

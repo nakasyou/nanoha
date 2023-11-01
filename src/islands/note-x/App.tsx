@@ -5,6 +5,7 @@ import Header from './components/Header'
 import Fab from './components/Fab'
 import { createEffect } from 'solid-js'
 import './App.css'
+import { createImageNote } from './components/notes/ImageNote'
 
 export interface Props {
 
@@ -46,11 +47,19 @@ export default () => {
       </div>
     </div>
     
-    <Fab onAddTextNote={() => {
-      notes.setNotes([
-        ...notes.notes(),
-        createTextNote()
-      ])
-    }}/>
+    <Fab
+      onAddTextNote={() => {
+        notes.setNotes([
+          ...notes.notes(),
+          createTextNote()
+        ])
+      }}
+      onAddImageNote={() => {
+        notes.setNotes([
+          ...notes.notes(),
+          createImageNote()
+        ])
+      }}
+    />
   </div>
 }
