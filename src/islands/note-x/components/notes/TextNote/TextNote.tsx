@@ -15,6 +15,7 @@ import { Dialog } from "../../utils/Dialog"
 import { Controller } from "../../note-components/Controller"
 import { noteBookState, setNoteBookState } from "../../../App"
 import { Player } from "./Player"
+import { sleep } from "../../../utils/promise/sleep"
 
 export interface Props extends NoteComponentProps {
   noteData: TextNoteData
@@ -90,10 +91,18 @@ export const TextNote = ((props: Props) => {
       <Show when={isActive()}>
         <div class="flex justify-center gap-5">
           <div class="flex justify-center">
-            <div class="grid hover:drop-shadow drop-shadow-none rounded-full p-1 bg-white border" onClick={() => {
-              editor()?.chain().focus().toggleSheet().run()
-            }}>
-              <div innerHTML={isActiveEachMethods.sheet() ? removeIconSize(IconNote): removeIconSize(IconNoteOff)} class="w-8 h-8" />
+            <div class="grid hover:drop-shadow drop-shadow-none rounded-full p-1 bg-white border"
+              onClick={() => {
+                //editor()?.chain().focus().toggleSheet().run()
+                //await sleep(1000)
+                editor()?.chain().focus().toggleSheet().run()
+              }}
+            >
+              <Switch fallback={<div innerHTML={removeIconSize(IconNoteOff)} class="w-8 h-8" />}>
+                <Match when={isActiveEachMethods.sheet()}>
+                  <div innerHTML={removeIconSize(IconNote)} class="w-8 h-8" />
+                </Match>
+              </Switch>
             </div>
           </div>
           <Controller

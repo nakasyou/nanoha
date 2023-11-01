@@ -26,18 +26,26 @@ export default () => {
   ])
 
   return <div class="bg-background h-screen">
-    <Header />
-    <div class="mx-5">
-      {
-        notes.notes().length === 0 ?
-          <div class="text-center">
-            <div>
-              <p>ここにはノートが一つもありません :(</p>
-              <p>右下の<span class="text-2xl">+</span>を押して、ノートを追加しましょう!</p>
-            </div>
-          </div> : <Notes notes={notes.notes()} setNotes={notes.setNotes}/>
-      }
+    <div class="flex flex-col md:flex-row">
+      <div class="sticky md:fixed top-0">
+        <Header />
+      </div>
+      <div class="w-10 hidden md:block">
+
+      </div>
+      <div class="mx-5 w-full">
+        {
+          notes.notes().length === 0 ?
+            <div class="text-center">
+              <div>
+                <p>ここにはノートが一つもありません :(</p>
+                <p>右下の<span class="text-2xl">+</span>を押して、ノートを追加しましょう!</p>
+              </div>
+            </div> : <Notes notes={notes.notes()} setNotes={notes.setNotes}/>
+        }
+      </div>
     </div>
+    
     <Fab onAddTextNote={() => {
       notes.setNotes([
         ...notes.notes(),
