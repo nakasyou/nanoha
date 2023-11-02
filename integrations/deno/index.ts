@@ -17,6 +17,9 @@ export default (): AstroIntegration => {
           supportedAstroFeatures: {
             staticOutput: "stable",
             serverOutput: "stable",
+            assets: {
+              
+            }
           },
         })
       },
