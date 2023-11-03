@@ -4,15 +4,24 @@ import { createSignal } from 'solid-js'
 
 export type DialogStyle = 'confirm' | 'custom'
 
+export const createDialog = <T,>(): CreatedDialog<T> => ({
+  close (result) {
+    if (this.closeHandler) {
+      this.closeHandler(result)
+    }
+  }
+})
+export interface CreatedDialog<T,> {
+  closeHandler?: (result: T) => void
+  close(result: T) :void
+} 
 /**
  * ダイアログ
  * @param props 
  * @returns 
  */
 export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
-  children: T extends 'custom' ?
-    (close: (result: U) => void) => import('solid-js').JSX.Element :
-    import('solid-js').JSX.Element | undefined
+  children: import('solid-js').JSX.Element | undefined
   onClose (result: ({
     confirm: boolean
     custom: U | false
@@ -20,7 +29,9 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
   type: T
 
   title: string
-}) => {
+} & ('custom' extends T ? {
+  dialog: ReturnType<typeof createDialog>
+} : {})) => {
   const [isOpen, setIsOpen] = createSignal(false)
   const close = (result: Parameters<typeof props.onClose>[0]) => {
     setIsOpen(false)
@@ -31,7 +42,12 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
   setTimeout(() => {
     setIsOpen(true)
   }, 0)
-  
+  if (props.type === "custom") {
+    // @ts-ignore
+    props.dialog.closeHandler = (data: any) => {
+      close(data)
+    }
+  }
   return <div class="fixed top-0 left-0 w-screen h-screen p-4 bg-[#000a] z-10">
     <div class='rounded-lg border bg-background p-2 transition duration-150 scale-0' classList={{
       'scale-0': !isOpen(),
@@ -50,14 +66,7 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
         </div>
       </div>
       <div class="mx-4">
-        {
-          props.type === 'custom' && (props.children as (close: (result: U) => void) => import('solid-js').JSX.Element)(result => 
-            // @ts-expect-error
-            props.onClose(result))
-        }
-        {
-          props.type !== 'custom' && (props.children as import('solid-js').JSX.Element)
-        }
+        { props.children }
       </div>
       {
         props.type === 'confirm' &&  <div>

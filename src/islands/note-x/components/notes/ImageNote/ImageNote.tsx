@@ -13,6 +13,7 @@ import type { Editor } from "@tiptap/core"
 import { Dialog } from "../../utils/Dialog"
 import { Controller } from "../../note-components/Controller"
 import { noteBookState, setNoteBookState } from "../../../App"
+import { ScanedImageEditor } from "./components/ScanedImageEditor"
 
 export interface Props extends NoteComponentProps {
   noteData: ImageNoteData
@@ -28,9 +29,10 @@ export const ImageNote = ((props: Props) => {
 
   const [imageBlob, setImageBlob] = createSignal<Blob | undefined>()
 
+  const [isShowEditor, setIsShowEditor] = createSignal(false)
   return <div onClick={() => props.focus()}>
-    {
-      isShowCloseDialog() && <Dialog onClose={(result) => {
+    <Show when={isShowCloseDialog()}>
+      <Dialog onClose={(result) => {
         if (result) {
           // 消していいいらしい
           props.removeNote()
@@ -39,7 +41,12 @@ export const ImageNote = ((props: Props) => {
       }} type="confirm" title="削除しますか?">
         ノートを削除すると、元に戻せなくなる可能性があります。
       </Dialog>
-    }
+    </Show>
+    <Show when={isShowEditor()}>
+      <ScanedImageEditor onEnd={() => {
+        setIsShowEditor(false)
+      }} />
+    </Show>
     <Show when={!noteBookState.isEditMode}>
       <div>
         Player
@@ -51,7 +58,9 @@ export const ImageNote = ((props: Props) => {
           <div class="text-xl">ImageNote</div>
           <div>まだスキャンされていません</div>
           <div class="my-2 flex justify-center">
-            <button class="outlined-button">スキャン</button>
+            <button class="outlined-button" onClick={() => {
+              setIsShowEditor(true)
+            }}>スキャン</button>
           </div>
         </div>}
       </div>
