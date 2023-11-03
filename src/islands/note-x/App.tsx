@@ -34,7 +34,7 @@ export default () => {
       <div class="w-10 hidden lg:block">
 
       </div>
-      <div class="mx-5 w-full">
+      <div class="px-2 w-full pb-5">
         {
           notes.notes().length === 0 ?
             <div class="text-center">
