@@ -4,7 +4,7 @@ export const Player = (props: { html: string }) => {
 
   const html = createMemo((): string => {
     let newHtml = props.html
-    newHtml = newHtml.replace(/class=\"nanoha-sheet/, 'class="nanoha-sheet nanoha-sheet-playing')
+    //newHtml = newHtml.replace(/class=\"nanoha-sheet/, 'class="nanoha-sheet nanoha-sheet-playing')
     return newHtml
   })
   
@@ -31,11 +31,11 @@ export const Player = (props: { html: string }) => {
         isHidden: 'false' | 'true'
       }
     }
-    for (const sheetElement of sheetElements) {
-      if (!(sheetElement instanceof HTMLSpanElement)) {
+    for (const sheetElement of sheetElements as HTMLSpanElement[]) {
+      /*if (!(sheetElement instanceof HTMLSpanElement)) {
         continue
-      }
-
+      }*/ 
+      sheetElement.classList.add('nanoha-sheet-playing')
       resetDataset(sheetElement)
       const dataset = sheetElement.dataset as {
         isHidden: 'false' | 'true'
