@@ -6,7 +6,7 @@ import { removeIconSize } from '../utils/icon/removeIconSize'
 import { noteBookState, setNoteBookState } from '../App'
 
 const Header = () => {
-  return <div class="w-full lg:w-10 lg:px-2 py-2 bg-surface-variant z-10 h-auto lg:h-screen">
+  return <div class="w-full lg:w-10 lg:px-2 py-2 bg-surface-variant z-10 h-auto lg:h-[100dvh]">
     <div class="flex justify-between items-center flex-row lg:flex-col h-full">
       <div>
         <a href="/app">
