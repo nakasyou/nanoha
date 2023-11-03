@@ -27,11 +27,11 @@ export default () => {
   ])
 
   return <div class="bg-background h-screen">
-    <div class="flex flex-col md:flex-row">
-      <div class="sticky md:fixed top-0">
+    <div class="flex flex-col lg:flex-row">
+      <div class="sticky lg:fixed top-0">
         <Header />
       </div>
-      <div class="w-10 hidden md:block">
+      <div class="w-10 hidden lg:block">
 
       </div>
       <div class="mx-5 w-full">
