@@ -58,7 +58,7 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
           { props.title }
         </div>
         <div onClick={() => {
-          if (props.type === 'confirm') {
+          if (props.type === 'confirm' || props.type === 'custom') {
             return close(false)
           }
         }}>
