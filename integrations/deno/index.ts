@@ -41,7 +41,8 @@ export default (): AstroIntegration => {
           plugins: [],
           minify: false,
           alias: {
-            'hono': 'https://deno.land/x/hono@v3.8.3/mod.ts'
+            'hono': 'https://deno.land/x/hono@v3.8.3/mod.ts',
+            ...Object.fromEntries(compatibleNodeModules.map(mod => [mod, `node:${mod}`]))
           }
         })
       }
