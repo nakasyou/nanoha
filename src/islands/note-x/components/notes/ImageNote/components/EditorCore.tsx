@@ -40,16 +40,71 @@ export default (props: Props) => {
     app.stage.hitArea = app.screen
 
     container.eventMode = 'static'
-    let isDowned = false
-    container.on('mousedown', () => isDowned = true)
-    container.on('mousemove', (evt) => {
-      if (!isDowned) return
-      container.position.x += evt.movementX
-      container.position.y += evt.movementY
 
-    })
-    container.on('mouseup', () => isDowned = false)
     let scale = 1
+
+    /**
+     * Set Pointer Handler
+     */
+    ;(() => {
+      const pointerDatas: Record<string, {
+        x: number
+        y: number
+        deltaX: number
+        deltaY: number
+      }> = {}
+
+      container.on('pointerdown', evt => {
+        pointerDatas[evt.pointerId] = {
+          x: evt.screenX,
+          y: evt.screenY,
+          deltaX: 0,
+          deltaY: 0
+        }
+      })
+      let lastDistanseFor2 = 0
+      container.on('pointermove', evt => {
+        const lastPointerEvent = pointerDatas[evt.pointerId]
+
+        const deltaX = evt.screenX - lastPointerEvent.x
+        const deltaY = evt.screenY - lastPointerEvent.y
+
+        container.position.x += deltaX
+        container.position.y += deltaY
+
+        if (Object.keys(pointerDatas).length > 1) {
+          const pointerEntries = Object.entries(pointerDatas)
+          
+          const pointer0 = pointerEntries[0][1]
+          const pointer1 = pointerEntries[1][1]
+
+          const distanceX = pointer0.x - pointer1.x
+          const distanceY = pointer0.y - pointer1.y
+
+          const distanceXy = Math.sqrt(distanceX ** 2 + distanceY ** 2)
+
+          scale *= (lastDistanseFor2 / (distanceXy || 1))
+
+          lastDistanseFor2 = distanceXy
+          container.scale.set(scale, scale)
+        }
+        pointerDatas[evt.pointerId] = {
+          x: evt.screenX,
+          y: evt.screenY,
+          deltaX,
+          deltaY,
+        }
+      })
+      container.on('pointerup', evt => {
+        delete pointerDatas[evt.pointerId]
+      })
+      container.on('pointercancel', evt => {
+        delete pointerDatas[evt.pointerId]
+      })
+      container.on('pointerout', evt => {
+        delete pointerDatas[evt.pointerId]
+      })
+    })()
     canvas.addEventListener('wheel', evt => {
       scale *= evt.deltaY < 0 ? 1.1 : 0.9
       container.scale.set(scale, scale)

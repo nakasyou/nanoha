@@ -61,8 +61,8 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
           if (props.type === 'confirm' || props.type === 'custom') {
             return close(false)
           }
-        }}>
-          <div innerHTML={removeIconSize(IconX)} class="w-6 h-6" />
+        }} class='p-2 rounded-full hover:border grid items-center justify-center'>
+          <div innerHTML={removeIconSize(IconX)} class="w-8 h-8" />
         </div>
       </div>
       <div class="mx-4">

@@ -26,7 +26,7 @@ export default () => {
     ...notes.notes()
   ])
 
-  return <div class="bg-background h-screen">
+  return <div class="bg-background h-screen touch-manipulation">
     <div class="flex flex-col lg:flex-row">
       <div class="sticky lg:fixed top-0">
         <Header />
