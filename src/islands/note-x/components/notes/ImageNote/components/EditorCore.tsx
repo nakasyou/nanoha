@@ -1,5 +1,5 @@
 import { Application, Container, Sprite, Texture } from 'pixi.js'
-import { createEffect, onMount } from 'solid-js'
+import { createEffect, onMount, onCleanup } from 'solid-js'
 
 export interface Props {
   scanedImage?: Blob | undefined
@@ -26,13 +26,6 @@ export default (props: Props) => {
     
     app.stage.addChild(container)
 
-    let scale = 1
-    canvas.addEventListener('wheel', ev => {
-      scale *= ev.deltaY < 0 ? 1.1 : 0.9 
-      container.scale.set(scale, scale)
-      console.log(ev.deltaZ)
-    })
-
     const resize = () => {
       container.position.set(position.x + canvas.width / 2, position.y + canvas.height / 2)
     }
@@ -40,6 +33,29 @@ export default (props: Props) => {
     observer.observe(canvas, {
       attributes: true,
       attributeFilter: ["width", "height"]
+    })
+    resize()
+
+    app.stage.eventMode = 'static'
+    app.stage.hitArea = app.screen
+
+    container.eventMode = 'static'
+    let isDowned = false
+    container.on('mousedown', () => isDowned = true)
+    container.on('mousemove', (evt) => {
+      if (!isDowned) return
+      container.position.x += evt.movementX
+      container.position.y += evt.movementY
+
+    })
+    container.on('mouseup', () => isDowned = false)
+    let scale = 1
+    canvas.addEventListener('wheel', evt => {
+      scale *= evt.deltaY < 0 ? 1.1 : 0.9
+      container.scale.set(scale, scale)
+    })
+    onCleanup(() => {
+      app.destroy()
     })
   })
 
