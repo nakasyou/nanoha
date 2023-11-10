@@ -23,7 +23,9 @@ export const ScanedImageEditor = (props: Props) => {
     }
     input.click()
   }
-
+  /*/fetch(exampleImage.src).then(res => res.blob()).then(blob => {
+    setScanedImageBlob(blob)
+  })*/
   return <Dialog type="custom" dialog={dialog} title="編集" onClose={(result) => {
     console.log('close')
     props.onEnd()

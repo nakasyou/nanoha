@@ -1,11 +1,12 @@
 import { Application, Container, Sprite, Texture } from 'pixi.js'
-import { createEffect, onMount, onCleanup } from 'solid-js'
+import { createEffect, onMount, onCleanup, createSignal } from 'solid-js'
 
 export interface Props {
   scanedImage?: Blob | undefined
 }
 
 export default (props: Props) => {
+  const [editMode, setEditMode] = createSignal<'move' | 'paint'>('move')
   let canvas!: HTMLCanvasElement
   let canvasContainer!: HTMLDivElement
 
@@ -54,7 +55,7 @@ export default (props: Props) => {
         deltaY: number
       }> = {}
 
-      container.on('pointerdown', evt => {
+      canvas.addEventListener('pointerdown', evt => {
         pointerDatas[evt.pointerId] = {
           x: evt.screenX,
           y: evt.screenY,
@@ -63,31 +64,35 @@ export default (props: Props) => {
         }
       })
       let lastDistanseFor2 = 0
-      container.on('pointermove', evt => {
+      canvas.addEventListener('pointermove', evt => {
         const lastPointerEvent = pointerDatas[evt.pointerId]
 
         const deltaX = evt.screenX - lastPointerEvent.x
         const deltaY = evt.screenY - lastPointerEvent.y
-
-        container.position.x += deltaX
-        container.position.y += deltaY
-
-        if (Object.keys(pointerDatas).length > 1) {
-          const pointerEntries = Object.entries(pointerDatas)
-          
-          const pointer0 = pointerEntries[0][1]
-          const pointer1 = pointerEntries[1][1]
-
-          const distanceX = pointer0.x - pointer1.x
-          const distanceY = pointer0.y - pointer1.y
-
-          const distanceXy = Math.sqrt(distanceX ** 2 + distanceY ** 2)
-
-          scale *= (lastDistanseFor2 / (distanceXy || 1))
-
-          lastDistanseFor2 = distanceXy
-          container.scale.set(scale, scale)
+        if (editMode() === 'move') {
+          container.position.x += deltaX
+          container.position.y += deltaY
+  
+          if (Object.keys(pointerDatas).length > 1) {
+            const pointerEntries = Object.entries(pointerDatas)
+            
+            const pointer0 = pointerEntries[0][1]
+            const pointer1 = pointerEntries[1][1]
+  
+            const distanceX = pointer0.x - pointer1.x
+            const distanceY = pointer0.y - pointer1.y
+  
+  
+            const distanceXy = Math.sqrt(distanceX ** 2 + distanceY ** 2)
+  
+            scale /= (lastDistanseFor2 / (distanceXy || 1)) || 1
+  
+            console.log((lastDistanseFor2 / (distanceXy || 1)))
+            lastDistanseFor2 = distanceXy
+            container.scale.set(scale, scale)
+          }
         }
+
         pointerDatas[evt.pointerId] = {
           x: evt.screenX,
           y: evt.screenY,
@@ -95,13 +100,14 @@ export default (props: Props) => {
           deltaY,
         }
       })
-      container.on('pointerup', evt => {
+      canvas.addEventListener('pointerup', evt => {
+        lastDistanseFor2 = 0
         delete pointerDatas[evt.pointerId]
       })
-      container.on('pointercancel', evt => {
+      canvas.addEventListener('pointercancel', evt => {
         delete pointerDatas[evt.pointerId]
       })
-      container.on('pointerout', evt => {
+      canvas.addEventListener('pointerout', evt => {
         delete pointerDatas[evt.pointerId]
       })
     })()
@@ -124,7 +130,6 @@ export default (props: Props) => {
     image.onload = () => {
       container.pivot.set(image.width / 2, image.height / 2)
       container.position.set(image.width / 2, image.height / 2)
-
       //container.width = image.width
       //container.height = image.height
     }
@@ -135,8 +140,24 @@ export default (props: Props) => {
     scanedImageSprite.texture = texture
   })
   return <div>
-    <div ref={canvasContainer} class="w-full h-96">
+    <div ref={canvasContainer} class="w-full h-[calc(100dvh-200px)]">
       <canvas ref={canvas} />
+    </div>
+    <div class="my-2 flex">
+      <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
+        onClick={() => {
+          setEditMode('move')
+        }}
+        disabled={editMode() === 'move'}>
+        <div innerHTML={'move'} class="w-8 h-8" />
+      </button>
+      <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
+        onClick={() => {
+          setEditMode('paint')
+        }}
+        disabled={editMode() === 'paint'}>
+        <div innerHTML={'paint'} class="w-8 h-8" />
+      </button>
     </div>
   </div>
 }
