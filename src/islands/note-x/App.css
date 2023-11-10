@@ -1,5 +1,5 @@
 .nanoha-sheet-playing {
-    @apply select-none bg-secondary-container text-on-secondary-container mx-[0.125em] p-[0.1em];
+    @apply select-none bg-secondary-container text-on-secondary-container mx-[0.125em] p-[0.2em] rounded-md;
 }
 .nanoha-sheet-playing[data-is-hidden="true"] {
     @apply text-transparent bg-primary-container;
