@@ -3,7 +3,7 @@ import Notes, { createNotes } from './components/Notes'
 import  { createTextNote } from './components/notes/TextNote'
 import Header from './components/Header'
 import Fab from './components/Fab'
-import { createEffect } from 'solid-js'
+import { createEffect, onMount } from 'solid-js'
 import './App.css'
 import { createImageNote } from './components/notes/ImageNote'
 
@@ -21,10 +21,12 @@ export interface NoteBookState {
 export default () => {
   const notes = createNotes()
   
-  notes.setNotes([
-    createTextNote(`これはNanohaNoteです!`),
-    ...notes.notes()
-  ])
+  onMount(() => {
+    notes.setNotes([
+      createTextNote(`これはNanohaNoteです!`),
+      ...notes.notes()
+    ])
+  })
 
   return <div class="bg-background h-screen touch-manipulation">
     <div class="flex flex-col lg:flex-row">
@@ -37,9 +39,9 @@ export default () => {
       <div class="px-2 w-full pb-5">
         {
           notes.notes().length === 0 ?
-            <div class="text-center">
+            <div class="text-center my-2">
               <div>
-                <p>ここにはノートが一つもありません :(</p>
+                <p class="text-xl">ここにはノートが一つもありません :(</p>
                 <p>右下の<span class="text-2xl">+</span>を押して、ノートを追加しましょう!</p>
               </div>
             </div> : <Notes notes={notes.notes()} setNotes={notes.setNotes}/>

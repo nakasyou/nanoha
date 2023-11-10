@@ -8,7 +8,9 @@ import deno from './integrations/deno';
 export default defineConfig({
   output: "server",
   adapter: deno(),
-  integrations: [tailwind(), solidJs(), svelte()],
+  integrations: [tailwind({
+    
+  }), solidJs(), svelte()],
   image: {
     service: passthroughImageService()
   }

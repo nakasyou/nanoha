@@ -6,7 +6,6 @@ import type { TextNoteData } from "./types"
 import { ExtensionSheet } from "./tiptap/PluginSheet"
 import { Match, Show, Switch, createEffect, createSignal } from "solid-js"
 import { removeIconSize } from "../../../utils/icon/removeIconSize"
-
 import IconNote from '@tabler/icons/note.svg?raw'
 import IconNoteOff from '@tabler/icons/note-off.svg?raw'
 
@@ -16,6 +15,8 @@ import { Controller } from "../../note-components/Controller"
 import { noteBookState, setNoteBookState } from "../../../App"
 import { Player } from "./Player"
 import { sleep } from "../../../utils/promise/sleep"
+
+import './TextNoteStyle.css'
 
 export interface Props extends NoteComponentProps {
   noteData: TextNoteData
@@ -30,7 +31,7 @@ export const TextNote = ((props: Props) => {
       StarterKit,
       // @ts-expect-error
       ExtensionSheet({
-        sheetClassName: 'bg-red-100'
+        sheetClassName: ''
       })
     ],
     content: props.noteData.canToJsonData.html,
@@ -86,7 +87,7 @@ export const TextNote = ((props: Props) => {
         </Dialog>
       }
       <div>
-        <div onInput={editorInputHandler} id="editor" ref={ref} class="bg-on-tertiary p-2 rounded my-2 border boader-outlined" />
+        <div onInput={editorInputHandler} id="editor" ref={ref} class="bg-on-tertiary p-2 rounded my-2 border boader-outlined nanohanote-textnote-styler" />
       </div>
       <Show when={isActive()}>
         <div class="flex justify-center gap-5">
