@@ -1,6 +1,8 @@
 import { createSignal } from "solid-js"
 import IconPlus from '@tabler/icons/plus.svg?raw'
 import IconNote from '@tabler/icons/notebook.svg?raw'
+import IconPhotoScan from '@tabler/icons/photo-scan.svg?raw'
+
 import { removeIconSize } from "../utils/icon/removeIconSize"
 import { noteBookState, setNoteBookState } from '../App'
 import Pencil from '@tabler/icons/pencil.svg?raw'
@@ -24,7 +26,7 @@ export default (props: Props) => {
           <div innerHTML={removeIconSize(IconNote)} class="w-5 h-5" />
         </div>
         <div class="small-fab flex justify-center items-center touch-manipulation" onClick={() => props.onAddImageNote && props.onAddImageNote()}>
-          <div innerHTML={removeIconSize(IconNote)} class="w-5 h-5" />
+          <div innerHTML={removeIconSize(IconPhotoScan)} class="w-5 h-5" />
         </div>
       </div>
       
