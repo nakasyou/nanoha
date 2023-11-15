@@ -104,7 +104,7 @@ export default function(props: Props){
         })().catch(() => alert('読み込みに失敗しました...'))
       }
       if (params.has('play')) {
-        setMode('play')
+        setTimeout(() => setMode('play'), 500)
       }
     }
   }, [])
