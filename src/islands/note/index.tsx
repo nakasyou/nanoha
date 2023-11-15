@@ -90,6 +90,23 @@ export default function(props: Props){
       "font-size: 4em; color: red; font-weight: bold;",
       "\nここは開発者がウェブサイトを詳しく調べる場所です。ここに貼り付けることで、情報が抜き取られたりするかもしれません。"
     )
+    if (location.hash) {
+      const hash = location.hash.slice(1)
+      const params = new URLSearchParams(hash)
+
+      if (hash.has('url')) {
+        ;(async () => {
+          setNoteElements([
+            createTextNote(`Loading...`)
+          ])
+          const file = await fetch(hash.get('url') || '').then(res => res.blob())
+          await load(file)
+        })().catch(() => alert('読み込みに失敗しました...'))
+      }
+      if (hash.has('play')) {
+        setMode('play')
+      }
+    }
   }, [])
   const load = async (file: Blob) => {
     try {
