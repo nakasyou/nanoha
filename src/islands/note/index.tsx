@@ -94,16 +94,16 @@ export default function(props: Props){
       const hash = location.hash.slice(1)
       const params = new URLSearchParams(hash)
 
-      if (hash.has('url')) {
+      if (params.has('url')) {
         ;(async () => {
           setNoteElements([
             createTextNote(`Loading...`)
           ])
-          const file = await fetch(hash.get('url') || '').then(res => res.blob())
+          const file = await fetch(params.get('url') || '').then(res => res.blob())
           await load(file)
         })().catch(() => alert('読み込みに失敗しました...'))
       }
-      if (hash.has('play')) {
+      if (params.has('play')) {
         setMode('play')
       }
     }
