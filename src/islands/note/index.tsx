@@ -90,7 +90,78 @@ export default function(props: Props){
       "font-size: 4em; color: red; font-weight: bold;",
       "\nここは開発者がウェブサイトを詳しく調べる場所です。ここに貼り付けることで、情報が抜き取られたりするかもしれません。"
     )
+    if (location.hash) {
+      const hash = location.hash.slice(1)
+      const params = new URLSearchParams(hash)
+
+      if (params.has('url')) {
+        ;(async () => {
+          setNoteElements([
+            createTextNote(`Loading...`)
+          ])
+          const file = await fetch(params.get('url') || '').then(res => res.blob())
+          await load(file)
+        })().catch(() => alert('読み込みに失敗しました...'))
+      }
+      if (params.has('play')) {
+        setMode('play')
+      }
+    }
   }, [])
+  const load = async (file: Blob) => {
+    try {
+      const buff = await file.arrayBuffer()
+      const uint8array = new Uint8Array(buff)
+
+      let files
+      try {
+        files = await fflate.unzipSync(uint8array)
+        if (!files) {
+          throw new Error()
+        }
+      } catch (error) {
+        alert('ファイルの解凍に失敗しました。おそらくファイルの形式が違います。')
+        throw error
+      }
+      const noteData = JSON.parse(new TextDecoder().decode(files['note.json']))
+      const newNoteElements = []
+
+      let index = 0
+      for (const note of noteData.notes) {
+        switch (note.type) {
+          case 'text': {
+            newNoteElements.push(createTextNote(note.data.html))
+            break
+          }
+          case 'image': {
+            const noteData: ImageNoteData = {
+                        data: {
+                          paths: note.data.paths,
+                          sheetSvgPaths: note.data.sheetSvgPaths
+                        },
+                        blobs: {
+                          image: new Blob([files[`blobs/${index}/image`]])
+                        }
+            }
+            newNoteElements.push({
+                        element: <ImageNote
+                          data={noteData}
+                          />,
+                        key: Math.random(),
+                        data: noteData,
+                        type: 'image',
+            })
+            break
+          }
+          default:
+        }
+        index ++
+       }
+       setNoteElements(newNoteElements)
+      } catch(e) {
+                alert(e)
+              }
+  }
   return <>
     <div>
       { isScanActive && <ScanDialog onClose={(data) => {
@@ -171,60 +242,8 @@ export default function(props: Props){
               const input = document.createElement('input')
               input.type = 'file'
               input.oninput = async (evt) => {
-              try {
                 const file = evt.target.files[0]
-                const buff = await file.arrayBuffer()
-                const uint8array = new Uint8Array(buff)
-
-                let files
-                try {
-                  files = await fflate.unzipSync(uint8array)
-                  if (!files) {
-                    throw new Error()
-                  }
-                } catch (error) {
-                  alert('ファイルの解凍に失敗しました。おそらくファイルの形式が違います。')
-                  throw error
-                }
-                
-                const noteData = JSON.parse(new TextDecoder().decode(files['note.json']))
-                const newNoteElements = []
-
-                let index = 0
-                for (const note of noteData.notes) {
-                  switch (note.type) {
-                    case 'text': {
-                      newNoteElements.push(createTextNote(note.data.html))
-                      break
-                    }
-                    case 'image': {
-                      const noteData: ImageNoteData = {
-                        data: {
-                          paths: note.data.paths,
-                          sheetSvgPaths: note.data.sheetSvgPaths
-                        },
-                        blobs: {
-                          image: new Blob([files[`blobs/${index}/image`]])
-                        }
-                      }
-                      newNoteElements.push({
-                        element: <ImageNote
-                          data={noteData}
-                          />,
-                        key: Math.random(),
-                        data: noteData,
-                        type: 'image',
-                      })
-                      break
-                    }
-                    default:
-                  }
-                  index ++
-                }
-                setNoteElements(newNoteElements)
-              } catch(e) {
-                alert(e)
-              }
+                await load(file)
               }
               input.click()
             }}>読み込む</button> 
