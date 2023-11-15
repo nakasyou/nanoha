@@ -101,10 +101,10 @@ export default function(props: Props){
           ])
           const file = await fetch(params.get('url') || '').then(res => res.blob())
           await load(file)
+          if (params.has('play')) {
+            setTimeout(() => setMode('play'), 500)
+          }
         })().catch(() => alert('読み込みに失敗しました...'))
-      }
-      if (params.has('play')) {
-        setTimeout(() => setMode('play'), 500)
       }
     }
   }, [])
