@@ -11,5 +11,5 @@
 
 }
 .nanoha-sheet-playing[data-is-hidden="true"] {
-    @apply text-transparent bg-primary-container;
+    @apply text-transparent bg-primary-container stroke-primary-container;
 }

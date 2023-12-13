@@ -1,4 +1,4 @@
-import { Application, Container, Sprite, Texture } from 'pixi.js'
+import { Application, Container, Graphics, Sprite, Texture } from 'pixi.js'
 import { createEffect, onMount, onCleanup, createSignal } from 'solid-js'
 
 export interface Props {
@@ -13,6 +13,9 @@ export default (props: Props) => {
   const container = new Container()
   const scanedImageSprite = new Sprite()
   container.addChild(scanedImageSprite)
+
+  const sheets = new Container()
+  container.addChild(sheets)
 
   const position = {
     x: 0,
@@ -54,19 +57,36 @@ export default (props: Props) => {
         deltaX: number
         deltaY: number
       }> = {}
+      const hadSheetByPointers: Record<string, {
+        sheet: Graphics
+      }> = {}
 
-      canvas.addEventListener('pointerdown', evt => {
+      const sheet = new Graphics()
+        .beginFill(0xff00ff)
+        .lineStyle(4, 0xff00ff, 1)
+        .moveTo(0, 0)
+        .lineTo(10, 10)
+        .lineStyle(4, 0xff00ff, 1)
+      sheets.addChild(sheet)
+
+      app.stage.addEventListener('pointerdown', evt => {
         pointerDatas[evt.pointerId] = {
           x: evt.screenX,
           y: evt.screenY,
           deltaX: 0,
           deltaY: 0
         }
+
+        hadSheetByPointers[evt.pointerId] ={
+          sheet
+        }
       })
       let lastDistanseFor2 = 0
-      canvas.addEventListener('pointermove', evt => {
+      app.stage.on('pointermove', evt => {
         const lastPointerEvent = pointerDatas[evt.pointerId]
-
+        if (!lastPointerEvent) {
+          return
+        }
         const deltaX = evt.screenX - lastPointerEvent.x
         const deltaY = evt.screenY - lastPointerEvent.y
         if (editMode() === 'move') {
@@ -91,8 +111,14 @@ export default (props: Props) => {
             lastDistanseFor2 = distanceXy
             container.scale.set(scale, scale)
           }
+        } else if (editMode() === 'paint') {
+          const thisPointerSheet = hadSheetByPointers[evt.pointerId]
+          if (thisPointerSheet) {
+            thisPointerSheet.sheet.lineTo(evt.globalX, evt.globalY)
+              .moveTo(evt.globalX, evt.globalY)
+              .lineStyle(4, 0xff00ff, 1)
+          }
         }
-
         pointerDatas[evt.pointerId] = {
           x: evt.screenX,
           y: evt.screenY,
@@ -103,6 +129,8 @@ export default (props: Props) => {
       canvas.addEventListener('pointerup', evt => {
         lastDistanseFor2 = 0
         delete pointerDatas[evt.pointerId]
+        hadSheetByPointers[evt.pointerId].sheet.closePath().endFill()
+        delete hadSheetByPointers[evt.pointerId]
       })
       canvas.addEventListener('pointercancel', evt => {
         delete pointerDatas[evt.pointerId]

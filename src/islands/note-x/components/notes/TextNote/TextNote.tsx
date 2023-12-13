@@ -87,7 +87,7 @@ export const TextNote = ((props: Props) => {
         </Dialog>
       }
       <div>
-        <div onInput={editorInputHandler} id="editor" ref={ref} class="bg-on-tertiary p-2 rounded my-2 border boader-outlined nanohanote-textnote-styler" />
+        <div onInput={editorInputHandler} id="editor" ref={ref} class="textnote-tiptap-container bg-on-tertiary rounded my-2 border boader-outlined nanohanote-textnote-styler" />
       </div>
       <Show when={isActive()}>
         <div class="flex justify-center gap-5">

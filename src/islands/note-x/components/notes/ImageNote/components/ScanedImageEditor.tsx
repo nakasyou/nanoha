@@ -1,6 +1,6 @@
 import { Show, createSignal } from "solid-js"
 import { Dialog, createDialog } from "../../../utils/Dialog"
-import EditorCore from "./EditorCore"
+import EditorCore from "./EditorCoreX"
 
 export interface Props {
   onEnd(): void
@@ -17,7 +17,6 @@ export const ScanedImageEditor = (props: Props) => {
       if (!input.files){
         return
       }
-      
       const imageFile = input.files[0]
       setScanedImageBlob(imageFile)
     }
