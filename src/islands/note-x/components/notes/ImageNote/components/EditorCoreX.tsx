@@ -17,19 +17,7 @@ export default (props: Props) => {
     w: 0,
     h: 0,
   })
-  const [sheets, setSheets] = createSignal<Sheets>([
-    {
-      positions: [{
-        x: 100,
-        y: 100
-      }],
-      startPosition: {
-        x: 0,
-        y: 0
-      },
-      weight: 10
-    }
-  ])
+  const [sheets, setSheets] = createSignal<Sheets>([])
   const [tmpSheet, setTmpSheet] = createSignal<{
     sheet: Sheets[number]
     pointerId: number
