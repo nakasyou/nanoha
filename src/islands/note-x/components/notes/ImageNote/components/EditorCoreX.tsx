@@ -59,7 +59,10 @@ export default (props: Props) => {
 
     const positionX = (pointerXByEditor - editorPosition().x) / editorPosition().size
     const positionY = (pointerYByEditor - editorPosition().y) / editorPosition().size
-    return [positionX, positionY]
+    return [
+      Math.floor(positionX),
+      Math.floor(positionY)
+    ]
   }
   let pointersData: Record<string, {
     isDowned: boolean
