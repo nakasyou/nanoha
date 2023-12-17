@@ -57,7 +57,7 @@ export default (props: {
   notes: Note[],
   setNotes: Setter<Note[]>
 }) => {
-  return <Key each={props.notes} by={note => note.id}>
+  return <div class="flex flex-col gap-1"><Key each={props.notes} by={note => note.id}>
     {(note, index) => {
       const NoteComponent = note().Component
       return <div>
@@ -100,5 +100,5 @@ export default (props: {
           />
       </div>
     }}
-  </Key>
+  </Key></div>
 }
