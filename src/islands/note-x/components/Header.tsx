@@ -4,10 +4,15 @@ import IconPencil from "@tabler/icons/pencil.svg?raw"
 
 import { removeIconSize } from "../utils/icon/removeIconSize"
 
-import { noteBookState, setNoteBookState } from "../App"
-import { Match, Show, Switch } from "solid-js"
+import { noteBookState, setNoteBookState } from "../store"
+import { Show, createSignal } from "solid-js"
 
-const Header = () => {
+export interface Props {
+  onClickMenuOpen (): void
+  isMenuActive: boolean
+}
+const Header = (props: Props) => {
+  props
   return (
     <div class="w-full lg:w-10 lg:px-2 py-2 bg-surface-variant z-10 h-auto lg:h-[100dvh]">
       <div class="flex justify-between items-center flex-row lg:flex-col h-full">

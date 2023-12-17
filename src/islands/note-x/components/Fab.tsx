@@ -4,7 +4,7 @@ import IconNote from '@tabler/icons/notebook.svg?raw'
 import IconPhotoScan from '@tabler/icons/photo-scan.svg?raw'
 
 import { removeIconSize } from "../utils/icon/removeIconSize"
-import { noteBookState, setNoteBookState } from '../App'
+import { noteBookState, setNoteBookState } from '../store'
 import Pencil from '@tabler/icons/pencil.svg?raw'
 
 export interface Props {

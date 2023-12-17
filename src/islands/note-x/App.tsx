@@ -3,7 +3,8 @@ import Notes, { createNotes } from './components/Notes'
 import  { createTextNote } from './components/notes/TextNote'
 import Header from './components/Header'
 import Fab from './components/Fab'
-import { createEffect, onMount } from 'solid-js'
+import { createSignal, onMount } from 'solid-js'
+
 import './App.css'
 import { createImageNote } from './components/notes/ImageNote'
 
@@ -11,13 +12,6 @@ export interface Props {
 
 }
 
-export const [noteBookState, setNoteBookState] = createStore<NoteBookState>({
-  isEditMode: true
-})
-
-export interface NoteBookState {
-  isEditMode: boolean
-}
 export default () => {
   const notes = createNotes()
   
@@ -27,6 +21,8 @@ export default () => {
       ...notes.notes()
     ])
   })
+
+  const [getIsActiveMenu, setIsActiveMenu] = createSignal(false)
 
   return <div class="bg-background h-screen touch-manipulation">
     <div class="flex flex-col lg:flex-row">
