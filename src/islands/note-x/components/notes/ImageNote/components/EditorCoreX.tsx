@@ -1,9 +1,18 @@
-import { Application, Container, Graphics, Sprite, Texture } from 'pixi.js'
 import { createEffect, onMount, onCleanup, createSignal } from 'solid-js'
 import Sheet, { type Sheets } from './Sheet'
 
+import IconArrowsMove from '@tabler/icons/arrows-move.svg?raw'
+import IconHighlight from '@tabler/icons/highlight.svg?raw'
+import IconEraser from '@tabler/icons/eraser.svg?raw'
+
+import { removeIconSize } from '../../../../utils/icon/removeIconSize'
+
 export interface Props {
   scanedImage?: Blob | undefined
+
+  changeSheets (sheets: Sheets): void
+
+  sheets?: Sheets
 }
 
 export default (props: Props) => {
@@ -17,12 +26,15 @@ export default (props: Props) => {
     w: 0,
     h: 0,
   })
-  const [sheets, setSheets] = createSignal<Sheets>([])
+  const [sheets, setSheets] = createSignal<Sheets>(props.sheets ?? [])
   const [tmpSheet, setTmpSheet] = createSignal<{
     sheet: Sheets[number]
     pointerId: number
   } | number>()
-  
+
+  createEffect(() => {
+    props.changeSheets(sheets())
+  })
   createEffect(() => {
     if (!props.scanedImage) {
       return
@@ -197,27 +209,27 @@ export default (props: Props) => {
         </div>
       </div>
     </div>
-    <div class="my-2 flex">
+    <div class="my-2 flex justify-between">
       <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
         onClick={() => {
           setEditMode('move')
         }}
         disabled={editMode() === 'move'}>
-        <div innerHTML={'move'} class="w-8 h-8" />
+        <div innerHTML={removeIconSize(IconArrowsMove)} class="w-8 h-8" />
       </button>
       <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
         onClick={() => {
           setEditMode('paint')
         }}
         disabled={editMode() === 'paint'}>
-        <div innerHTML={'paint'} class="w-8 h-8" />
+        <div innerHTML={IconHighlight} class="w-8 h-8" />
       </button>
       <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
         onClick={() => {
           setEditMode('clear')
         }}
         disabled={editMode() === 'clear'}>
-        <div innerHTML={'clear'} class="w-8 h-8" />
+        <div innerHTML={IconEraser} class="w-8 h-8" />
       </button>
     </div>
   </div>

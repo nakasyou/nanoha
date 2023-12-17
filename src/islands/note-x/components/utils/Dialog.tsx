@@ -29,8 +29,9 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
   type: T
 
   title: string
+  class?: string
 } & ('custom' extends T ? {
-  dialog: ReturnType<typeof createDialog>
+  dialog: ReturnType<typeof createDialog<U>>
 } : {})) => {
   const [isOpen, setIsOpen] = createSignal(false)
   const close = (result: Parameters<typeof props.onClose>[0]) => {
@@ -48,10 +49,11 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
       close(data)
     }
   }
-  return <div class="fixed top-0 left-0 w-screen h-screen p-4 bg-[#000a] z-10">
+  return <div class="fixed top-0 left-0 w-screen h-screen p-4 bg-[#000a] z-10 ">
     <div class='rounded-lg border bg-background p-2 transition duration-150 scale-0' classList={{
       'scale-0': !isOpen(),
-      'scale-100': isOpen()
+      'scale-100': isOpen(),
+      ...Object.fromEntries([[props.class || '', true]])
     }}>
       <div class="flex justify-between items-center">
         <div class="text-2xl">

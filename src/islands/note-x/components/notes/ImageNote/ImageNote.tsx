@@ -3,7 +3,7 @@ import { type SetStoreFunction } from "solid-js/store"
 import { createEditorTransaction, createTiptapEditor } from 'solid-tiptap'
 import StarterKit from '@tiptap/starter-kit'
 import type { ImageNoteData } from "./types"
-import { Match, Show, Switch, createEffect, createSignal } from "solid-js"
+import { Match, Show, Switch, createEffect, createMemo, createSignal } from "solid-js"
 import { removeIconSize } from "../../../utils/icon/removeIconSize"
 
 import IconNote from '@tabler/icons/note.svg?raw'
@@ -14,6 +14,8 @@ import { Dialog } from "../../utils/Dialog"
 import { Controller } from "../../note-components/Controller"
 import { noteBookState, setNoteBookState } from "../../../App"
 import { ScanedImageEditor } from "./components/ScanedImageEditor"
+import type { Sheets } from "./components/Sheet"
+import Player from "./components/Player"
 
 export interface Props extends NoteComponentProps {
   noteData: ImageNoteData
@@ -28,9 +30,19 @@ export const ImageNote = ((props: Props) => {
   })
 
   const [imageBlob, setImageBlob] = createSignal<Blob | undefined>()
-
+  const [sheetsData, setSheetsData] = createSignal<Sheets>()
+  const imageUrl = createMemo(() => {
+    const nowImageBlob = imageBlob()
+    return nowImageBlob ? URL.createObjectURL(nowImageBlob) : null
+  })
   const [isShowEditor, setIsShowEditor] = createSignal(false)
-  return <div onClick={() => props.focus()}>
+  return <div onClick={() => {
+    props.focus()
+
+    if (noteBookState.isEditMode) {
+      setIsShowEditor(true)
+    }
+  }}>
     <Show when={isShowCloseDialog()}>
       <Dialog onClose={(result) => {
         if (result) {
@@ -43,14 +55,24 @@ export const ImageNote = ((props: Props) => {
       </Dialog>
     </Show>
     <Show when={isShowEditor()}>
-      <ScanedImageEditor onEnd={() => {
+      <ScanedImageEditor onEnd={(data) => {
+        if (!data) {
+          return
+        }
+        setImageBlob(data.image)
+        setSheetsData(data.sheets)
+
         setIsShowEditor(false)
-      }} />
+      }} scanedImage={imageBlob()} sheets={sheetsData()} />
     </Show>
     <Show when={!noteBookState.isEditMode}>
-      <div>
-        Player
-      </div>
+      <Show when={imageBlob() && sheetsData()}>
+        <Player
+          imageBlob={imageBlob()!!!}
+          sheetsData={sheetsData()!!!}
+          imageUrl={imageUrl()!!!}
+          viewMode={false} />
+      </Show>
     </Show>
     <Show when={noteBookState.isEditMode}>
       <div class="p-2 rounded border my-2 bg-white">
@@ -63,6 +85,13 @@ export const ImageNote = ((props: Props) => {
             }}>スキャン</button>
           </div>
         </div>}
+        <Show when={imageBlob() && sheetsData()}>
+          <Player
+            imageBlob={imageBlob()!!!}
+            sheetsData={sheetsData()!!!}
+            imageUrl={imageUrl()!!!}
+            viewMode={true} />
+        </Show>
       </div>
       <Show when={isActive()}>
         <div class="flex justify-center gap-5">

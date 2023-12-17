@@ -12,7 +12,6 @@ export interface Props {
   onAddImageNote?: () =>  void
 }
 
-
 export default (props: Props) => {
   const EditModeFab = () => {
     const [isOpen, setIsOpen] = createSignal(false)

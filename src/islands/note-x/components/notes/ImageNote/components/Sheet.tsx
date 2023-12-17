@@ -1,4 +1,4 @@
-import { For, createEffect } from "solid-js"
+import { For, createEffect, createSignal } from "solid-js"
 
 export interface Position {
   x: number
@@ -24,22 +24,43 @@ export interface Props {
   height: number
 }
 export default (props: Props) => {
+  const [getSheets, setSheets] = createSignal(props.sheets.map(sheet => {
+    return {
+      sheet,
+      isHide: false
+    }
+  }))
   createEffect(() => {
-    console.log(props.sheets)
+    setSheets(props.sheets.map(sheet => {
+      return {
+        sheet,
+        isHide: false
+      }
+    }))
+  })
+  createEffect(() => {
+    console.log('changed', getSheets())
   })
   return <svg width={props.width} height={props.height}>
-    <For each={props.sheets}>{(sheet, index) => {
-      const commands: (string | number)[] = ['M' + sheet.startPosition.x + ',' + sheet.startPosition.y]
-      for (const position of sheet.positions) {
+    <For each={getSheets()}>{(sheet, index) => {
+      const commands: (string | number)[] = ['M' + sheet.sheet.startPosition.x + ',' + sheet.sheet.startPosition.y]
+      for (const position of sheet.sheet.positions) {
         commands.push('L' + position.x + ',' + position.y)
       }
       return <path
-        d={commands.join(' ')} stroke="#fff" stroke-width={sheet.weight}
+        d={commands.join(' ')} stroke="#fff" stroke-width={sheet.sheet.weight}
         fill="none"
-        onClick={() => props.onClickSheet(index())}
+        onClick={() => {
+          props.onClickSheet(index())
+          if (props.isPlayMode) {
+            const newSheetStates = getSheets()
+            newSheetStates[index()].isHide = !newSheetStates[index()].isHide
+            setSheets([...newSheetStates])
+          }
+        }}
         class="stroke-primary-container"
-        stroke-opacity="0.5"
+        stroke-opacity={getSheets()[index()].isHide ? "1.0" : "0.5"}
       />
-    }}</For>    
+    }}</For>
   </svg>
 }
