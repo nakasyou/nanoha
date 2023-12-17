@@ -1,6 +1,5 @@
 import { createSignal, type Accessor, type Setter, type JSX } from 'solid-js'
 import { Key } from '@solid-primitives/keyed'
-import { type SetStoreFunction, createStore } from "solid-js/store"
 import { moveArray } from '../utils/array/moveArray'
 
 export interface NoteData <CanToJsonData extends any = any> {
