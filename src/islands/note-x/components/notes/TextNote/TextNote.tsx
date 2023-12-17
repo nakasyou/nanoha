@@ -11,7 +11,7 @@ import IconNoteOff from "@tabler/icons/note-off.svg?raw"
 import type { Editor } from "@tiptap/core"
 import { Dialog } from "../../utils/Dialog"
 import { Controller } from "../../note-components/Controller"
-import { noteBookState, setNoteBookState } from "../../../App"
+import { noteBookState, setNoteBookState } from "../../../store"
 import { Player } from "./Player"
 
 import "./TextNoteStyle.css"

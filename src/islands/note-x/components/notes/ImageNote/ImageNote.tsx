@@ -12,7 +12,7 @@ import IconNoteOff from '@tabler/icons/note-off.svg?raw'
 import type { Editor } from "@tiptap/core"
 import { Dialog } from "../../utils/Dialog"
 import { Controller } from "../../note-components/Controller"
-import { noteBookState, setNoteBookState } from "../../../App"
+import { noteBookState, setNoteBookState } from "../../../store"
 import { ScanedImageEditor } from "./components/ScanedImageEditor"
 import type { Sheets } from "./components/Sheet"
 import Player from "./components/Player"
