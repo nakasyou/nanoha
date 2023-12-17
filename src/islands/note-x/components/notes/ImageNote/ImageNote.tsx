@@ -56,13 +56,12 @@ export const ImageNote = ((props: Props) => {
     </Show>
     <Show when={isShowEditor()}>
       <ScanedImageEditor onEnd={(data) => {
+        setIsShowEditor(false)
         if (!data) {
           return
         }
         setImageBlob(data.image)
         setSheetsData(data.sheets)
-
-        setIsShowEditor(false)
       }} scanedImage={imageBlob()} sheets={sheetsData()} />
     </Show>
     <Show when={!noteBookState.isEditMode}>
