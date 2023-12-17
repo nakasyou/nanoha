@@ -38,10 +38,6 @@ export const ImageNote = ((props: Props) => {
   const [isShowEditor, setIsShowEditor] = createSignal(false)
   return <div onClick={() => {
     props.focus()
-
-    if (noteBookState.isEditMode) {
-      setIsShowEditor(true)
-    }
   }}>
     <Show when={isShowCloseDialog()}>
       <Dialog onClose={(result) => {
