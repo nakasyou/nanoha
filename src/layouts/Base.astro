@@ -15,6 +15,13 @@ interface Props {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{Astro.props.title}</title>
+
+    {
+      import.meta.env.DEV && <>
+        <script is:inline src="//cdn.jsdelivr.net/npm/eruda"></script>
+        <script is:inline>eruda.init();</script>
+      </>
+    }
   </head>
   <body class={Astro.props.bodyClass || ""}>
     <slot />
