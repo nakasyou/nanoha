@@ -2,56 +2,7 @@ import { createSignal, type Accessor, type Setter, type JSX } from 'solid-js'
 import { Key } from '@solid-primitives/keyed'
 import { moveArray } from '../utils/array/moveArray'
 
-export interface NoteData <CanToJsonData extends any = any> {
-  /**
-   * ノートのファイルストア
-   */
-  blobs: Record<string, Blob>
-  /**
-   * `JSON.parse`ができるデータ
-   */
-  canToJsonData: CanToJsonData
-}
-export interface NoteComponentProps <CanToJsonData extends any = any> {
-  noteData: NoteData<CanToJsonData>
-
-  focus (): void
-  on <EventType extends keyof NoteEvents>(type: EventType, listenter: (evt: NoteEventArgs[EventType]) => void): void
-  removeNote (): void
-
-  up (): void
-  down (): void
-
-  index: number
-  notes: Note[]
-}
-export type NoteComponent<CanToJsonData extends any = any> = (props: NoteComponentProps<CanToJsonData>) => JSX.Element
-
-export interface NoteEvents {
-  focus?: ((evt: NoteEventArgs['focus']) => void)[]
-}
-export interface NoteEventArgs {
-  focus: {
-    isActive: boolean
-  }
-}
-export interface Note <CanToJsonData = any> {
-  id: string
-  Component: NoteComponent<CanToJsonData>
-  noteData: NoteData
-
-  events: NoteEvents
-}
-export const createNotes = (): {
-  notes: Accessor<Note[]>
-  setNotes: Setter<Note[]>
-} => {
-  const [notes, setNotes] = createSignal<Note[]>([])
-  return {
-    notes,
-    setNotes
-  }
-}
+import type { Note } from './notes-utils'
 
 export default (props: {
   notes: Note[],

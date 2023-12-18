@@ -1,4 +1,4 @@
-import type { NoteComponent, NoteComponentProps } from "../../Notes"
+import type { NoteComponent, NoteComponentProps } from "../../notes-utils"
 import { createEditorTransaction, createTiptapEditor } from "solid-tiptap"
 import StarterKit from "@tiptap/starter-kit"
 import type { TextNoteData } from "./types"

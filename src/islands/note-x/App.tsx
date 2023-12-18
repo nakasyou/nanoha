@@ -1,29 +1,25 @@
-import { createStore } from 'solid-js/store'
-import Notes, { createNotes } from './components/Notes'
+import Notes from './components/Notes'
 import  { createTextNote } from './components/notes/TextNote'
 import Header from './components/Header'
 import Fab from './components/Fab'
-import { createSignal, onMount } from 'solid-js'
+import { createEffect, createSignal, onMount } from 'solid-js'
 
 import './App.css'
 import { createImageNote } from './components/notes/ImageNote'
+import { Menu } from './components/Menu'
+import { notes } from './store'
 
 export interface Props {
 
 }
 
 export default () => {
-  const notes = createNotes()
-  
   onMount(() => {
     notes.setNotes([
       createTextNote(`これはNanohaNoteです!`),
       ...notes.notes()
     ])
   })
-
-  const [getIsActiveMenu, setIsActiveMenu] = createSignal(false)
-
   return <div class="bg-background h-screen touch-manipulation">
     <div class="flex flex-col lg:flex-row">
       <div class="sticky lg:fixed top-0">
@@ -44,7 +40,6 @@ export default () => {
         }
       </div>
     </div>
-    
     <Fab
       onAddTextNote={() => {
         notes.setNotes([
@@ -59,5 +54,6 @@ export default () => {
         ])
       }}
     />
+    <Menu />
   </div>
 }
