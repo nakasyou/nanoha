@@ -13,7 +13,8 @@ declare global {
 
 const mimetypeMap: Record<string, string | undefined> = {
   '.js': 'text/javascript',
-  '.html': 'text/html'
+  '.html': 'text/html',
+  '.svg': 'image/svg+xml'
 }
 export async function start (manifest: import('astro').SSRManifest) {
   const app = new App(manifest)
