@@ -21,7 +21,6 @@ export default (props: {
   createEffect(() => {
     getImageElementByUrl(props.imageUrl)
       .then(elem => {
-        console.log(elem)
         setImageElement(elem)
       })
   })

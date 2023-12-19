@@ -38,9 +38,7 @@ export default (props: Props) => {
       }
     }))
   })
-  createEffect(() => {
-    console.log('changed', getSheets())
-  })
+
   return <svg width={props.width} height={props.height}>
     <For each={getSheets()}>{(sheet, index) => {
       const commands: (string | number)[] = ['M' + sheet.sheet.startPosition.x + ',' + sheet.sheet.startPosition.y]

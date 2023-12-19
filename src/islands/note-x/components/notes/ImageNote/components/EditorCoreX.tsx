@@ -80,6 +80,7 @@ export default (props: Props) => {
     isDowned: boolean
   } | undefined> = {}
   const pointerDown = (evt: PointerEvent) => {
+    evt.preventDefault()
     pointersData[evt.pointerId] = {
       isDowned: true
     }
@@ -104,6 +105,7 @@ export default (props: Props) => {
     }
   }
   const pointerMove = (evt: PointerEvent) => {
+    evt.preventDefault()
     const currentEditMode = editMode()
     if (currentEditMode === "move") {
       if (Object.values(pointersData).filter(e => e?.isDowned).length === 1) {
@@ -146,6 +148,7 @@ export default (props: Props) => {
     
   }
   const pointerUp = (evt: PointerEvent) => {
+    evt.preventDefault()
     delete pointersData[evt.pointerId]
 
     const nowTmpSheet = tmpSheet()
@@ -178,33 +181,50 @@ export default (props: Props) => {
   return <div>
     <div class="w-full h-[calc(100dvh-200px)]">
       <div class="bg-black w-full h-full overflow-hidden"
-        onPointerDown={pointerDown}
-        onPointerMove={pointerMove}
-        onPointerUp={pointerUp}
-        onPointerCancel={pointerUp}
-        
-        onWheel={onWheel}
+        classList={{
+          'touch-none': editMode() !== 'clear'
+        }}
         ref={editorContainer}
         >
-        <div class="relative origin-top-left" style={{
+        <div class="relative" style={{
           width: imageSize().w + 'px',
           height: imageSize().h + 'px',
-          transform: `translateX(${editorPosition().x}px) translateY(${editorPosition().y}px) scale(${editorPosition().size})`
         }}>
-          <div class="absolute top-0 left-0">
-            <img class="pointer-events-none select-none" src={imageUrl()} alt='image' />
+          <div class="origin-top-left" style={{
+            transform: `translateX(${editorPosition().x}px) translateY(${editorPosition().y}px) scale(${editorPosition().size})`
+          }}>
+            <div class="absolute top-0 left-0">
+              <img class="pointer-events-none select-none" src={imageUrl()} alt='image' />
+            </div>
+            <div class="absolute top-0 left-0">
+              <Sheet
+                isPlayMode={false}
+                sheets={[...sheets(), ...(() => {
+                  const nowTmpSheet = tmpSheet()
+                  return (nowTmpSheet && typeof nowTmpSheet !== 'number') ? [nowTmpSheet.sheet] : []
+                })()]}
+                onClickSheet={sheetClicked}
+                width={imageSize().w}
+                height={imageSize().h}
+              />
+            </div>
           </div>
-          <div class="absolute top-0 left-0">
-            <Sheet
-              isPlayMode={false}
-              sheets={[...sheets(), ...(() => {
-                const nowTmpSheet = tmpSheet()
-                return (nowTmpSheet && typeof nowTmpSheet !== 'number') ? [nowTmpSheet.sheet] : []
-              })()]}
-              onClickSheet={sheetClicked}
-              width={imageSize().w}
-              height={imageSize().h}
-            />
+          <div
+            class="absolute top-0 left-0"
+            classList={{
+              'hidden': editMode() === 'clear'
+            }}
+            style={{
+              width: editorContainerRect().width + 'px',
+              height: editorContainerRect().height + 'px'
+            }}
+            onPointerDown={pointerDown}
+            onPointerMove={pointerMove}
+            onPointerUp={pointerUp}
+            onPointerCancel={pointerUp}
+            
+            onWheel={onWheel}>
+
           </div>
         </div>
       </div>
