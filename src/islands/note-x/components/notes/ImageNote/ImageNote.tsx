@@ -1,4 +1,4 @@
-import type { NoteComponent, NoteComponentProps } from "../../Notes"
+import type { NoteComponent, NoteComponentProps } from "../../notes-utils"
 import { type SetStoreFunction } from "solid-js/store"
 import { createEditorTransaction, createTiptapEditor } from 'solid-tiptap'
 import StarterKit from '@tiptap/starter-kit'
