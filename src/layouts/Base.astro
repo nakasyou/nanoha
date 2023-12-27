@@ -4,6 +4,9 @@ interface Props {
   description: string
   bodyClass?: string
 }
+
+const userAgent = (Astro.request.headers.get('User-Agent') ?? '').toLowerCase()
+const isPhone = userAgent.includes('android')
 ---
 
 <!doctype html>
@@ -17,7 +20,7 @@ interface Props {
     <title>{Astro.props.title}</title>
 
     {
-      import.meta.env.DEV && <>
+      isPhone && import.meta.env.DEV && <>
         <script is:inline src="//cdn.jsdelivr.net/npm/eruda"></script>
         <script is:inline>eruda.init();</script>
       </>

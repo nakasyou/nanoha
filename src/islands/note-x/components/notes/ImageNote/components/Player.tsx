@@ -1,4 +1,4 @@
-import { Show, createEffect, createResource, createSignal } from 'solid-js'
+import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js'
 import type { Sheets } from './Sheet'
 import Sheet from './Sheet'
 
@@ -18,29 +18,35 @@ export default (props: {
   viewMode: boolean
 }) => {
   const [getImageElement, setImageElement] = createSignal(new Image())
+  const [getImageRect, setImageRect] = createSignal(new DOMRect())
+  let imgRef!: HTMLImageElement
   createEffect(() => {
     getImageElementByUrl(props.imageUrl)
       .then(elem => {
         setImageElement(elem)
       })
+    console.log(getImageRect())
+  })
+  onMount(() => {
+    setImageRect(imgRef.getBoundingClientRect())
+    const observer = new ResizeObserver(() => {
+      setImageRect(imgRef.getBoundingClientRect())
+    })
+    observer.observe(imgRef)
   })
   
-  return <div>
-    <div class="relative origin-top-left" style={{
-      width: getImageElement().width + 'px',
-      height: getImageElement().height + 'px',
-      transform: ``
-    }}>
-      <div class="absolute top-0 left-0">
-        <img class="pointer-events-none select-none" src={props.imageUrl} alt='image' />
-      </div>
+  return <div class="">
+    <div class="relative origin-top-left">
+      <img class="pointer-events-none select-none" src={props.imageUrl} alt='image' ref={imgRef} />
       <div class="absolute top-0 left-0">
         <Sheet
           isPlayMode={!props.viewMode}
           sheets={props.sheetsData}
           onClickSheet={() => null}
           width={getImageElement().width}
-          height={getImageElement().height} />
+          height={getImageElement().height}
+          class="w-full h-full"
+          />
       </div>
     </div>
   </div>

@@ -21,11 +21,11 @@ export default () => {
     ])
   })
   return <div class="bg-background h-screen touch-manipulation">
-    <div class="flex flex-col lg:flex-row">
+    <div class="flex flex-col lg:flex-row lg:max-w-[calc(100dvw-2.5em)]">
       <div class="sticky lg:fixed top-0 z-30">
         <Header />
       </div>
-      <div class="w-10 hidden lg:block">
+      <div class="w-10 hidden lg:block flex-shrink-0">
 
       </div>
       <div class="px-2 w-full pb-5">

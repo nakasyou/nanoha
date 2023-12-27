@@ -1,6 +1,6 @@
 import { createStore } from "solid-js/store"
 import type { ImageNoteData, ImageNoteCanToJsonData } from "./types"
-import type { Note } from '../../Notes'
+import type { Note } from '../../notes-utils'
 import { ImageNote } from "./ImageNote"
 
 export const createImageNote = () => {

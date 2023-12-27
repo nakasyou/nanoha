@@ -22,6 +22,8 @@ export interface Props {
 
   width: number
   height: number
+
+  class?: string
 }
 export default (props: Props) => {
   const [getSheets, setSheets] = createSignal(props.sheets.map(sheet => {
@@ -39,7 +41,7 @@ export default (props: Props) => {
     }))
   })
 
-  return <svg width={props.width} height={props.height}>
+  return <svg width={props.width} height={props.height} class={props.class}>
     <For each={getSheets()}>{(sheet, index) => {
       const commands: (string | number)[] = ['M' + sheet.sheet.startPosition.x + ',' + sheet.sheet.startPosition.y]
       for (const position of sheet.sheet.positions) {

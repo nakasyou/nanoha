@@ -49,7 +49,7 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
       close(data)
     }
   }
-  return <div class="fixed top-0 left-0 w-screen h-screen p-4 bg-[#000a] z-10 ">
+  return <div class="fixed top-0 left-0 w-screen h-screen p-4 bg-[#000a] z-50 ">
     <div class='rounded-lg border bg-background p-2 transition duration-150 scale-0' classList={{
       'scale-0': !isOpen(),
       'scale-100': isOpen(),
