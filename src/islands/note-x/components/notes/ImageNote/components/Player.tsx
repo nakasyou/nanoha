@@ -38,7 +38,7 @@ export default (props: {
   return <div class="">
     <div class="relative origin-top-left">
       <img class="pointer-events-none select-none" src={props.imageUrl} alt='image' ref={imgRef} />
-      <div class="absolute top-0 left-0">
+      <div class="absolute top-0 left-0 w-full h-full">
         <Sheet
           isPlayMode={!props.viewMode}
           sheets={props.sheetsData}

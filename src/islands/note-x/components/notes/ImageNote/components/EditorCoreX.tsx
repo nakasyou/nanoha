@@ -196,7 +196,7 @@ export default (props: Props) => {
             <div class="absolute top-0 left-0">
               <img class="pointer-events-none select-none" src={imageUrl()} alt='image' />
             </div>
-            <div class="absolute top-0 left-0">
+            <div class="absolute top-0 left-0 w-full h-full">
               <Sheet
                 isPlayMode={false}
                 sheets={[...sheets(), ...(() => {
