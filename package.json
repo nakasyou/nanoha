@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@astrojs/deno": "^4.3.0",
-    "@astrojs/react": "^2.2.1",
+    "@astrojs/react": "^3.0.9",
     "@astrojs/tailwind": "^4.0.0",
     "@material/material-color-utilities": "^0.2.7",
     "@tabler/icons-react": "^2.30.0",
