@@ -60,45 +60,45 @@ export const ImageNote = ((props: Props) => {
         setSheetsData(data.sheets)
       }} scanedImage={imageBlob()} sheets={sheetsData()} />
     </Show>
-    <Show when={!noteBookState.isEditMode}>
-      <Show when={imageBlob() && sheetsData()}>
+
+    {/* 本体 */}
+    <div class="p-2 rounded border my-2 bg-white">
+      <Show when={imageBlob() && sheetsData()} fallback={
+        // 画像がない場合
+        <Show when={noteBookState.isEditMode} fallback={
+          // 画像がないplayモード
+          <div>Nothing image...</div>
+        }>
+          {/* 画像がない編集モード */}
+          <div class="text-center">
+            <div class="text-xl">ImageNote</div>
+            <div>まだスキャンされていません</div>
+            <div class="my-2 flex justify-center">
+              <button class="outlined-button" onClick={() => {
+                setIsShowEditor(true)
+              }}>スキャン</button>
+            </div>
+          </div>
+        </Show>
+      }>
+        {/* 画像がある */}
         <Player
           imageBlob={imageBlob()!!!}
           sheetsData={sheetsData()!!!}
           imageUrl={imageUrl()!!!}
-          viewMode={false} />
+          viewMode={noteBookState.isEditMode} />
       </Show>
-    </Show>
-    <Show when={noteBookState.isEditMode}>
-      <div class="p-2 rounded border my-2 bg-white">
-        { !imageBlob() && <div class="text-center">
-          <div class="text-xl">ImageNote</div>
-          <div>まだスキャンされていません</div>
-          <div class="my-2 flex justify-center">
-            <button class="outlined-button" onClick={() => {
-              setIsShowEditor(true)
-            }}>スキャン</button>
-          </div>
-        </div>}
-        <Show when={imageBlob() && sheetsData()}>
-          <Player
-            imageBlob={imageBlob()!!!}
-            sheetsData={sheetsData()!!!}
-            imageUrl={imageUrl()!!!}
-            viewMode={true} />
-        </Show>
-      </div>
-      <Show when={isActive()}>
-        <div class="flex justify-center gap-5">
-          <Controller
-            noteIndex={props.index}
-            notesLength={props.notes.length}
+    </div>
+    <Show when={noteBookState.isEditMode && isActive()}>
+      <div class="flex justify-center gap-5">
+        <Controller
+          noteIndex={props.index}
+          notesLength={props.notes.length}
 
-            onRemove={() => setIsShowCloseDialog(true)}
-            onUpNote={() => props.up()}
-            onDownNote={() => props.down()}/>
-        </div>
-      </Show>
+          onRemove={() => setIsShowCloseDialog(true)}
+          onUpNote={() => props.up()}
+          onDownNote={() => props.down()}/>
+      </div>
     </Show>
   </div>
 }) satisfies NoteComponent
