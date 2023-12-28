@@ -1,5 +1,6 @@
 import { createSignal, type Accessor, type Setter } from "solid-js"
 import type { JSX } from 'solid-js/jsx-runtime'
+import type { Note0 } from "../utils/file-format/manifest-schema"
 
 export interface NoteData <CanToJsonData extends any = any> {
   /**
@@ -10,6 +11,10 @@ export interface NoteData <CanToJsonData extends any = any> {
    * `JSON.parse`ができるデータ
    */
   canToJsonData: CanToJsonData
+  /**
+   * ノートのType
+   */
+  type: Note0['type']
 }
 export interface NoteComponentProps <CanToJsonData extends any = any> {
   noteData: NoteData<CanToJsonData>

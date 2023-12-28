@@ -15,6 +15,16 @@ const CloseBtn = () => {
   )
 }
 export const Menu = () => {
+  const onSave = async () => {
+    const fileDataBlob = await save(notes.notes())
+
+    const atagForDownload = document.createElement("a")
+    atagForDownload.download = "project.zip"
+
+    atagForDownload.href = URL.createObjectURL(fileDataBlob)
+
+    atagForDownload.click()
+  }
   return (
     <div class="">
       <div
@@ -40,20 +50,10 @@ export const Menu = () => {
                 <div class="flex justify-center items-center gap-4">
                   <button
                     class="filled-button"
-                    onClick={async () => {
-                      const fileDataBlob = await save(notes.notes())
-
-                      const atagForDownload = document.createElement("a")
-                      atagForDownload.download = "project.nnote"
-
-                      atagForDownload.href = URL.createObjectURL(fileDataBlob)
-
-                      atagForDownload.click()
-                    }}
                   >
                     Load
                   </button>
-                  <button class="filled-button">Save</button>
+                  <button class="filled-button" onClick={onSave}>Save</button>
                 </div>
               </div>
             </div>
