@@ -19,6 +19,7 @@ import Player from "./components/Player"
 
 export interface Props extends NoteComponentProps {
   noteData: ImageNoteData
+  setNoteData: SetStoreFunction<ImageNoteData>
 }
 
 export const ImageNote = ((props: Props) => {
@@ -28,11 +29,8 @@ export const ImageNote = ((props: Props) => {
   props.on('focus', (evt) => {
     setIsActive(evt.isActive)
   })
-
-  const [imageBlob, setImageBlob] = createSignal<Blob | undefined>()
-  const [sheetsData, setSheetsData] = createSignal<Sheets>()
   const imageUrl = createMemo(() => {
-    const nowImageBlob = imageBlob()
+    const nowImageBlob = props.noteData.blobs.scanedImage
     return nowImageBlob ? URL.createObjectURL(nowImageBlob) : null
   })
   const [isShowEditor, setIsShowEditor] = createSignal(false)
@@ -56,14 +54,14 @@ export const ImageNote = ((props: Props) => {
         if (!data) {
           return
         }
-        setImageBlob(data.image)
-        setSheetsData(data.sheets)
-      }} scanedImage={imageBlob()} sheets={sheetsData()} />
+        props.setNoteData('blobs', 'scanedImage', data.image)
+        props.setNoteData(data.sheets)
+      }} scanedImage={props.noteData.blobs.scanedImage} sheets={sheetsData()} />
     </Show>
 
     {/* 本体 */}
     <div class="p-2 rounded border my-2 bg-white">
-      <Show when={imageBlob() && sheetsData()} fallback={
+      <Show when={props.noteData.blobs.scanedImage && sheetsData()} fallback={
         // 画像がない場合
         <Show when={noteBookState.isEditMode} fallback={
           // 画像がないplayモード
@@ -83,7 +81,7 @@ export const ImageNote = ((props: Props) => {
       }>
         {/* 画像がある */}
         <Player
-          imageBlob={imageBlob()!!!}
+          imageBlob={props.noteData.blobs.scanedImage!!!}
           sheetsData={sheetsData()!!!}
           imageUrl={imageUrl()!!!}
           viewMode={noteBookState.isEditMode} />

@@ -1,4 +1,4 @@
-import type { Note, NoteData, NoteComponent } from "../../Notes"
+import type { Note, NoteData, NoteComponent } from "../../notes-utils"
 
 export interface TextNoteCanToJsonData {
   html: string

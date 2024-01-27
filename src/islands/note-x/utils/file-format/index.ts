@@ -29,15 +29,20 @@ export const save = async (notes: Note[]): Promise<Blob> => {
     const thisNote = notes[parseInt(index)]
     const baseNoteDir = `notes/${noteId}`
 
-    const blobMimeTypes: []
+    const blobMimetypes: Record<string, string> = {}
     for (const [name, blob] of Object.entries(thisNote.noteData.blobs)) {
-      fileTree[`${baseNoteDir}/${blob}`] = new Uint8Array(await blob.arrayBuffer())
+      if (!blob) {
+        continue
+      }
+      fileTree[`${baseNoteDir}/${name}`] = new Uint8Array(await blob.arrayBuffer())
+      blobMimetypes[name] = blob.type
     }
 
     const noteJson: Note0 = (() => {
       return {
         version: 0,
-        type: thisNote.noteData.type
+        type: thisNote.noteData.type,
+        blobMimetypes
       }
     })()
     fileTree[`${baseNoteDir}/notes.json`] = textEncoder.encode(JSON.stringify(noteJson))

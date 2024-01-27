@@ -15,9 +15,11 @@ import { noteBookState, setNoteBookState } from "../../../store"
 import { Player } from "./Player"
 
 import "./TextNoteStyle.css"
+import type { SetStoreFunction } from "solid-js/store"
 
 export interface Props extends NoteComponentProps {
   noteData: TextNoteData
+  setNoteData: SetStoreFunction<TextNoteData>
 }
 
 export const TextNote = ((props: Props) => {
@@ -61,8 +63,8 @@ export const TextNote = ((props: Props) => {
   })
 
   const [isShowCloseDialog, setIsShowCloseDialog] = createSignal(false)
-  const editorInputHandler = () => {
-    props.noteData.canToJsonData.html = editor()?.getHTML() || ""
+  const saveContext = () => {
+    props.setNoteData('canToJsonData', 'html', editor()?.getHTML() || "")
   }
   return (
     <div>
@@ -93,9 +95,9 @@ export const TextNote = ((props: Props) => {
         )}
         <div>
           <div
-            onInput={editorInputHandler}
             id="editor"
             ref={ref}
+            onFocusOut={saveContext}
             class="textnote-tiptap-container bg-on-tertiary rounded my-2 border boader-outlined nanohanote-textnote-styler"
           />
         </div>

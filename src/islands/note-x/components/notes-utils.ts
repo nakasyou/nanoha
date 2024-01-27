@@ -1,12 +1,16 @@
 import { createSignal, type Accessor, type Setter } from "solid-js"
 import type { JSX } from 'solid-js/jsx-runtime'
 import type { Note0 } from "../utils/file-format/manifest-schema"
+import type { SetStoreFunction } from 'solid-js/store'
 
-export interface NoteData <CanToJsonData extends any = any> {
+export interface NoteData <
+  CanToJsonData extends any = any,
+  BlobStore extends string = string
+> {
   /**
    * ノートのファイルストア
    */
-  blobs: Record<string, Blob>
+  blobs: Record<BlobStore, Blob | undefined>
   /**
    * `JSON.parse`ができるデータ
    */
@@ -16,8 +20,12 @@ export interface NoteData <CanToJsonData extends any = any> {
    */
   type: Note0['type']
 }
-export interface NoteComponentProps <CanToJsonData extends any = any> {
-  noteData: NoteData<CanToJsonData>
+export interface NoteComponentProps <
+  CanToJsonData extends any = any,
+  BlobStore extends string = string
+> {
+  noteData: NoteData<CanToJsonData, BlobStore>
+  setNoteData: SetStoreFunction<NoteData<CanToJsonData, BlobStore>>
 
   focus (): void
   on <EventType extends keyof NoteEvents>(type: EventType, listenter: (evt: NoteEventArgs[EventType]) => void): void
@@ -42,7 +50,9 @@ export interface NoteEventArgs {
 export interface Note <CanToJsonData = any> {
   id: string
   Component: NoteComponent<CanToJsonData>
+
   noteData: NoteData
+  setNoteData: SetStoreFunction<NoteData<CanToJsonData>>
 
   events: NoteEvents
 }

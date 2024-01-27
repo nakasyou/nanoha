@@ -1,4 +1,4 @@
-import { object, literal, array, string, uuid, type Input, union } from 'valibot'
+import { object, literal, array, string, uuid, type Input, union, record } from 'valibot'
 
 /**
  * Manifest Version 0
@@ -21,6 +21,8 @@ export const note0 = object({
   type: union([
     literal('text'),
     literal('image')
-  ])
+  ]),
+
+  blobMimetypes: record(string(), string())
 })
 export type Note0 = Input<typeof note0>

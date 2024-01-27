@@ -6,7 +6,9 @@ interface Props {
 }
 
 const userAgent = (Astro.request.headers.get('User-Agent') ?? '').toLowerCase()
-const isPhone = userAgent.includes('android')
+const isPhone = userAgent.includes('android') || (
+  userAgent.includes('macintosh')
+)
 ---
 
 <!doctype html>

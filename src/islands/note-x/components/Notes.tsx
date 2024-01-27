@@ -14,7 +14,7 @@ export default (props: {
       return <div>
         <NoteComponent
           noteData={note().noteData}
-
+          setNoteData={note().setNoteData}
           focus={() => {
             for (const eachNote of props.notes) {
               for (const focusEventListener of (eachNote.events.focus || [])) {
