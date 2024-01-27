@@ -26,6 +26,8 @@ export const ImageNote = ((props: Props) => {
   const [isActive, setIsActive] = createSignal(false)
   const [isShowCloseDialog, setIsShowCloseDialog] = createSignal(false)
 
+  props.noteData
+
   props.on('focus', (evt) => {
     setIsActive(evt.isActive)
   })
