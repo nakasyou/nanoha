@@ -1,4 +1,4 @@
-import { createEffect, onMount, onCleanup, createSignal } from 'solid-js'
+import { createEffect, onMount, onCleanup, createSignal, Show } from 'solid-js'
 import Sheet, { type Sheets } from './Sheet'
 
 import IconArrowsMove from '@tabler/icons/arrows-move.svg?raw'
@@ -6,17 +6,22 @@ import IconHighlight from '@tabler/icons/highlight.svg?raw'
 import IconEraser from '@tabler/icons/eraser.svg?raw'
 
 import { removeIconSize } from '../../../../utils/icon/removeIconSize'
+import { Dialog } from '../../../utils/Dialog'
 
 export interface Props {
   scanedImage?: Blob | undefined
 
-  changeSheets (sheets: Sheets): void
+  changeSheets(sheets: Sheets): void
 
   sheets?: Sheets
+
+  rescan (): void
 }
 
 export default (props: Props) => {
-  const [editMode, setEditMode] = createSignal<'move' | 'paint' | 'clear'>('move')
+  const [editMode, setEditMode] = createSignal<'move' | 'paint' | 'clear'>(
+    'move'
+  )
 
   const [imageUrl, setImageUrl] = createSignal<string>()
   const [imageSize, setImageSize] = createSignal<{
@@ -27,10 +32,13 @@ export default (props: Props) => {
     h: 0,
   })
   const [sheets, setSheets] = createSignal<Sheets>(props.sheets ?? [])
-  const [tmpSheet, setTmpSheet] = createSignal<{
-    sheet: Sheets[number]
-    pointerId: number
-  } | number>()
+  const [tmpSheet, setTmpSheet] = createSignal<
+    | {
+        sheet: Sheets[number]
+        pointerId: number
+      }
+    | number
+  >()
 
   createEffect(() => {
     props.changeSheets(sheets())
@@ -44,7 +52,7 @@ export default (props: Props) => {
     image.onload = () => {
       setImageSize({
         w: image.width,
-        h: image.height
+        h: image.height,
       })
     }
     image.src = blobImageUrl
@@ -53,11 +61,13 @@ export default (props: Props) => {
   const [editorPosition, setEditorPosition] = createSignal({
     x: 0,
     y: 0,
-    size: 1
+    size: 1,
   })
 
   let editorContainer!: HTMLDivElement
-  const [editorContainerRect, setEditorContainerRect] = createSignal<DOMRect>(new DOMRect())
+  const [editorContainerRect, setEditorContainerRect] = createSignal<DOMRect>(
+    new DOMRect()
+  )
   onMount(() => {
     const observer = new ResizeObserver(() => {
       setEditorContainerRect(editorContainer.getBoundingClientRect())
@@ -69,22 +79,25 @@ export default (props: Props) => {
     const pointerXByEditor = evt.clientX - editorContainerRect().left
     const pointerYByEditor = evt.clientY - editorContainerRect().top
 
-    const positionX = (pointerXByEditor - editorPosition().x) / editorPosition().size
-    const positionY = (pointerYByEditor - editorPosition().y) / editorPosition().size
-    return [
-      Math.floor(positionX),
-      Math.floor(positionY)
-    ]
+    const positionX =
+      (pointerXByEditor - editorPosition().x) / editorPosition().size
+    const positionY =
+      (pointerYByEditor - editorPosition().y) / editorPosition().size
+    return [Math.floor(positionX), Math.floor(positionY)]
   }
-  let pointersData: Record<string, {
-    isDowned: boolean,
-    last: PointerEvent
-  } | undefined> = {}
+  let pointersData: Record<
+    string,
+    | {
+        isDowned: boolean
+        last: PointerEvent
+      }
+    | undefined
+  > = {}
   const pointerDown = (evt: PointerEvent) => {
     evt.preventDefault()
     pointersData[evt.pointerId] = {
       isDowned: true,
-      last: evt
+      last: evt,
     }
     const currentEditMode = editMode()
     if (currentEditMode === 'paint') {
@@ -99,10 +112,10 @@ export default (props: Props) => {
           positions: [],
           startPosition: {
             x: positionX,
-            y: positionY
+            y: positionY,
           },
-          weight: 30 / editorPosition().size
-        }
+          weight: 30 / editorPosition().size,
+        },
       })
     }
   }
@@ -111,13 +124,13 @@ export default (props: Props) => {
     if (!(evt.pointerId in pointersData)) {
       pointersData[evt.pointerId] = {
         isDowned: false,
-        last: evt
+        last: evt,
       }
     }
     const thisPointer = pointersData[evt.pointerId]!
     const currentEditMode = editMode()
     if (currentEditMode === 'move') {
-      if (Object.values(pointersData).filter(e => e?.isDowned).length === 1) {
+      if (Object.values(pointersData).filter((e) => e?.isDowned).length === 1) {
         // タッチしているポインターが一つ
         if (pointersData[evt.pointerId]?.isDowned) {
           const movementX = evt.screenX - thisPointer.last.screenX
@@ -126,7 +139,7 @@ export default (props: Props) => {
           setEditorPosition({
             x: editorPosition().x + movementX,
             y: editorPosition().y + movementY,
-            size: editorPosition().size
+            size: editorPosition().size,
           })
           console.log(editorPosition())
         }
@@ -150,10 +163,10 @@ export default (props: Props) => {
               ...lastTmpSheet.sheet.positions,
               {
                 x: positionX,
-                y: positionY
-              }
-            ]
-          }
+                y: positionY,
+              },
+            ],
+          },
         })
       }
     }
@@ -168,10 +181,7 @@ export default (props: Props) => {
       return
     }
     if (nowTmpSheet?.pointerId === evt.pointerId) {
-      setSheets([
-        ...sheets(),
-        nowTmpSheet?.sheet
-      ])
+      setSheets([...sheets(), nowTmpSheet?.sheet])
       setTmpSheet()
     }
   }
@@ -179,7 +189,7 @@ export default (props: Props) => {
     const lastEditorPosition = editorPosition()
     setEditorPosition({
       ...lastEditorPosition,
-      size: lastEditorPosition.size * (evt.deltaY > 0 ? 0.9 : 1.1)
+      size: lastEditorPosition.size * (evt.deltaY > 0 ? 0.9 : 1.1),
     })
   }
   const sheetClicked = (sheetIndex: number) => {
@@ -190,79 +200,119 @@ export default (props: Props) => {
       setTmpSheet(Math.random())
     }
   }
-  return <div>
-    <div class="w-full h-[calc(100dvh-200px)]">
-      <div class="bg-black w-full h-full overflow-hidden"
-        classList={{
-          'touch-none': editMode() !== 'clear'
-        }}
-        ref={editorContainer}
+  const [getRescanConfirm, setRescanConfirm] = createSignal(false)
+  return (
+    <div>
+      <Show when={getRescanConfirm()}>
+        <Dialog type='confirm' onClose={(ok) => {
+          if (ok) {
+            props.rescan()
+          }
+          setRescanConfirm(false)
+        }} title="Confirm">
+          本当に再スキャンしますか？このデータは失われます。
+        </Dialog>
+      </Show>
+      <div class="w-full h-[calc(100dvh-200px)]">
+        <div
+          class="bg-black w-full h-full overflow-hidden"
+          classList={{
+            'touch-none': editMode() !== 'clear',
+          }}
+          ref={editorContainer}
         >
-        <div class="relative" style={{
-          width: imageSize().w + 'px',
-          height: imageSize().h + 'px',
-        }}>
-          <div class="origin-top-left" style={{
-            transform: `translateX(${editorPosition().x}px) translateY(${editorPosition().y}px) scale(${editorPosition().size})`
-          }}>
-            <div class="absolute top-0 left-0">
-              <img class="pointer-events-none select-none" src={imageUrl()} alt='image' />
-            </div>
-            <div class="absolute top-0 left-0 w-full h-full">
-              <Sheet
-                isPlayMode={false}
-                sheets={[...sheets(), ...(() => {
-                  const nowTmpSheet = tmpSheet()
-                  return (nowTmpSheet && typeof nowTmpSheet !== 'number') ? [nowTmpSheet.sheet] : []
-                })()]}
-                onClickSheet={sheetClicked}
-                width={imageSize().w}
-                height={imageSize().h}
-              />
-            </div>
-          </div>
           <div
-            class="absolute top-0 left-0"
-            classList={{
-              'hidden': editMode() === 'clear'
-            }}
+            class="relative"
             style={{
-              width: editorContainerRect().width + 'px',
-              height: editorContainerRect().height + 'px'
+              width: imageSize().w + 'px',
+              height: imageSize().h + 'px',
             }}
-            onPointerDown={pointerDown}
-            onPointerMove={pointerMove}
-            onPointerUp={pointerUp}
-            onPointerCancel={pointerUp}
-            
-            onWheel={onWheel}>
-
+          >
+            <div
+              class="origin-top-left"
+              style={{
+                transform: `translateX(${editorPosition().x}px) translateY(${
+                  editorPosition().y
+                }px) scale(${editorPosition().size})`,
+              }}
+            >
+              <div class="absolute top-0 left-0">
+                <img
+                  class="pointer-events-none select-none"
+                  src={imageUrl()}
+                  alt="image"
+                />
+              </div>
+              <div class="absolute top-0 left-0 w-full h-full">
+                <Sheet
+                  isPlayMode={false}
+                  sheets={[
+                    ...sheets(),
+                    ...(() => {
+                      const nowTmpSheet = tmpSheet()
+                      return nowTmpSheet && typeof nowTmpSheet !== 'number'
+                        ? [nowTmpSheet.sheet]
+                        : []
+                    })(),
+                  ]}
+                  onClickSheet={sheetClicked}
+                  width={imageSize().w}
+                  height={imageSize().h}
+                />
+              </div>
+            </div>
+            <div
+              class="absolute top-0 left-0"
+              classList={{
+                hidden: editMode() === 'clear',
+              }}
+              style={{
+                width: editorContainerRect().width + 'px',
+                height: editorContainerRect().height + 'px',
+              }}
+              onPointerDown={pointerDown}
+              onPointerMove={pointerMove}
+              onPointerUp={pointerUp}
+              onPointerCancel={pointerUp}
+              onWheel={onWheel}
+            ></div>
           </div>
         </div>
       </div>
+      <div class="flex my-2 justify-center gap-5">
+        <div class="flex gap-2">
+          <button
+            class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
+            onClick={() => {
+              setEditMode('move')
+            }}
+            disabled={editMode() === 'move'}
+          >
+            <div innerHTML={removeIconSize(IconArrowsMove)} class="w-8 h-8" />
+          </button>
+          <button
+            class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
+            onClick={() => {
+              setEditMode('paint')
+            }}
+            disabled={editMode() === 'paint'}
+          >
+            <div innerHTML={IconHighlight} class="w-8 h-8" />
+          </button>
+          <button
+            class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
+            onClick={() => {
+              setEditMode('clear')
+            }}
+            disabled={editMode() === 'clear'}
+          >
+            <div innerHTML={IconEraser} class="w-8 h-8" />
+          </button>
+        </div>
+        <div>
+          <button class="text-button" onClick={() => setRescanConfirm(true)}>ReScan</button>
+        </div>
+      </div>
     </div>
-    <div class="my-2 flex justify-between">
-      <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
-        onClick={() => {
-          setEditMode('move')
-        }}
-        disabled={editMode() === 'move'}>
-        <div innerHTML={removeIconSize(IconArrowsMove)} class="w-8 h-8" />
-      </button>
-      <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
-        onClick={() => {
-          setEditMode('paint')
-        }}
-        disabled={editMode() === 'paint'}>
-        <div innerHTML={IconHighlight} class="w-8 h-8" />
-      </button>
-      <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
-        onClick={() => {
-          setEditMode('clear')
-        }}
-        disabled={editMode() === 'clear'}>
-        <div innerHTML={IconEraser} class="w-8 h-8" />
-      </button>
-    </div>
-  </div>
+  )
 }

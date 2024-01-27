@@ -1,20 +1,12 @@
 import type { NoteComponent, NoteComponentProps } from "../../notes-utils"
 import { type SetStoreFunction } from "solid-js/store"
-import { createEditorTransaction, createTiptapEditor } from 'solid-tiptap'
-import StarterKit from '@tiptap/starter-kit'
 import type { ImageNoteData } from "./types"
-import { Match, Show, Switch, createEffect, createMemo, createSignal } from "solid-js"
-import { removeIconSize } from "../../../utils/icon/removeIconSize"
+import { Show, createMemo, createSignal } from "solid-js"
 
-import IconNote from '@tabler/icons/note.svg?raw'
-import IconNoteOff from '@tabler/icons/note-off.svg?raw'
-
-import type { Editor } from "@tiptap/core"
 import { Dialog } from "../../utils/Dialog"
 import { Controller } from "../../note-components/Controller"
 import { noteBookState, setNoteBookState } from "../../../store"
 import { ScanedImageEditor } from "./components/ScanedImageEditor"
-import type { Sheets } from "./components/Sheet"
 import Player from "./components/Player"
 
 export interface Props extends NoteComponentProps {
@@ -36,6 +28,9 @@ export const ImageNote = ((props: Props) => {
   const [isShowEditor, setIsShowEditor] = createSignal(false)
   return <div onClick={() => {
     props.focus()
+    if (noteBookState.isEditMode) {
+      setIsShowEditor(true)
+    }
   }}>
     <Show when={isShowCloseDialog()}>
       <Dialog onClose={(result) => {
@@ -56,7 +51,7 @@ export const ImageNote = ((props: Props) => {
         }
         props.setNoteData('blobs', 'scanedImage', data.image)
         props.setNoteData('canToJsonData', 'sheets', data.sheets)
-      }} scanedImage={props.noteData.blobs.scanedImage} sheets={props.noteData.canToJsonData.sheets} />
+      }} noteData={props.noteData} setNoteData={props.setNoteData} />
     </Show>
 
     {/* 本体 */}

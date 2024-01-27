@@ -1,70 +1,88 @@
-import { Show, createEffect, createSignal, onMount } from "solid-js"
-import { Dialog, createDialog } from "../../../utils/Dialog"
-import EditorCore from "./EditorCoreX"
-import type { Sheets } from "./Sheet"
+import { Show } from 'solid-js'
+import { Dialog, createDialog } from '../../../utils/Dialog'
+import EditorCore from './EditorCoreX'
+import type { Sheets } from './Sheet'
+import type { ImageNoteData } from '../types'
+import type { SetStoreFunction } from 'solid-js/store'
 
 export interface Props {
   onEnd(data: ScanedImageEditedData | null): void
-  scanedImage?: Blob
-  sheets?: Sheets
+  noteData: ImageNoteData
+  setNoteData: SetStoreFunction<ImageNoteData>
 }
 export interface ScanedImageEditedData {
   sheets: Sheets
   image: Blob
 }
 export const ScanedImageEditor = (props: Props) => {
-  const [scanedImageBlob, setScanedImageBlob] = createSignal<Blob | undefined>(props.scanedImage)
   const dialog = createDialog<boolean>()
-  
+
   let scanInputRef!: HTMLInputElement
 
   const reScan = () => {
     scanInputRef.oninput = () => {
-      if (!scanInputRef.files){
+      if (!scanInputRef.files) {
         return
       }
       const imageFile = scanInputRef.files[0]
       if (!imageFile) {
         return
       }
-      setScanedImageBlob(() => imageFile)
+      props.setNoteData('blobs', 'scanedImage', imageFile)
     }
     scanInputRef.click()
   }
-  const [sheets, setSheets] = createSignal<Sheets>(props.sheets ?? [])
-  return <Dialog type="custom" dialog={dialog} title="編集" onClose={(result) => {
-    const nowScanedImageBlob = scanedImageBlob()
-    props.onEnd((result && nowScanedImageBlob) ? {
-      sheets: sheets(),
-      image: nowScanedImageBlob
-    } : null)
-  }} class="ml-5">
-    <input ref={scanInputRef} type="file" class="hidden" />
-    <div>
-      <Show when={!scanedImageBlob()}>
-        <button class="outlined-button" onClick={reScan}>スキャン!</button>
-      </Show>
-    </div>
-    <div>
-      <Show when={scanedImageBlob()}>
-        <div>
-          <EditorCore
-            scanedImage={scanedImageBlob()}
-            changeSheets={(sheets) => {
-              setSheets(sheets)
-            }}
-            sheets={sheets()}
+  return (
+    <Dialog
+      type="custom"
+      dialog={dialog}
+      title="編集"
+      onClose={(result) => {
+        const nowScanedImageBlob = props.noteData.blobs.scanedImage
+        props.onEnd(
+          result && nowScanedImageBlob
+            ? {
+                sheets: props.noteData.canToJsonData.sheets,
+                image: nowScanedImageBlob,
+              }
+            : null
+        )
+      }}
+      class="ml-5"
+    >
+      <input ref={scanInputRef} type="file" class="hidden" />
+      <div>
+        <Show when={!props.noteData.blobs.scanedImage}>
+          <button class="outlined-button" onClick={reScan}>
+            スキャン!
+          </button>
+        </Show>
+      </div>
+      <div>
+        <Show when={props.noteData.blobs.scanedImage}>
+          <div>
+            <EditorCore
+              scanedImage={props.noteData.blobs.scanedImage}
+              changeSheets={(sheets) => {
+                props.setNoteData('canToJsonData', 'sheets', sheets)
+              }}
+              sheets={props.noteData.canToJsonData.sheets}
+              rescan={() => {
+                props.setNoteData('canToJsonData', 'sheets', [])
+                props.setNoteData('blobs', 'scanedImage', undefined)
+              }}
             />
-        </div>
-        <div class="flex justify-center gap-5 items-center">
-          <button class="outlined-button" onClick={() => dialog.close(false)}>
-            キャンセル
-          </button>
-          <button class="filled-button" onClick={() => dialog.close(true)}>
-            完了
-          </button>
-        </div>
-      </Show>
-    </div>
-  </Dialog>
+          </div>
+          <div class="flex justify-center gap-5 items-center">
+            <button class="outlined-button" onClick={() => dialog.close(false)}>
+              キャンセル
+            </button>
+            <button class="filled-button" onClick={() => dialog.close(true)}>
+              完了
+            </button>
+          </div>
+        </Show>
+      </div>
+    </Dialog>
+  )
 }
