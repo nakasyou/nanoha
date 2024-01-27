@@ -119,6 +119,35 @@ export default (props: Props) => {
       })
     }
   }
+  const scaleDatas: {
+    baseDistance: null | number
+    lastDistance: number | null
+    baseScale: number
+    preview (): void
+    end (): void
+  } = {
+    baseDistance: null,
+    lastDistance: null,
+    baseScale: 1,
+    preview () {
+      setEditorPosition(prev => ({
+        ...prev,
+        size: this.baseScale * (this.lastDistance ?? 1) / (this.baseDistance ?? 1)
+      }))
+    },
+    end () {
+      this.baseScale *= (this.lastDistance ?? 1) / (this.baseDistance ?? 1)
+      this.lastDistance = null
+      this.baseDistance = null
+      setEditorPosition(prev => ({
+        ...prev,
+        size: this.baseScale
+      }))
+    }
+  }
+  createEffect(() => {
+    console.log(editorPosition())
+  })
   const pointerMove = (evt: PointerEvent) => {
     evt.preventDefault()
     if (!(evt.pointerId in pointersData)) {
@@ -141,8 +170,23 @@ export default (props: Props) => {
             y: editorPosition().y + movementY,
             size: editorPosition().size,
           })
-          console.log(editorPosition())
+          scaleDatas.end()
         }
+      } else {
+        // タッチしているポインターが2つ以上
+        const downedPointers = Object.values(pointersData).filter((e) => e?.isDowned)
+        const p0 = downedPointers[0]!
+        const p1 = downedPointers[1]!
+
+        const pinchDistance = Math.sqrt(
+          (p0.last.screenX - p1.last.screenX) ** 2 + (p0.last.screenY - p1.last.screenY) ** 2
+        ) // ピタゴラスに感謝
+
+        if (!scaleDatas.baseDistance) {
+          scaleDatas.baseDistance = pinchDistance
+        }
+        scaleDatas.lastDistance = pinchDistance
+        scaleDatas.preview()
       }
     } else if (currentEditMode === 'paint') {
       const nowPointerData = pointersData[evt.pointerId]
@@ -175,7 +219,7 @@ export default (props: Props) => {
   const pointerUp = (evt: PointerEvent) => {
     evt.preventDefault()
     delete pointersData[evt.pointerId]
-
+    scaleDatas.end()
     const nowTmpSheet = tmpSheet()
     if (typeof nowTmpSheet === 'number') {
       return
@@ -231,7 +275,7 @@ export default (props: Props) => {
             <div
               class="origin-top-left"
               style={{
-                transform: `translateX(${editorPosition().x}px) translateY(${
+                transform: `translateX(${editorPosition().x + Math.random()}px) translateY(${
                   editorPosition().y
                 }px) scale(${editorPosition().size})`,
               }}
