@@ -77,12 +77,14 @@ export default (props: Props) => {
     ]
   }
   let pointersData: Record<string, {
-    isDowned: boolean
+    isDowned: boolean,
+    last: PointerEvent
   } | undefined> = {}
   const pointerDown = (evt: PointerEvent) => {
     evt.preventDefault()
     pointersData[evt.pointerId] = {
-      isDowned: true
+      isDowned: true,
+      last: evt
     }
     const currentEditMode = editMode()
     if (currentEditMode === 'paint') {
@@ -106,17 +108,27 @@ export default (props: Props) => {
   }
   const pointerMove = (evt: PointerEvent) => {
     evt.preventDefault()
+    if (!(evt.pointerId in pointersData)) {
+      pointersData[evt.pointerId] = {
+        isDowned: false,
+        last: evt
+      }
+    }
+    const thisPointer = pointersData[evt.pointerId]!
     const currentEditMode = editMode()
-    if (currentEditMode === "move") {
+    if (currentEditMode === 'move') {
       if (Object.values(pointersData).filter(e => e?.isDowned).length === 1) {
         // タッチしているポインターが一つ
         if (pointersData[evt.pointerId]?.isDowned) {
+          const movementX = evt.screenX - thisPointer.last.screenX
+          const movementY = evt.screenY - thisPointer.last.screenY
           // そのポインターが押されている
           setEditorPosition({
-            x: editorPosition().x + evt.movementX,
-            y: editorPosition().y + evt.movementY,
+            x: editorPosition().x + movementX,
+            y: editorPosition().y + movementY,
             size: editorPosition().size
           })
+          console.log(editorPosition())
         }
       }
     } else if (currentEditMode === 'paint') {
@@ -145,7 +157,7 @@ export default (props: Props) => {
         })
       }
     }
-    
+    thisPointer.last = evt
   }
   const pointerUp = (evt: PointerEvent) => {
     evt.preventDefault()

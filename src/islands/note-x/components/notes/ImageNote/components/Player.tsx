@@ -25,7 +25,6 @@ export default (props: {
       .then(elem => {
         setImageElement(elem)
       })
-    console.log(getImageRect())
   })
   onMount(() => {
     setImageRect(imgRef.getBoundingClientRect())

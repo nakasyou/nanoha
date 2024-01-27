@@ -26,8 +26,6 @@ export const ImageNote = ((props: Props) => {
   const [isActive, setIsActive] = createSignal(false)
   const [isShowCloseDialog, setIsShowCloseDialog] = createSignal(false)
 
-  props.noteData
-
   props.on('focus', (evt) => {
     setIsActive(evt.isActive)
   })
@@ -57,13 +55,13 @@ export const ImageNote = ((props: Props) => {
           return
         }
         props.setNoteData('blobs', 'scanedImage', data.image)
-        props.setNoteData(data.sheets)
-      }} scanedImage={props.noteData.blobs.scanedImage} sheets={sheetsData()} />
+        props.setNoteData('canToJsonData', 'sheets', data.sheets)
+      }} scanedImage={props.noteData.blobs.scanedImage} sheets={props.noteData.canToJsonData.sheets} />
     </Show>
 
     {/* 本体 */}
     <div class="p-2 rounded border my-2 bg-white">
-      <Show when={props.noteData.blobs.scanedImage && sheetsData()} fallback={
+      <Show when={props.noteData.blobs.scanedImage && props.noteData.canToJsonData.sheets} fallback={
         // 画像がない場合
         <Show when={noteBookState.isEditMode} fallback={
           // 画像がないplayモード
@@ -84,7 +82,7 @@ export const ImageNote = ((props: Props) => {
         {/* 画像がある */}
         <Player
           imageBlob={props.noteData.blobs.scanedImage!!!}
-          sheetsData={sheetsData()!!!}
+          sheetsData={props.noteData.canToJsonData.sheets!!!}
           imageUrl={imageUrl()!!!}
           viewMode={noteBookState.isEditMode} />
       </Show>

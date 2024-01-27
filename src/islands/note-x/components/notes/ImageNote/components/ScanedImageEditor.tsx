@@ -1,4 +1,4 @@
-import { Show, createSignal } from "solid-js"
+import { Show, createEffect, createSignal, onMount } from "solid-js"
 import { Dialog, createDialog } from "../../../utils/Dialog"
 import EditorCore from "./EditorCoreX"
 import type { Sheets } from "./Sheet"
@@ -16,17 +16,20 @@ export const ScanedImageEditor = (props: Props) => {
   const [scanedImageBlob, setScanedImageBlob] = createSignal<Blob | undefined>(props.scanedImage)
   const dialog = createDialog<boolean>()
   
+  let scanInputRef!: HTMLInputElement
+
   const reScan = () => {
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.onchange = () => {
-      if (!input.files){
+    scanInputRef.oninput = () => {
+      if (!scanInputRef.files){
         return
       }
-      const imageFile = input.files[0]
-      setScanedImageBlob(imageFile)
+      const imageFile = scanInputRef.files[0]
+      if (!imageFile) {
+        return
+      }
+      setScanedImageBlob(() => imageFile)
     }
-    input.click()
+    scanInputRef.click()
   }
   const [sheets, setSheets] = createSignal<Sheets>(props.sheets ?? [])
   return <Dialog type="custom" dialog={dialog} title="編集" onClose={(result) => {
@@ -36,6 +39,7 @@ export const ScanedImageEditor = (props: Props) => {
       image: nowScanedImageBlob
     } : null)
   }} class="ml-5">
+    <input ref={scanInputRef} type="file" class="hidden" />
     <div>
       <Show when={!scanedImageBlob()}>
         <button class="outlined-button" onClick={reScan}>スキャン!</button>
