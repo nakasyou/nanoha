@@ -6,6 +6,7 @@
     "allowImportingTsExtensions": true,
     "types": [
       "bun-types"
-    ]
+    ],
+    "noUncheckedIndexedAccess": true
   }
 }

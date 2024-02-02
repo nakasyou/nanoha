@@ -1,7 +1,7 @@
 import { noteBookState, notes, setNoteBookState } from "../store"
 import IconX from "@tabler/icons/x.svg?raw"
 import { removeIconSize } from "../utils/icon/removeIconSize"
-import { save } from "../utils/file-format"
+import { load, save } from "../utils/file-format"
 
 const CloseBtn = () => {
   return (
@@ -24,6 +24,25 @@ export const Menu = () => {
     atagForDownload.href = URL.createObjectURL(fileDataBlob)
 
     atagForDownload.click()
+  }
+  const onLoad = () => {
+    const inputElement = document.createElement('input')
+    inputElement.type = 'file'
+    inputElement.oninput = async () => {
+      const files = inputElement.files
+      if (!files) {
+        return
+      }
+      const targetFile = files[0]
+      if (!targetFile) {
+        return
+      }
+      
+      const loadResult = await load(targetFile)
+
+      console.log(loadResult)
+    }
+    inputElement.click()
   }
   return (
     <div class="">
@@ -50,6 +69,7 @@ export const Menu = () => {
                 <div class="flex justify-center items-center gap-4">
                   <button
                     class="filled-button"
+                    onClick={onLoad}
                   >
                     Load
                   </button>
