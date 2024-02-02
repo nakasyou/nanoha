@@ -172,7 +172,7 @@ export default (props: Props) => {
           })
           scaleDatas.end()
         }
-      } else {
+      } else if (Object.values(pointersData).filter((e) => e?.isDowned).length >= 2) {
         // タッチしているポインターが2つ以上
         const downedPointers = Object.values(pointersData).filter((e) => e?.isDowned)
         const p0 = downedPointers[0]!
