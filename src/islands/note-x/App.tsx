@@ -16,7 +16,14 @@ export interface Props {
 export default () => {
   onMount(() => {
     notes.setNotes([
-      createTextNote(`これはNanohaNoteです!`),
+      createTextNote({
+        blobs: {},
+        canToJsonData: {
+          html: 'NanohaNoteです!'
+        },
+        type: 'text',
+        id: crypto.randomUUID(),
+      }),
       ...notes.notes()
     ])
   })

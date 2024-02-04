@@ -10,7 +10,7 @@ export interface NoteData <
   /**
    * ノートのファイルストア
    */
-  blobs: Record<BlobStore, Blob | undefined>
+  blobs: Partial<Record<BlobStore, Blob | undefined>>
   /**
    * `JSON.parse`ができるデータ
    */
@@ -19,6 +19,8 @@ export interface NoteData <
    * ノートのType
    */
   type: Note0['type']
+
+  id: string
 }
 export interface NoteComponentProps <
   CanToJsonData extends any = any,
@@ -48,7 +50,6 @@ export interface NoteEventArgs {
   }
 }
 export interface Note <CanToJsonData = any> {
-  id: string
   Component: NoteComponent<CanToJsonData>
 
   noteData: NoteData

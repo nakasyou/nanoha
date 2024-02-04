@@ -72,7 +72,10 @@ type LoadErrorType =
   | 'NOTE_DEFINE_FILE_IS_NOT_FOUND'
   | 'NOTE_DEFINE_FILE_IS_INVALID'
   | 'NOTE_BLOB_FILE_IS_NOT_FOUND'
-
+export type LoadError = {
+  type: LoadErrorType
+  debug?: unknown
+}
 type LoadResult =
   | {
       success: true
@@ -80,10 +83,7 @@ type LoadResult =
     }
   | {
       success: false
-      error: {
-        type: LoadErrorType
-        debug?: unknown
-      }
+      error: LoadError
     }
 
 export const load = async (data: Blob): Promise<LoadResult> => {
@@ -125,7 +125,6 @@ export const load = async (data: Blob): Promise<LoadResult> => {
     const noteFolder = `notes/${id}`
     const noteDefineJsonPath = `${noteFolder}/note.json`
 
-    console.log(unzipped, noteDefineJsonPath)
     const noteDefineJsonBuff = unzipped[noteDefineJsonPath]
     if (!noteDefineJsonBuff) {
       return {
@@ -158,6 +157,7 @@ export const load = async (data: Blob): Promise<LoadResult> => {
     }
     const blobs: Record<string, Blob> = {}
     for (const [name, mime] of Object.entries(noteDefineJsonData.blobMimetypes)) {
+      console.log(noteDefineJsonData)
       const blobPath = `${noteFolder}/blobs/${name}`
       const blob = unzipped[blobPath]
       if (!blob) {
@@ -175,7 +175,8 @@ export const load = async (data: Blob): Promise<LoadResult> => {
     newNoteDatas.push({
       canToJsonData: noteDefineJsonData.noteData,
       blobs,
-      type: noteDefineJsonData.type
+      type: noteDefineJsonData.type,
+      id: id
     })
   }
   return {

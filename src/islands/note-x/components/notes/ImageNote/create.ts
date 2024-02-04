@@ -3,23 +3,23 @@ import type { ImageNoteData, ImageNoteCanToJsonData } from "./types"
 import type { Note, NoteData } from '../../notes-utils'
 import { ImageNote } from "./ImageNote"
 
-export const createImageNote = () => {
+export const createImageNote = (initNoteData?: ImageNoteData) => {
   /*const [noteData, setNoteData] = createStore<TextNoteData>({
     blobs: {},
     canToJsonData: {
       html: defaultText || 'NanohaNote!!!'
     }
   })*/
-  const [noteData, setNoteData] = createStore<NoteData<ImageNoteCanToJsonData>>({
+  const [noteData, setNoteData] = createStore<ImageNoteData>(initNoteData ?? {
     blobs: {},
     canToJsonData: {
       sheets: []
     },
-    type: 'image'
+    type: 'image',
+    id: crypto.randomUUID()
   })
   const addNote: Note<ImageNoteCanToJsonData> = {
     Component: ImageNote,
-    id: crypto.randomUUID(),
     noteData,
     setNoteData,
     events: {},

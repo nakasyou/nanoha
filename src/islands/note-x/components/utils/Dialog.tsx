@@ -1,8 +1,8 @@
 import IconX from '@tabler/icons/x.svg?raw'
 import { removeIconSize } from '../../utils/icon/removeIconSize'
-import { createSignal } from 'solid-js'
+import { Show, createSignal } from 'solid-js'
 
-export type DialogStyle = 'confirm' | 'custom'
+export type DialogStyle = 'confirm' | 'custom' | 'alert'
 
 export const createDialog = <T,>(): CreatedDialog<T> => ({
   close (result) {
@@ -25,6 +25,7 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
   onClose (result: ({
     confirm: boolean
     custom: U | false
+    alert: false
   })[T]): void
   type: T
 
@@ -60,9 +61,8 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
           { props.title }
         </div>
         <div onClick={() => {
-          if (props.type === 'confirm' || props.type === 'custom') {
-            return close(false)
-          }
+          // @ts-ignore
+          return close(props.type === 'alert' ? undefined : false)
         }} class='p-2 rounded-full hover:border grid items-center justify-center'>
           <div innerHTML={removeIconSize(IconX)} class="w-8 h-8" />
         </div>
@@ -71,16 +71,20 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
         { props.children }
       </div>
       {
-        props.type === 'confirm' &&  <div>
+        (props.type === 'confirm' || props.type === 'alert') &&  <div>
         <div class="flex justify-center items-center gap-2 flex-wrap mx-5">
           <button class="outlined-button" onClick={() => close(
             // @ts-expect-error
             true)}>
-            はい
+            {
+              props.type === 'alert' ? 'OK' : 'はい'
+            }
           </button>
-          <button class="outlined-button" onClick={() => close(false)}>
-            キャンセル
-          </button>
+          <Show when={props.type !== 'alert'}>
+            <button class="outlined-button" onClick={() => close(false)}>
+              キャンセル
+            </button>
+          </Show>
         </div>
       </div>
       }

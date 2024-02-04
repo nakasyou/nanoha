@@ -1,7 +1,11 @@
 import { noteBookState, notes, setNoteBookState } from "../store"
 import IconX from "@tabler/icons/x.svg?raw"
 import { removeIconSize } from "../utils/icon/removeIconSize"
-import { load, save } from "../utils/file-format"
+import { load, save, type LoadError } from "../utils/file-format"
+import { Dialog } from "./utils/Dialog"
+import { Show, createEffect, createSignal } from "solid-js"
+import type { Note } from "./notes-utils"
+import { createImageNote } from "./notes/ImageNote"
 
 const CloseBtn = () => {
   return (
@@ -15,6 +19,7 @@ const CloseBtn = () => {
   )
 }
 export const Menu = () => {
+  const [getLoadError, setLoadError] = createSignal<LoadError>()
   const onSave = async () => {
     const fileDataBlob = await save(notes.notes())
 
@@ -40,12 +45,42 @@ export const Menu = () => {
       
       const loadResult = await load(targetFile)
 
-      console.log(loadResult)
+      if (!loadResult.success) {
+        setLoadError(loadResult.error)
+        return
+      }
+      const newNotes: Note[] = loadResult.notes.map(note => {
+        let newNote: Note
+        switch (note.type) {
+          case 'image':
+            newNote = createImageNote(note)
+            break
+          case 'text':
+            newNote = createImageNote(note)
+            break
+        }
+        return newNote
+      })
+      notes.setNotes(newNotes)
     }
     inputElement.click()
   }
+  
   return (
     <div class="">
+      <Show when={getLoadError()}>
+        <Dialog title="Load Error" type="alert" onClose={() => {
+          setLoadError()
+        }}>
+          <div>ファイルの読み込みに失敗しました</div>
+          <div>デバッグ用情報:</div>
+          <div>Error Type: <code>{getLoadError()?.type}</code></div>
+          <pre><code>
+            {JSON.stringify(getLoadError()?.debug, null, 2)}
+          </code></pre>
+        </Dialog>
+      </Show>
+
       <div
         class="fixed top-0 left-0 w-screen h-[100dvh] transition-transform"
         classList={{

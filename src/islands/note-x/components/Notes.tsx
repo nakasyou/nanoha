@@ -8,7 +8,7 @@ export default (props: {
   notes: Note[],
   setNotes: Setter<Note[]>
 }) => {
-  return <div class="flex flex-col gap-1"><Key each={props.notes} by={note => note.id}>
+  return <div class="flex flex-col gap-1"><Key each={props.notes} by={note => note.noteData.id}>
     {(note, index) => {
       const NoteComponent = note().Component
       return <div>
@@ -19,7 +19,7 @@ export default (props: {
             for (const eachNote of props.notes) {
               for (const focusEventListener of (eachNote.events.focus || [])) {
                 focusEventListener({
-                  isActive: eachNote.id === note().id
+                  isActive: eachNote.noteData.id === note().noteData.id
                 })
               }
             }
@@ -27,6 +27,7 @@ export default (props: {
 
           on={(type, listener) => {
             const thisNote = props.notes[index()]
+            if (!thisNote) return
             if (!thisNote.events[type]) {
               thisNote.events[type] = []
             }
