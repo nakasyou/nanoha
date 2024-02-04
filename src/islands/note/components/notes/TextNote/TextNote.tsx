@@ -52,7 +52,7 @@ export const TextNote = ((props: Props) => {
     editor.on('focus', (evt) => {
       setIsFocused(evt.editor.isFocused)
     })
-    editor.on('update', () => {
+    editor.on('transaction', () => {
       setIsActiveSheet(editor.isActive('sheet'))
     })
   })
