@@ -1,11 +1,10 @@
 import { noteBookState, notes, setNoteBookState } from "../store"
 import IconX from "@tabler/icons/x.svg?raw"
 import { removeIconSize } from "../utils/icon/removeIconSize"
-import { load, save, type LoadError } from "../utils/file-format"
+import { save, type LoadError } from "../utils/file-format"
 import { Dialog } from "./utils/Dialog"
-import { Show, createEffect, createSignal } from "solid-js"
-import type { Note } from "./notes-utils"
-import { createImageNote } from "./notes/ImageNote"
+import { Show, createSignal } from "solid-js"
+import { loadFromBlob } from "./load-process"
 
 const CloseBtn = () => {
   return (
@@ -43,25 +42,10 @@ export const Menu = () => {
         return
       }
       
-      const loadResult = await load(targetFile)
-
-      if (!loadResult.success) {
-        setLoadError(loadResult.error)
-        return
+      const error = await loadFromBlob(targetFile)
+      if (error) {
+        setLoadError(error)
       }
-      const newNotes: Note[] = loadResult.notes.map(note => {
-        let newNote: Note
-        switch (note.type) {
-          case 'image':
-            newNote = createImageNote(note)
-            break
-          case 'text':
-            newNote = createImageNote(note)
-            break
-        }
-        return newNote
-      })
-      notes.setNotes(newNotes)
     }
     inputElement.click()
   }

@@ -32,9 +32,6 @@ export const Player = (props: { html: string }) => {
       }
     }
     for (const sheetElement of sheetElements as HTMLSpanElement[]) {
-      /*if (!(sheetElement instanceof HTMLSpanElement)) {
-        continue
-      }*/ 
       sheetElement.classList.add('nanoha-sheet-playing')
       resetDataset(sheetElement)
       const dataset = sheetElement.dataset as {

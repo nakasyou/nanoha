@@ -1,21 +1,27 @@
-import type { NoteComponent, NoteComponentProps } from "../../notes-utils"
-import { createEditorTransaction, createTiptapEditor } from "solid-tiptap"
-import StarterKit from "@tiptap/starter-kit"
-import type { TextNoteData } from "./types"
-import { ExtensionSheet } from "./tiptap/PluginSheet"
-import { Match, Show, Switch, createEffect, createSignal } from "solid-js"
-import { removeIconSize } from "../../../utils/icon/removeIconSize"
-import IconNote from "@tabler/icons/note.svg?raw"
-import IconNoteOff from "@tabler/icons/note-off.svg?raw"
+import type { NoteComponent, NoteComponentProps } from '../../notes-utils'
+import StarterKit from '@tiptap/starter-kit'
+import type { TextNoteData } from './types'
+import { ExtensionSheet } from './tiptap/PluginSheet'
+import {
+  Match,
+  Show,
+  Switch,
+  createEffect,
+  createSignal,
+  onMount
+} from 'solid-js'
+import { removeIconSize } from '../../../utils/icon/removeIconSize'
+import IconNote from '@tabler/icons/note.svg?raw'
+import IconNoteOff from '@tabler/icons/note-off.svg?raw'
 
-import type { Editor } from "@tiptap/core"
-import { Dialog } from "../../utils/Dialog"
-import { Controller } from "../../note-components/Controller"
-import { noteBookState, setNoteBookState } from "../../../store"
-import { Player } from "./Player"
+import { Editor } from '@tiptap/core'
+import { Dialog } from '../../utils/Dialog'
+import { Controller } from '../../note-components/Controller'
+import { noteBookState } from '../../../store'
+import { Player } from './Player'
 
-import "./TextNoteStyle.css"
-import type { SetStoreFunction } from "solid-js/store"
+import './TextNoteStyle.css'
+import type { SetStoreFunction } from 'solid-js/store'
 
 export interface Props extends NoteComponentProps {
   noteData: TextNoteData
@@ -23,40 +29,43 @@ export interface Props extends NoteComponentProps {
 }
 
 export const TextNote = ((props: Props) => {
-  let ref!: HTMLDivElement
+  let editorRef!: HTMLDivElement
 
-  const editor = createTiptapEditor(() => ({
-    element: ref!,
-    extensions: [
-      StarterKit,
-      // @ts-expect-error
-      ExtensionSheet({
-        sheetClassName: "",
-      }),
-    ],
-    content: props.noteData.canToJsonData.html,
-  })) as () => Editor | undefined
+  const [getEditor, setEditor] = createSignal<Editor>()
 
-  const isFocused = createEditorTransaction(
-    editor as ReturnType<typeof createTiptapEditor>, // Editor instance from createTiptapEditor
-    (editor) => editor?.isFocused
-  )
+  const [getIsFocused, setIsFocused] = createSignal(false)
+  const [getIsActiveSheet, setIsActiveSheet] = createSignal(false)
 
-  const isActiveEachMethods = {
-    sheet: createEditorTransaction(
-      editor as ReturnType<typeof createTiptapEditor>,
-      (editor) => editor?.isActive("sheet")
-    ),
-  }
+  onMount(() => {
+    const editor = new Editor({
+      element: editorRef,
+      extensions: [
+        StarterKit,
+        ExtensionSheet({
+          sheetClassName: ''
+        })
+      ],
+      content: props.noteData.canToJsonData.html
+    })
+    setEditor(editor)
+
+    editor.on('focus', (evt) => {
+      setIsFocused(evt.editor.isFocused)
+    })
+    editor.on('update', () => {
+      setIsActiveSheet(editor.isActive('sheet'))
+    })
+  })
+
   const [isActive, setIsActive] = createSignal(false)
 
-  props.on("focus", (evt) => {
+  props.on('focus', (evt) => {
     setIsActive(evt.isActive)
   })
 
   createEffect(() => {
-    const isFocusedResult = isFocused() || false
-    if (isFocusedResult) {
+    const isFocused = getIsFocused() || false
+    if (isFocused) {
       // このノートがFocusしたことを他のノートに伝える
       props.focus()
     }
@@ -64,18 +73,18 @@ export const TextNote = ((props: Props) => {
 
   const [isShowCloseDialog, setIsShowCloseDialog] = createSignal(false)
   const saveContext = () => {
-    props.setNoteData('canToJsonData', 'html', editor()?.getHTML() || "")
+    props.setNoteData('canToJsonData', 'html', getEditor()?.getHTML() || '')
   }
   return (
     <div>
       <Show when={!noteBookState.isEditMode}>
         <div>
-          <Player html={editor()?.getHTML() || ""} />
+          <Player html={getEditor()?.getHTML() || ''} />
         </div>
       </Show>
       <div
         classList={{
-          hidden: !noteBookState.isEditMode,
+          hidden: !noteBookState.isEditMode
         }}
       >
         {isShowCloseDialog() && (
@@ -96,7 +105,7 @@ export const TextNote = ((props: Props) => {
         <div>
           <div
             id="editor"
-            ref={ref}
+            ref={editorRef}
             onFocusOut={saveContext}
             class="textnote-tiptap-container bg-on-tertiary rounded my-2 border boader-outlined nanohanote-textnote-styler"
           />
@@ -107,7 +116,7 @@ export const TextNote = ((props: Props) => {
               <div
                 class="grid hover:drop-shadow drop-shadow-none rounded-full p-1 bg-white border"
                 onClick={() => {
-                  editor()?.chain().focus().toggleSheet().run()
+                  getEditor()?.chain().focus().toggleSheet().run()
                 }}
               >
                 <Switch
@@ -118,7 +127,7 @@ export const TextNote = ((props: Props) => {
                     />
                   }
                 >
-                  <Match when={isActiveEachMethods.sheet()}>
+                  <Match when={getIsActiveSheet()}>
                     <div innerHTML={removeIconSize(IconNote)} class="w-8 h-8" />
                   </Match>
                 </Switch>
