@@ -1,0 +1,8 @@
+---
+export interface Props {
+  alt: string
+  src: ImageMetadata
+  class?: string
+}
+---
+<img src={Astro.props.src.src} class={Astro.props.class} alt={Astro.props.alt} />

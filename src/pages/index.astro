@@ -2,10 +2,15 @@
 import PageLayout from '../layouts/Page.astro'
 import NanohaNoteLogo from '../components/Logo.astro'
 
-import nanohaNotePlayingImage from '../assets/home/nanohanote-playing.png'
+//import { Image } from 'astro:assets'
+import Image from '../components/Image.astro'
+
+import nanohaNotePlayingImage from '../assets/home/nanohanote-playing.webp'
 import ankiImage from '../assets/home/anki-image.svg'
 import mujintoStudy from '../assets/home/munjinto-study.svg'
 import noPaperImage from '../assets/home/no-paper.svg'
+
+export const prerender = true
 ---
 <PageLayout title="NanohaNote" description="NanohaNote は、じぶんで作る暗記用ノートブックです。">
   <div class="">
@@ -17,11 +22,11 @@ import noPaperImage from '../assets/home/no-paper.svg'
           <div class="text-primary">NanohaNote</div>
           <div class="text-base">「じぶん」で作る学習用ノートブック</div>
           <div class="flex md:hidden w-full h-1/2 justify-center items-center">
-            <img src={nanohaNotePlayingImage} class="object-cover m-5" />
+            <Image src={nanohaNotePlayingImage} class="object-cover m-5" alt="playing image" />
           </div>
         </div>
         <div class="hidden md:flex p-10 w-full h-full justify-center items-center">
-          <img src={nanohaNotePlayingImage} class="object-cover m-5" />
+          <Image src={nanohaNotePlayingImage} class="object-cover m-5" alt="playing image" />
         </div>
       </div>
     
@@ -35,14 +40,14 @@ import noPaperImage from '../assets/home/no-paper.svg'
                  <br />暗記ツールであるNanohaNoteを使えば、すぐに覚えられるかも?</p>
             </div>
             <div class="flex justify-center items-center w-full h-full">
-              <img src={ankiImage}/>
+              <Image src={ankiImage} alt="anki image" />
             </div>
           </div>
         </div>
       </div>
       <div class="my-2 px-4 w-screen p-2 grid grid-rows-2 md:grid-rows-1 md:grid-cols-2">
         <div class="flex justify-center items-center">
-          <img src={mujintoStudy} alt="mujinto study"/>
+          <Image src={mujintoStudy} alt="mujinto study"/>
         </div>
         <div>
           <div class="text-2xl font-bold">Study <span class="text-primary">anywhere</span></div>
@@ -69,7 +74,7 @@ import noPaperImage from '../assets/home/no-paper.svg'
           </div>
         </div>
         <div class="flex items-center justify-center">
-          <img src={noPaperImage} />
+          <Image src={noPaperImage} alt="No paper image" />
         </div>
       </div>
       <div class="my-2">
