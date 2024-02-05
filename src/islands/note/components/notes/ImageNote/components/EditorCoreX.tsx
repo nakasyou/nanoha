@@ -32,8 +32,7 @@ export default (props: Props) => {
     h: 0,
   })
   const [sheets, setSheets] = createSignal<Sheets>(props.sheets ?? [])
-  const [tmpSheet, setTmpSheet] = createSignal<
-    | {
+  const [tmpSheet, setTmpSheet] = createSignal<{
         sheet: Sheets[number]
         pointerId: number
       }
@@ -111,11 +110,11 @@ export default (props: Props) => {
         sheet: {
           positions: [],
           startPosition: {
-            x: positionX,
-            y: positionY,
+            x: positionX ?? 0,
+            y: positionY ?? 0,
           },
-          weight: 30 / editorPosition().size,
-        },
+          weight: 30 / editorPosition().size
+        }
       })
     }
   }
@@ -206,8 +205,8 @@ export default (props: Props) => {
             positions: [
               ...lastTmpSheet.sheet.positions,
               {
-                x: positionX,
-                y: positionY,
+                x: positionX ?? 0,
+                y: positionY ?? 0,
               },
             ],
           },

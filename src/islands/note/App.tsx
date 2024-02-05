@@ -2,18 +2,23 @@ import Notes from './components/Notes'
 import  { createTextNote } from './components/notes/TextNote'
 import Header from './components/Header'
 import Fab from './components/Fab'
-import { Show, createEffect, createSignal, onMount } from 'solid-js'
+import { Show, createEffect, createSignal, onMount, onCleanup } from 'solid-js'
 
 import './App.css'
 import { createImageNote } from './components/notes/ImageNote'
 import { Menu } from './components/Menu'
-import { notes } from './store'
+import { noteBookState, notes, setNoteBookState } from './store'
 import type { Props } from '.'
 import { Dialog } from './components/utils/Dialog'
 import { NotesDB } from './notes-schema'
 import { loadFromBlob } from './components/load-process'
+import { save as saveFromNotes } from './utils/file-format'
 
 export default (props: Props) => {
+  let timeoutEnded = false
+  onCleanup(() => {
+    timeoutEnded = true
+  })
   onMount(async () => {
     notes.setNotes([
       createTextNote({
@@ -27,6 +32,7 @@ export default (props: Props) => {
       ...notes.notes()
     ])
 
+    let save: () => Promise<void> = async () => void 0
     if (props.noteLoadType.from === 'unknown') {
       setLoadError('指定したノートは存在しません。URLが正しいことを確認してください。')
       return
@@ -38,9 +44,26 @@ export default (props: Props) => {
         return
       }
       await loadFromBlob(new Blob([noteResponse.nnote]))
+      save = async () => {
+        const data = await saveFromNotes(notes.notes())
+        db.notes.update(noteResponse, {
+          nnote: new Uint8Array(await data.arrayBuffer()),
+          updated: new Date()
+        })
+      }
     }
-  })
 
+    const saveStep = async () => {
+      if (!noteBookState.isSaved) {
+        await save()
+      }
+      setNoteBookState('isSaved', true)
+      if (!timeoutEnded) {
+        setTimeout(saveStep, 1000)
+      }
+    }
+    saveStep()
+  })
   const [getLoadError, setLoadError] = createSignal<string>()
   return <div class="bg-background h-[100dvh] touch-manipulation">
     <Show when={getLoadError()}>

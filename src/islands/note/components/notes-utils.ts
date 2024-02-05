@@ -33,6 +33,8 @@ export interface NoteComponentProps <
   on <EventType extends keyof NoteEvents>(type: EventType, listenter: (evt: NoteEventArgs[EventType]) => void): void
   removeNote (): void
 
+  updated (): void
+  
   up (): void
   down (): void
 

@@ -51,6 +51,7 @@ export const ImageNote = ((props: Props) => {
         }
         props.setNoteData('blobs', 'scanedImage', data.image)
         props.setNoteData('canToJsonData', 'sheets', data.sheets)
+        props.updated()
       }} noteData={props.noteData} setNoteData={props.setNoteData} />
     </Show>
 

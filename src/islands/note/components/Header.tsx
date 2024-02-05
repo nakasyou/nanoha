@@ -19,6 +19,11 @@ const Header = (props: Props) => {
             <div innerHTML={removeIconSize(IconArrowLeft)} class="w-8 h-8" />
           </a>
         </div>
+        <div>
+          <Show when={noteBookState.isSaved} fallback="未保存">
+            保存済み
+          </Show>
+        </div>
         <div class="flex items-center justify-center lg:flex-col">
           <div>
             <Show

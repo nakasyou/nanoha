@@ -54,12 +54,12 @@ export default (props: Props) => {
           props.onClickSheet(index())
           if (props.isPlayMode) {
             const newSheetStates = getSheets()
-            newSheetStates[index()].isHide = !newSheetStates[index()].isHide
+            newSheetStates[index()]!.isHide = !newSheetStates[index()]!.isHide
             setSheets([...newSheetStates])
           }
         }}
         class="stroke-primary-container"
-        stroke-opacity={getSheets()[index()].isHide ? "1.0" : "0.5"}
+        stroke-opacity={getSheets()[index()]!.isHide ? "1.0" : "0.5"}
       />
     }}</For>
   </svg>

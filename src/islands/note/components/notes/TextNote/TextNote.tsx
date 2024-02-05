@@ -72,8 +72,9 @@ export const TextNote = ((props: Props) => {
   })
 
   const [isShowCloseDialog, setIsShowCloseDialog] = createSignal(false)
-  const saveContext = () => {
+  const saveContent = () => {
     props.setNoteData('canToJsonData', 'html', getEditor()?.getHTML() || '')
+    props.updated()
   }
   return (
     <div>
@@ -106,7 +107,8 @@ export const TextNote = ((props: Props) => {
           <div
             id="editor"
             ref={editorRef}
-            onFocusOut={saveContext}
+            onFocusOut={saveContent}
+            onInput={saveContent}
             class="textnote-tiptap-container bg-on-tertiary rounded my-2 border boader-outlined nanohanote-textnote-styler"
           />
         </div>
