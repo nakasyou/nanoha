@@ -1,9 +1,22 @@
 ---
 import Base from "../../../layouts/Base.astro"
 import NanohaNoteApp from "../../../islands/note"
+import type { NoteLoadType } from '../../../islands/note/note-load-types'
+
+const noteId = Astro.params.noteid ?? ''
+
+let noteLoadType: NoteLoadType = {
+  from: 'unknown'
+}
+if ((/^local\-.+$/).test(noteId)) {
+  noteLoadType = {
+    from: 'local',
+    id: parseInt(noteId.split('-').slice(1).join('-'))
+  }
+}
 ---
 <Base title="" description="nanohanote app">
-  <NanohaNoteApp client:load />
+  <NanohaNoteApp client:load noteLoadType={noteLoadType} />
 </Base>
 <style is:global>
   .icon-tabler {

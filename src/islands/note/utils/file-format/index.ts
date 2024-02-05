@@ -10,12 +10,12 @@ const textEncoder = new TextEncoder()
 export const json2uint8Array = (jsonData: unknown): Uint8Array =>
   textEncoder.encode(JSON.stringify(jsonData))
 
-export const save = async (notes: Note[]): Promise<Blob> => {
+export const saveNoteDatas = async (noteDatas: NoteData[]): Promise<Blob> => {
   const fileTree: FileTree = {}
 
   const manifest: Manifest0 = (() => {
-    const noteIds: Manifest0['noteIds'] = notes.map(() => ({
-      id: crypto.randomUUID()
+    const noteIds: Manifest0['noteIds'] = noteDatas.map((noteData) => ({
+      id: noteData.id
     }))
 
     return {
@@ -27,14 +27,14 @@ export const save = async (notes: Note[]): Promise<Blob> => {
   fileTree['notes.json'] = json2uint8Array(manifest)
 
   for (const [index, noteId] of Object.entries(manifest.noteIds)) {
-    const thisNote = notes[parseInt(index)]
-    if (!thisNote) {
+    const thisNoteData = noteDatas[parseInt(index)]
+    if (!thisNoteData) {
       continue
     }
     const baseNoteDir = `notes/${noteId.id}`
 
     const blobMimetypes: Record<string, string> = {}
-    for (const [name, blob] of Object.entries(thisNote.noteData.blobs)) {
+    for (const [name, blob] of Object.entries(thisNoteData.blobs)) {
       if (!blob) {
         continue
       }
@@ -47,10 +47,10 @@ export const save = async (notes: Note[]): Promise<Blob> => {
     const noteJson: Note0 = (() => {
       return {
         version: 0,
-        type: thisNote.noteData.type,
+        type: thisNoteData.type,
         blobMimetypes,
 
-        noteData: thisNote.noteData.canToJsonData
+        noteData: thisNoteData.canToJsonData
       }
     })()
     fileTree[`${baseNoteDir}/note.json`] = textEncoder.encode(
@@ -63,6 +63,9 @@ export const save = async (notes: Note[]): Promise<Blob> => {
   })
 
   return nnoteFile
+}
+export const save = async (notes: Note[]): Promise<Blob> => {
+  return saveNoteDatas(notes.map(note => note.noteData))
 }
 
 type LoadErrorType =

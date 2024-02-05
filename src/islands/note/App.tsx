@@ -2,32 +2,50 @@ import Notes from './components/Notes'
 import  { createTextNote } from './components/notes/TextNote'
 import Header from './components/Header'
 import Fab from './components/Fab'
-import { createEffect, createSignal, onMount } from 'solid-js'
+import { Show, createEffect, createSignal, onMount } from 'solid-js'
 
 import './App.css'
 import { createImageNote } from './components/notes/ImageNote'
 import { Menu } from './components/Menu'
 import { notes } from './store'
+import type { Props } from '.'
+import { Dialog } from './components/utils/Dialog'
+import { NotesDB } from './notes-schema'
+import { loadFromBlob } from './components/load-process'
 
-export interface Props {
-
-}
-
-export default () => {
-  onMount(() => {
+export default (props: Props) => {
+  onMount(async () => {
     notes.setNotes([
       createTextNote({
         blobs: {},
         canToJsonData: {
-          html: 'NanohaNoteです!'
+          html: '<h1>Loading...</h1>'
         },
         type: 'text',
         id: crypto.randomUUID(),
       }),
       ...notes.notes()
     ])
+
+    if (props.noteLoadType.from === 'unknown') {
+      setLoadError('指定したノートは存在しません。URLが正しいことを確認してください。')
+      return
+    } else if (props.noteLoadType.from === 'local') {
+      const db = new NotesDB()
+      const noteResponse = await db.notes.get(props.noteLoadType.id)
+      if (!noteResponse) {
+        setLoadError(`ノートID${props.noteLoadType.id}はローカルに存在しませんでした。`)
+        return
+      }
+      await loadFromBlob(new Blob([noteResponse.nnote]))
+    }
   })
-  return <div class="bg-background h-screen touch-manipulation">
+
+  const [getLoadError, setLoadError] = createSignal<string>()
+  return <div class="bg-background h-[100dvh] touch-manipulation">
+    <Show when={getLoadError()}>
+      <Dialog onClose={() => setLoadError(void 0)} type="alert" title="Load Error">{ getLoadError() }</Dialog>
+    </Show>
     <div class="flex flex-col lg:flex-row lg:max-w-[calc(100dvw-2.5em)]">
       <div class="sticky lg:fixed top-0 z-30">
         <Header />

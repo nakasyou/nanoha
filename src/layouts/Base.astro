@@ -1,8 +1,11 @@
 ---
-interface Props {
+import { ViewTransitions } from 'astro:transitions'
+
+export interface Props {
   title: string
   description: string
   bodyClass?: string
+  useViewTransitions?: boolean
 }
 
 const userAgent = (Astro.request.headers.get('User-Agent') ?? '').toLowerCase()
@@ -20,7 +23,9 @@ const isPhone = userAgent.includes('android') || (
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{Astro.props.title}</title>
-
+    {
+      Astro.props.useViewTransitions && <ViewTransitions />
+    }
     {
       isPhone && import.meta.env.DEV && <>
         <script is:inline src="//cdn.jsdelivr.net/npm/eruda"></script>

@@ -1,7 +1,11 @@
 //import { onMount } from 'solid-js'
 import App from './App'
+import type { NoteLoadType } from './note-load-types'
 
-export default () => {
+export interface Props {
+  noteLoadType: NoteLoadType
+}
+export default (props: Props) => {
   /*onMount(() => {
     addEventListener('error', (evt) => {
       if (import.meta.env.PROD) {
@@ -9,5 +13,5 @@ export default () => {
       }
     })
   })*/
-  return <App />
+  return <App {...props} />
 }

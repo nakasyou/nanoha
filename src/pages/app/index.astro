@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro'
+import { NoteList } from '../../islands/note-list'
+---
+<Base title="Notes | Nanoha" description="Notes | Nanoha" useViewTransitions={true} bodyClass="text-on-background bg-background">
+  <div class="px-5 py-2">
+    <div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-0">
+        <div class="text-2xl">すべてのノート</div>
+      </div>
+      <div class="fixed bottom-3 right-3">
+        <button id='create-note-button' class="filled-button place-self-end sm:place-self-center">+ 新しいノート</button>
+      </div>
+      <NoteList client:only="solid-js" />
+    </div>
+    <div id="">
+
+    </div>
+  </div>
+</Base>
+<script>
+  import { NotesDB } from '../../islands/note/notes-schema'
+  import { saveNoteDatas } from '../../islands/note/utils/file-format'
+
+  const db = new NotesDB()
+
+  const createNoteButton = document.getElementById('create-note-button')
+  createNoteButton?.addEventListener('click', async () => {
+    const noteFileBlob = await saveNoteDatas([{
+      id: crypto.randomUUID(),
+      blobs: {},
+      type: 'text',
+      canToJsonData: {
+        html: 'これは新しいノートである'
+      }
+    }])
+    
+    const noteFileBuff = new Uint8Array(await noteFileBlob.arrayBuffer())
+
+    const added = await db.notes.add({
+      name: '新しいノート',
+      updated: new Date(),
+      nnote: noteFileBuff
+    })
+
+    location.href = `/app/notes/local-${added}`
+  })
+</script>
