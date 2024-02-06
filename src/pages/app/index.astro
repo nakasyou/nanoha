@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { NoteList } from '../../islands/note-list'
+import { NoteList } from '../../islands/note-list/list'
 ---
 <Base title="Notes | Nanoha" description="Notes | Nanoha" useViewTransitions={true} bodyClass="text-on-background bg-background">
   <div class="px-5 py-2">
@@ -13,8 +13,27 @@ import { NoteList } from '../../islands/note-list'
       </div>
       <NoteList client:only="solid-js" />
     </div>
-    <div id="">
-
+    <div id="create-note-dialog" hidden>
+      <div class="fixed z-20 top-0 left-0 grid items-center justify-center w-full h-[100dvh] bg-[#000a]">
+        <div class="bg-background border p-2 rounded">
+          <div class="text-2xl">新しいノートを作成</div>
+          <div class="flex flex-col gap-2">
+            <label>
+              <span>保存先: </span>
+              <select id="create-note-save">
+                <option value="local">ローカル</option>
+              </select>
+            </label>
+            <label>
+              <span>名前: </span>
+              <input id="create-note-name" value="無題のノートブック" class="p-2 rounded-lg border" />
+            </label>
+            <div class="grid justify-center">
+              <button id="create-note-action" class="filled-tonal-button">作成</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </Base>
@@ -25,7 +44,15 @@ import { NoteList } from '../../islands/note-list'
   const db = new NotesDB()
 
   const createNoteButton = document.getElementById('create-note-button')
-  createNoteButton?.addEventListener('click', async () => {
+  const createNoteDialog = document.getElementById('create-note-dialog')!
+  const createNoteAction = document.getElementById('create-note-action')!
+  const createNoteSave = document.getElementById('create-note-save') as HTMLSelectElement
+  const createNoteName = document.getElementById('create-note-name') as HTMLInputElement
+
+  createNoteButton?.addEventListener('click', () => {
+    createNoteDialog.hidden = false
+  })
+  createNoteAction.addEventListener('click', async () => {
     const noteFileBlob = await saveNoteDatas([{
       id: crypto.randomUUID(),
       blobs: {},
@@ -38,7 +65,7 @@ import { NoteList } from '../../islands/note-list'
     const noteFileBuff = new Uint8Array(await noteFileBlob.arrayBuffer())
 
     const added = await db.notes.add({
-      name: '新しいノート',
+      name: createNoteName.value,
       updated: new Date(),
       nnote: noteFileBuff
     })
