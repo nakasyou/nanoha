@@ -26,12 +26,7 @@ export const ImageNote = ((props: Props) => {
     return nowImageBlob ? URL.createObjectURL(nowImageBlob) : null
   })
   const [isShowEditor, setIsShowEditor] = createSignal(false)
-  return <div onClick={() => {
-    props.focus()
-    if (noteBookState.isEditMode) {
-      setIsShowEditor(true)
-    }
-  }}>
+  return <div>
     <Show when={isShowCloseDialog()}>
       <Dialog onClose={(result) => {
         if (result) {
@@ -56,7 +51,12 @@ export const ImageNote = ((props: Props) => {
     </Show>
 
     {/* 本体 */}
-    <div class="p-2 rounded border my-2 bg-white">
+    <div class="p-2 rounded border my-2 bg-white" onClick={() => {
+      props.focus()
+      if (noteBookState.isEditMode) {
+        setIsShowEditor(true)
+      }
+    }}>
       <Show when={props.noteData.blobs.scanedImage && props.noteData.canToJsonData.sheets} fallback={
         // 画像がない場合
         <Show when={noteBookState.isEditMode} fallback={

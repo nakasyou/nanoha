@@ -2,6 +2,7 @@ import type { NoteComponent, NoteComponentProps } from '../../notes-utils'
 import StarterKit from '@tiptap/starter-kit'
 import type { TextNoteData } from './types'
 import { ExtensionSheet } from './tiptap/PluginSheet'
+import { Underline } from '@tiptap/extension-underline'
 import {
   Match,
   Show,
@@ -11,8 +12,10 @@ import {
   onMount
 } from 'solid-js'
 import { removeIconSize } from '../../../utils/icon/removeIconSize'
+
 import IconNote from '@tabler/icons/note.svg?raw'
-import IconNoteOff from '@tabler/icons/note-off.svg?raw'
+import IconBold from '@tabler/icons/bold.svg?raw'
+import IconUnderline from '@tabler/icons/underline.svg?raw'
 
 import { Editor } from '@tiptap/core'
 import { Dialog } from '../../utils/Dialog'
@@ -35,6 +38,8 @@ export const TextNote = ((props: Props) => {
 
   const [getIsFocused, setIsFocused] = createSignal(false)
   const [getIsActiveSheet, setIsActiveSheet] = createSignal(false)
+  const [getIsActiveBold, setIsActiveBold] = createSignal(false)
+  const [getIsActiveUndlerline, setIsActiveUndlerline] = createSignal(false)
 
   onMount(() => {
     const editor = new Editor({
@@ -43,7 +48,8 @@ export const TextNote = ((props: Props) => {
         StarterKit,
         ExtensionSheet({
           sheetClassName: ''
-        })
+        }),
+        Underline
       ],
       content: props.noteData.canToJsonData.html
     })
@@ -54,6 +60,8 @@ export const TextNote = ((props: Props) => {
     })
     editor.on('transaction', () => {
       setIsActiveSheet(editor.isActive('sheet'))
+      setIsActiveBold(editor.isActive('bold'))
+      setIsActiveUndlerline(editor.isActive('underline'))
     })
   })
 
@@ -115,25 +123,40 @@ export const TextNote = ((props: Props) => {
         <Show when={isActive()}>
           <div class="flex justify-center gap-5">
             <div class="flex justify-center">
-              <div
-                class="grid hover:drop-shadow drop-shadow-none rounded-full p-1 bg-white border"
-                onClick={() => {
-                  getEditor()?.chain().focus().toggleSheet().run()
-                }}
-              >
-                <Switch
-                  fallback={
-                    <div
-                      innerHTML={removeIconSize(IconNoteOff)}
-                      class="w-8 h-8"
-                    />
+              {
+                ([
+                  {
+                    icon: IconNote,
+                    toggle: 'toggleSheet',
+                    isActive: getIsActiveSheet
+                  },
+                  {
+                    icon: IconBold,
+                    toggle: 'toggleBold',
+                    isActive: getIsActiveBold
+                  },
+                  {
+                    icon: IconUnderline,
+                    toggle: 'toggleUnderline',
+                    isActive: getIsActiveUndlerline
                   }
-                >
-                  <Match when={getIsActiveSheet()}>
-                    <div innerHTML={removeIconSize(IconNote)} class="w-8 h-8" />
-                  </Match>
-                </Switch>
-              </div>
+                ] satisfies ({
+                  icon: string
+                  toggle: keyof Editor['commands']
+                  isActive: () => boolean
+                }[])).map((data) => {
+                  return <button
+                    class="grid hover:drop-shadow drop-shadow-none rounded-full p-1 bg-white border"
+                    onClick={() => {
+                      getEditor()?.chain().focus()[data.toggle]().run()
+                    }}
+                  >
+                    <div innerHTML={removeIconSize(data.icon)} class="w-8 h-8" classList={{
+                      'opacity-30': !data.isActive()
+                    }} />
+                  </button>
+                })
+              }
             </div>
             <Controller
               noteIndex={props.index}
