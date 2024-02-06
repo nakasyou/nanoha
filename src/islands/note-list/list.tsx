@@ -2,7 +2,7 @@ import { For, Suspense, lazy, onMount } from 'solid-js'
 import { NotesDB } from '../note/notes-schema'
 
 
-export const NoteListLoader = lazy(async () => {
+const NoteListLoader = lazy(async () => {
   const db = new NotesDB()
 
   const allNotes = await db.notes.toArray()

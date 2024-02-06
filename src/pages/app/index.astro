@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { NoteList } from '../../islands/note-list'
+import { NoteList } from '../../islands/note-list/list'
 ---
 <Base title="Notes | Nanoha" description="Notes | Nanoha" useViewTransitions={true} bodyClass="text-on-background bg-background">
   <div class="px-5 py-2">
@@ -13,8 +13,13 @@ import { NoteList } from '../../islands/note-list'
       </div>
       <NoteList client:only="solid-js" />
     </div>
-    <div id="">
+    <div id="create-note-dialog" hidden class="fixed z-20 top-0 left-0 grid items-center justify-center w-full h-[100dvh]">
+      <div class="bg-background border p-2 rounded">
+        <div class="text-2xl">新しいノートを作成</div>
+        <div>
 
+        </div>
+      </div>
     </div>
   </div>
 </Base>
@@ -25,7 +30,10 @@ import { NoteList } from '../../islands/note-list'
   const db = new NotesDB()
 
   const createNoteButton = document.getElementById('create-note-button')
+  const createNoteDialog = document.getElementById('create-note-dialog')!
+
   createNoteButton?.addEventListener('click', async () => {
+    createNoteDialog.hidden = false
     const noteFileBlob = await saveNoteDatas([{
       id: crypto.randomUUID(),
       blobs: {},
