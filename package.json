@@ -10,11 +10,13 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/deno": "^4.3.0",
-    "@astrojs/react": "^2.2.1",
-    "@astrojs/tailwind": "^4.0.0",
-    "@material/material-color-utilities": "^0.2.7",
-    "@tabler/icons-react": "^2.30.0",
+    "@astrojs/cloudflare": "^9.0.0",
+    "@astrojs/svelte": "latest",
+    "@astrojs/tailwind": "5.1.0",
+    "@solid-primitives/keyed": "^1.2.0",
+    "@tabler/icons": "^2.44.0",
+    "@tabler/icons-solidjs": "^2.36.0",
+    "@tabler/icons-svelte": "^2.37.0",
     "@tailwindcss/typography": "^0.5.9",
     "@tiptap/core": "^2.0.4",
     "@tiptap/pm": "^2.0.4",
