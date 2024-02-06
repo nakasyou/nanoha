@@ -1,18 +1,18 @@
-import { defineConfig, squooshImageService, passthroughImageService } from 'astro/config';
-import tailwind from "@astrojs/tailwind";
+import { defineConfig } from 'astro/config';
+import deno from "./integrations/deno";
+
 import solidJs from "@astrojs/solid-js";
+import tailwind from "@astrojs/tailwind";
 import svelte from "@astrojs/svelte";
-import deno from './integrations/deno';
 
 import cloudflare from "@astrojs/cloudflare";
+import { passthroughImageService } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  adapter: deno(),
-  integrations: [tailwind({
-    
-  }), solidJs(), svelte()],
+  adapter: process.env.IS_CF ? cloudflare() : deno(),
+  integrations: [tailwind({}), solidJs(), svelte()],
   image: {
     service: passthroughImageService()
   }
