@@ -51,7 +51,7 @@ export const ImageNote = ((props: Props) => {
     </Show>
 
     {/* 本体 */}
-    <div class="p-2 rounded border my-2 bg-white" onClick={() => {
+    <div class="p-2 rounded border my-2 bg-surface" onClick={() => {
       props.focus()
       if (noteBookState.isEditMode) {
         setIsShowEditor(true)

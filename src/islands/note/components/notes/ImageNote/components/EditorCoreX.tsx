@@ -325,7 +325,7 @@ export default (props: Props) => {
       <div class="flex my-2 justify-center gap-5">
         <div class="flex gap-2">
           <button
-            class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
+            class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none bg-secondary text-on-secondary disabled:bg-secondary-container disabled:text-on-secondary-container rounded-full p-1 border"
             onClick={() => {
               setEditMode('move')
             }}
@@ -334,7 +334,7 @@ export default (props: Props) => {
             <div innerHTML={removeIconSize(IconArrowsMove)} class="w-8 h-8" />
           </button>
           <button
-            class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
+            class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none bg-secondary text-on-secondary disabled:bg-secondary-container disabled:text-on-secondary-container rounded-full p-1 border"
             onClick={() => {
               setEditMode('paint')
             }}
@@ -343,7 +343,7 @@ export default (props: Props) => {
             <div innerHTML={IconHighlight} class="w-8 h-8" />
           </button>
           <button
-            class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
+            class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none bg-secondary text-on-secondary disabled:bg-secondary-container disabled:text-on-secondary-container rounded-full p-1 border"
             onClick={() => {
               setEditMode('clear')
             }}

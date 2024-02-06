@@ -20,13 +20,13 @@ import { NoteList } from '../../islands/note-list/list'
           <div class="flex flex-col gap-2">
             <label>
               <span>保存先: </span>
-              <select id="create-note-save">
-                <option value="local">ローカル</option>
+              <select id="create-note-save" class="bg-background border-outline">
+                <option value="local" class="text-write border border-outline">ローカル</option>
               </select>
             </label>
             <label>
               <span>名前: </span>
-              <input id="create-note-name" value="無題のノートブック" class="p-2 rounded-lg border" />
+              <input id="create-note-name" value="無題のノートブック" class="p-2 rounded-lg border bg-background text-on-background" />
             </label>
             <div class="grid justify-center">
               <button id="create-note-action" class="filled-tonal-button">作成</button>

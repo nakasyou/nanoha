@@ -25,6 +25,7 @@ import { Player } from './Player'
 
 import './TextNoteStyle.css'
 import type { SetStoreFunction } from 'solid-js/store'
+import { getVisualViewportHeight } from '../../../window-apis'
 
 export interface Props extends NoteComponentProps {
   noteData: TextNoteData
@@ -117,12 +118,14 @@ export const TextNote = ((props: Props) => {
             ref={editorRef}
             onFocusOut={saveContent}
             onInput={saveContent}
-            class="textnote-tiptap-container bg-on-tertiary rounded my-2 border boader-outlined nanohanote-textnote-styler"
+            class="textnote-tiptap-container rounded my-2 border boader-outlined nanohanote-textnote-styler"
           />
         </div>
         <Show when={isActive()}>
-          <div class="flex justify-center gap-5">
-            <div class="flex justify-center">
+          <div class="flex flex-col justify-center gap-2">
+            <div class="flex justify-center gap-2 fixed left-0 w-full" style={{
+              top: getVisualViewportHeight() - 32 + 'px'
+            }}>
               {
                 ([
                   {
@@ -146,14 +149,15 @@ export const TextNote = ((props: Props) => {
                   isActive: () => boolean
                 }[])).map((data) => {
                   return <button
-                    class="grid hover:drop-shadow drop-shadow-none rounded-full p-1 bg-white border"
+                    class="grid hover:drop-shadow drop-shadow-none"
                     onClick={() => {
                       getEditor()?.chain().focus()[data.toggle]().run()
                     }}
+                    classList={{
+                      'bg-secondary-container text-secondary rounded': data.isActive()
+                    }}
                   >
-                    <div innerHTML={removeIconSize(data.icon)} class="w-8 h-8" classList={{
-                      'opacity-30': !data.isActive()
-                    }} />
+                    <div innerHTML={removeIconSize(data.icon)} class="w-8 h-8" />
                   </button>
                 })
               }

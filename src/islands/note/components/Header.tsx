@@ -12,7 +12,7 @@ export interface Props {}
 
 const Header = (props: Props) => {
   return (
-    <div class="w-full lg:w-10 lg:px-2 py-2 bg-surface-variant z-30 h-auto lg:h-[100dvh]">
+    <div class="w-full lg:w-10 lg:px-2 py-1 z-30 h-auto lg:h-[100dvh]">
       <div class="flex justify-between items-center flex-row lg:flex-col h-full">
         <div>
           <a href="/app">

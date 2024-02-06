@@ -45,7 +45,7 @@ export const Player = (props: { html: string }) => {
   })
   return (
     <div
-      class="bg-on-tertiary p-2 rounded my-2 border boader-outlined nanohanote-textnot-styler"
+      class="p-2 rounded my-2 border border-outlined nanohanote-textnot-styler"
       innerHTML={html()}
       ref={ref}
     />
