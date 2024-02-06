@@ -1,0 +1,15 @@
+.nanoha-sheet {
+    @apply bg-secondary-container text-on-secondary-container;
+}
+.nanoha-sheet-playing {
+    @apply select-none mx-[0.125em] p-[0.2em] rounded-md;
+
+    /* Animation */
+    @apply transition;
+    transition-timing-function: ease-in;
+    transition-duration: 70ms;
+
+}
+.nanoha-sheet-playing[data-is-hidden="true"] {
+    @apply text-transparent bg-primary-container stroke-primary-container;
+}

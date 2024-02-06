@@ -13,8 +13,8 @@ jobs:
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
-      - name: Setup deno
-        uses: denoland/setup-deno@v1
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
       - uses: actions/cache@v3
         id: deno_cache
         env:
@@ -23,11 +23,14 @@ jobs:
           path: |
             node_modules
             /home/runner/.cache/deno
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/deno.lock', '**/pnpm-lock.yaml') }}
-      - name: Test deno cache dir
-        run: deno info
-      - name: Build Astro from Deno
-        run: deno task build
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/deno.lock', '**/bun.lock') }}
+      - name: Bun Install
+        run: bun i
+      - name: Build Astro from Bun
+        run: bun run build
+      - run: |
+          mkdir ./dist/dist
+          cp -r ./dist/client ./dist/dist/client
       - name: Deploy Astro Website
         uses: denoland/deployctl@v1
         with:

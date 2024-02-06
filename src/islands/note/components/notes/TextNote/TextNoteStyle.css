@@ -1,0 +1,7 @@
+.nanohanote-textnote-styler {
+    & h1 {
+        @apply text-3xl font-bold;
+    }}
+.textnote-tiptap-container .tiptap {
+    @apply p-2
+}
