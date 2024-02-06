@@ -70,7 +70,7 @@ export default (props: Props) => {
       <Dialog onClose={() => setLoadError(void 0)} type="alert" title="Load Error">{ getLoadError() }</Dialog>
     </Show>
     <div class="flex flex-col h-[100dvh] lg:flex-row w-full">
-      <div class="lg:h-[100dvh]">
+      <div class="lg:h-[100dvh] lg:border-r border-b lg:border-b-0 border-r-0">
         <Header />
       </div>
       <div class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow">
