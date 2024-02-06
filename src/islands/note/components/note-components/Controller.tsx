@@ -11,17 +11,17 @@ export const Controller = (props: {
   noteIndex: number
   notesLength: number
 }) => {
-  return <div class="flex justify-center gap-1">
-    <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border" onClick={props.onRemove}>
+  return <div class="flex justify-center gap-1 bg-surface text-on-surface">
+    <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-outline rounded-full p-1 border" onClick={props.onRemove}>
       <div innerHTML={removeIconSize(IconX)} class="w-8 h-8" />
     </button>
-    <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
+    <button class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-outline rounded-full p-1 border"
       onClick={props.onUpNote}
       disabled={props.noteIndex === 0}>
       <div innerHTML={removeIconSize(IconArrowNarrowUp)} class="w-8 h-8" />
     </button>
     <button
-      class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-gray-100 rounded-full p-1 bg-white border"
+      class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none disabled:bg-outline rounded-full p-1 border"
       onClick={props.onDownNote}
       disabled={props.noteIndex === props.notesLength - 1}>
       <div innerHTML={removeIconSize(IconArrowNarrowDown)} class="w-8 h-8" />

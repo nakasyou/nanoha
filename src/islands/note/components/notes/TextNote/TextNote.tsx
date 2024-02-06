@@ -117,12 +117,12 @@ export const TextNote = ((props: Props) => {
             ref={editorRef}
             onFocusOut={saveContent}
             onInput={saveContent}
-            class="textnote-tiptap-container bg-on-tertiary rounded my-2 border boader-outlined nanohanote-textnote-styler"
+            class="textnote-tiptap-container rounded my-2 border boader-outlined nanohanote-textnote-styler"
           />
         </div>
         <Show when={isActive()}>
           <div class="flex justify-center gap-5">
-            <div class="flex justify-center">
+            <div class="flex justify-center bg-surface text-on-surface">
               {
                 ([
                   {
@@ -146,7 +146,7 @@ export const TextNote = ((props: Props) => {
                   isActive: () => boolean
                 }[])).map((data) => {
                   return <button
-                    class="grid hover:drop-shadow drop-shadow-none rounded-full p-1 bg-white border"
+                    class="grid hover:drop-shadow drop-shadow-none rounded-full p-1 border"
                     onClick={() => {
                       getEditor()?.chain().focus()[data.toggle]().run()
                     }}
