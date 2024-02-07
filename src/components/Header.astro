@@ -1,8 +1,14 @@
 ---
 import icon from "../assets/icon.svg"
 import Image from './Image.astro'
+
+export interface Props {
+  headerSticky: 'fixed' | 'sticky'
+}
 ---
-<header class="w-full flex top-0 fixed dark:text-white">
+<header class="w-full flex top-0 dark:text-white" class:list={[
+  Astro.props.headerSticky
+]}>
   <div class="px-7 py-2 flex justify-between items-center w-full">
     <div class="flex items-center">
       <a href="/" class="flex items-center gap-2">
