@@ -8,6 +8,8 @@ export interface Props {
   useViewTransitions?: boolean
 
   ogpType?: 'website' | 'article'
+
+  noIndex?: boolean
 }
 
 const userAgent = (Astro.request.headers.get('User-Agent') ?? '').toLowerCase()
@@ -37,6 +39,9 @@ nomalizedUrl.protocol = 'https://'
     <meta property="og:description" content={Astro.props.description}>
     <meta property="og:site_name" content="Nanoha">
     <meta property="og:type" content={Astro.props.ogpType ?? 'website'}>
+    {
+      Astro.props.noIndex && <meta name="robots" content="noindex" />
+    }
 
     {
       // ViewTransitions
