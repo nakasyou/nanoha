@@ -6,34 +6,56 @@ export interface Props {
   description: string
   bodyClass?: string
   useViewTransitions?: boolean
+
+  ogpType?: 'website' | 'article'
+
+  noIndex?: boolean
 }
 
 const userAgent = (Astro.request.headers.get('User-Agent') ?? '').toLowerCase()
 const isPhone = userAgent.includes('android') || (
   userAgent.includes('macintosh')
 )
+
+const nomalizedUrl = new URL(Astro.url.href)
+nomalizedUrl.hostname = 'nanoha.pages.dev'
+nomalizedUrl.port = '443'
+nomalizedUrl.protocol = 'https://'
 ---
 
 <!doctype html>
 <html lang="ja">
-  <head>
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
     <meta charset="UTF-8" />
     <meta name="description" content={Astro.props.description} />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{Astro.props.title}</title>
+    <link rel="canonical" href={nomalizedUrl.href}>
+
+    <meta property="og:url" content={Astro.url.href}>
+    <meta property="og:title" content={Astro.props.title}>
+    <meta property="og:description" content={Astro.props.description}>
+    <meta property="og:site_name" content="Nanoha">
+    <meta property="og:type" content={Astro.props.ogpType ?? 'website'}>
     {
+      Astro.props.noIndex && <meta name="robots" content="noindex" />
+    }
+
+    {
+      // ViewTransitions
       Astro.props.useViewTransitions && <ViewTransitions />
     }
     {
+      // Eruda
       isPhone && import.meta.env.DEV && <>
         <script is:inline src="//cdn.jsdelivr.net/npm/eruda"></script>
         <script is:inline>eruda.init();</script>
       </>
     }
   </head>
-  <body class={Astro.props.bodyClass || ""}>
+  <body class={Astro.props.bodyClass}>
     <slot />
   </body>
 </html>
