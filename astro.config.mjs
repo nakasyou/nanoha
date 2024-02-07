@@ -1,4 +1,5 @@
-import { defineConfig } from 'astro/config';
+// @ts-check
+import { defineConfig, passthroughImageService } from 'astro/config';
 import deno from "./integrations/deno";
 
 import solidJs from "@astrojs/solid-js";
@@ -6,7 +7,6 @@ import tailwind from "@astrojs/tailwind";
 import svelte from "@astrojs/svelte";
 
 import cloudflare from "@astrojs/cloudflare";
-import { passthroughImageService } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,6 +14,11 @@ export default defineConfig({
   adapter: process.env.IS_CF ? cloudflare() : deno(),
   integrations: [tailwind({}), solidJs(), svelte()],
   image: {
-    service: passthroughImageService()
+    service: {
+      entrypoint: './integrations/image/index.ts',
+      config: {
+        
+      }
+    }
   }
 });

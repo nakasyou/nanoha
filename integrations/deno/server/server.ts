@@ -1,11 +1,12 @@
 // @ts-check
 // @ts-ignore
-import { Hono  } from 'hono'
+import { Hono } from 'hono'
 import { App } from 'astro/app';
 import path from 'node:path'
+import fs from 'node:fs/promises'
 
 declare global {
-  const Deno: {
+  var Deno: {
     readFile (path: string): Promise<Uint8Array>
     serve (handler: (req: Request) => Promise<Response> | Response): void
   }
@@ -32,7 +33,7 @@ export async function start (manifest: import('astro').SSRManifest) {
       mimetype: mimetypeMap[ext] || ''
     }
     honoApp.all(asset.path, async (c) => {
-      const file = await Deno.readFile(asset.filePath)
+      const file = (await fs.readFile(asset.filePath))
       const buff = file.buffer as ArrayBuffer
       
       if (asset.mimetype) {
@@ -59,6 +60,12 @@ export async function start (manifest: import('astro').SSRManifest) {
     const res = await app.render(c.req.raw)
     return res
   })
-  Deno.serve(honoApp.fetch);
+  if (globalThis.Deno) {
+    Deno.serve(honoApp.fetch)
+  } else {
+    Bun.serve({
+      fetch: honoApp.fetch
+    })
+  }
 }
 
