@@ -1,10 +1,14 @@
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js"
 
-const [getVisualViewportHeight, setVisualViewportHeight] = createSignal<number>(0)
+const [getVisualViewport, setVisualViewport] = createSignal<{
+  data: VisualViewport | null
+}>({
+  data: null
+})
 
 if (globalThis.document) {
   const handleVisualViewportUpdate = () => {
-    setVisualViewportHeight(visualViewport?.height ?? 0)
+    setVisualViewport({ data: visualViewport ?? null })
   }
   visualViewport?.addEventListener('resize', () => handleVisualViewportUpdate())
   visualViewport?.addEventListener('scroll', () => handleVisualViewportUpdate())
@@ -12,6 +16,6 @@ if (globalThis.document) {
 }
 
 export {
-  getVisualViewportHeight
+  getVisualViewport
 }
 
