@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/Base.astro'
 const res = new Response(null, {
   status: 302,
   headers: {
-      Location: "/app/notes/" + crypto.randomUUID(),
+    Location: "/app/notes/" + crypto.randomUUID(),
   }
 })
 return res
