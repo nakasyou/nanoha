@@ -25,7 +25,7 @@ import { Player } from './Player'
 
 import './TextNoteStyle.css'
 import type { SetStoreFunction } from 'solid-js/store'
-import { getVisualViewportHeight } from '../../../window-apis'
+import { getVisualViewport } from '../../../window-apis'
 
 export interface Props extends NoteComponentProps {
   noteData: TextNoteData
@@ -124,7 +124,7 @@ export const TextNote = ((props: Props) => {
         <Show when={isActive()}>
           <div class="flex flex-col justify-center gap-2">
             <div class="flex justify-center gap-2 fixed left-0 w-full" style={{
-              top: getVisualViewportHeight() - 32 + 'px'
+              top: (getVisualViewport()?.data?.height ?? 0) + (getVisualViewport()?.data?.pageTop ?? 0) - 32 + 'px'
             }}>
               {
                 ([
@@ -149,7 +149,7 @@ export const TextNote = ((props: Props) => {
                   isActive: () => boolean
                 }[])).map((data) => {
                   return <button
-                    class="grid hover:drop-shadow drop-shadow-none"
+                    class="grid drop-shadow-none"
                     onClick={() => {
                       getEditor()?.chain().focus()[data.toggle]().run()
                     }}
