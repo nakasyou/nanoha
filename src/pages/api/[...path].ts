@@ -1,15 +1,12 @@
 import type { APIRoute } from 'astro'
-import { google } from 'googleapis'
 import { Hono } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
-import { accessTokenResponseSchema } from '../google-oauth/callback'
 import { parse, safeParse } from 'valibot'
-import { makeOauth2Client } from '../../utils/google-oauth/oauth2client'
-import type { OAuth2Client } from 'google-auth-library'
+import { makeOauth2Client, type Credentials, accessTokenResponseSchema, fetchUserInfo } from '../../utils/google-oauth'
 
 const app = new Hono<{
   Variables: {
-    googleOauthClient: OAuth2Client
+    googleOauthCredentials: Credentials
   }
 }>().basePath('/api')
 
@@ -21,7 +18,6 @@ const googleRoutes = app.basePath('/google')
         error: 'NOT_LOGINED'
       }, 400)
     }
-    const client = makeOauth2Client()
     const credentials = safeParse(accessTokenResponseSchema, JSON.parse(credentialsText))
     if (!credentials.success) {
       return c.json({
@@ -29,14 +25,11 @@ const googleRoutes = app.basePath('/google')
       }, 400)
     }
 
-    client.setCredentials(credentials.output)
-    c.set('googleOauthClient', client)
+    c.set('googleOauthCredentials', credentials.output)
     await next()
   })
   .get('/get-user-info', async c => {
-    const oauth2client = google.oauth2({ version: 'v2', auth: c.var.googleOauthClient })
-    const userInfo = await oauth2client.userinfo.get()
-    return c.json(userInfo.data)
+    return c.json(await fetchUserInfo(c.var.googleOauthCredentials.access_token))
   })
   .get('/get-nnote', async c => {
     const driveClient = google.drive({ version: 'v2', auth: c.var.googleOauthClient })
