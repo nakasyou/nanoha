@@ -2,18 +2,19 @@ import { type AstroConfig, type AstroIntegration } from "astro"
 import { fileURLToPath } from "url"
 import { compatibleNodeModules } from "./const/compatibleNodeModules"
 import { build } from 'esbuild'
+import * as fs from 'node:fs/promises'
 
 export default (): AstroIntegration => {
   let buildConfig: AstroConfig['build']
 
   return {
-    name: "deno-adapter",
+    name: "cf-adapter",
     hooks: {
       "astro:config:done": ({ setAdapter, config }) => {
         buildConfig = config.build
         setAdapter({
-          name: "deno-adapter",
-          serverEntrypoint: "./integrations/deno/server/server.ts",
+          name: "cf-adapter",
+          serverEntrypoint: "./integrations/cf/server/server.ts",
           supportedAstroFeatures: {
             staticOutput: "stable",
             serverOutput: "stable",
@@ -21,9 +22,11 @@ export default (): AstroIntegration => {
               
             }
           },
+          exports: ['fetch']
         })
       },
       "astro:build:done": async () => {
+        await fs.copyFile(new URL('./server/_worker.ts', import.meta.url), 'dist/_worker.ts')
         const entryUrl = new URL(buildConfig.serverEntry, buildConfig.server)
         const entryPath = fileURLToPath(entryUrl)
         await build({
@@ -31,17 +34,15 @@ export default (): AstroIntegration => {
           platform: 'node',
           bundle: true,
           allowOverwrite: true,
-          entryPoints: [entryPath],
-          outfile: entryPath,
+          entryPoints: ['dist/_worker.ts'],
+          outfile: 'dist/_worker.js',
           format: "esm",
           external: [
             ...compatibleNodeModules.map((mod) => `node:${mod}`),
             "@astrojs/markdown-remark",
           ],
-          plugins: [],
           minify: false,
           alias: {
-            'hono': 'https://deno.land/x/hono@v3.8.3/mod.ts',
             ...Object.fromEntries(compatibleNodeModules.map(mod => [mod, `node:${mod}`]))
           }
         })
