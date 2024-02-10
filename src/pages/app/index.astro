@@ -1,35 +1,39 @@
 ---
 import Base from '../../layouts/Base.astro'
 import { NoteList } from '../../islands/note-list/list'
+import { Navbar } from '../../islands/app/navbar'
 ---
 <Base title="Notes | Nanoha" description="Notes | Nanoha" useViewTransitions={true} bodyClass="text-on-background bg-background">
-  <div class="px-5 py-2">
-    <div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-0">
-        <div class="text-2xl">すべてのノート</div>
+  <div class="flex flex-col md:flex-row">
+    <Navbar client:load />
+    <div class="px-5 py-2 h-[100dvh] overflow-auto">
+      <div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-0">
+          <div class="text-2xl">すべてのノート</div>
+        </div>
+        <div class="fixed bottom-0 right-0 m-5">
+          <button id='create-note-button' class="filled-button place-self-end sm:place-self-center">+ 新しいノート</button>
+        </div>
+        <NoteList client:only="solid-js" />
       </div>
-      <div class="fixed bottom-0 right-0 m-5">
-        <button id='create-note-button' class="filled-button place-self-end sm:place-self-center">+ 新しいノート</button>
-      </div>
-      <NoteList client:only="solid-js" />
-    </div>
-    <div id="create-note-dialog" hidden>
-      <div class="fixed z-20 top-0 left-0 grid items-center justify-center w-full h-[100dvh] bg-[#000a]">
-        <div class="bg-background border p-2 rounded">
-          <div class="text-2xl">新しいノートを作成</div>
-          <div class="flex flex-col gap-2">
-            <label>
-              <span>保存先: </span>
-              <select id="create-note-save" class="bg-background border-outline">
-                <option value="local" class="text-write border border-outline">ローカル</option>
-              </select>
-            </label>
-            <label>
-              <span>名前: </span>
-              <input id="create-note-name" value="無題のノートブック" class="p-2 rounded-lg border bg-background text-on-background" />
-            </label>
-            <div class="grid justify-center">
-              <button id="create-note-action" class="filled-tonal-button">作成</button>
+      <div id="create-note-dialog" hidden>
+        <div class="fixed z-20 top-0 left-0 grid items-center justify-center w-full h-[100dvh] bg-[#000a]">
+          <div class="bg-background border p-2 rounded">
+            <div class="text-2xl">新しいノートを作成</div>
+            <div class="flex flex-col gap-2">
+              <label>
+                <span>保存先: </span>
+                <select id="create-note-save" class="bg-background border-outline">
+                  <option value="local" class="text-write border border-outline">ローカル</option>
+                </select>
+              </label>
+              <label>
+                <span>名前: </span>
+                <input id="create-note-name" value="無題のノートブック" class="p-2 rounded-lg border bg-background text-on-background" />
+              </label>
+              <div class="grid justify-center">
+                <button id="create-note-action" class="filled-tonal-button">作成</button>
+              </div>
             </div>
           </div>
         </div>
