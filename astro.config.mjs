@@ -1,9 +1,8 @@
 import { defineConfig } from 'astro/config';
-import deno from "./integrations/cf";
+import deno from "./integrations/cf-pages";
 import solidJs from "@astrojs/solid-js";
 import tailwind from "@astrojs/tailwind";
 import svelte from "@astrojs/svelte";
-import cloudflare from "@astrojs/cloudflare";
 import { passthroughImageService } from 'astro/config';
 import sitemap from "@astrojs/sitemap";
 

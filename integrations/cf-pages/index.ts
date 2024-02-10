@@ -14,7 +14,7 @@ export default (): AstroIntegration => {
         buildConfig = config.build
         setAdapter({
           name: "cf-adapter",
-          serverEntrypoint: "./integrations/cf/server/server.ts",
+          serverEntrypoint: "./integrations/cf-pages/server/server.ts",
           supportedAstroFeatures: {
             staticOutput: "stable",
             serverOutput: "stable",
@@ -26,26 +26,9 @@ export default (): AstroIntegration => {
         })
       },
       "astro:build:done": async () => {
-        await fs.copyFile(new URL('./server/_worker.ts', import.meta.url), 'dist/_worker.ts')
+        await fs.copyFile(new URL('./server/_worker.js', import.meta.url), 'dist/_worker.js')
         const entryUrl = new URL(buildConfig.serverEntry, buildConfig.server)
         const entryPath = fileURLToPath(entryUrl)
-        await build({
-          target: "esnext",
-          platform: 'node',
-          bundle: true,
-          allowOverwrite: true,
-          entryPoints: ['dist/_worker.ts'],
-          outfile: 'dist/_worker.js',
-          format: "esm",
-          external: [
-            ...compatibleNodeModules.map((mod) => `node:${mod}`),
-            "@astrojs/markdown-remark",
-          ],
-          minify: false,
-          alias: {
-            ...Object.fromEntries(compatibleNodeModules.map(mod => [mod, `node:${mod}`]))
-          }
-        })
       }
     },
   }
