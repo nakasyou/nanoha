@@ -1,23 +1,17 @@
-import { google } from "googleapis"
-import { number, object, parse, string, type Output, type BaseSchema, any, type Input, safeParse } from "valibot"
+import { number, object, parse, string, type Output, type BaseSchema, any, type Input, safeParse, optional } from "valibot"
 
 export const redirectUri = new URL('/google-oauth/callback', import.meta.env.DEV ? (import.meta.env.DEV_SITE ?? 'http://localhost:4321') : import.meta.env.SITE).href
 
-export const makeOauth2Client = () => new google.auth.OAuth2({
-  clientId: import.meta.env.GOOGLE_OAUTH_CLIENT_ID,
-  clientSecret: import.meta.env.GOOGLE_OAUTH_CLIENT_SECRET,
-  redirectUri
-})
-
-export const accessTokenResponseSchema = object({
+export const credentialsSchema = object({
   access_token: string(),
   expires_in: number(),
+  refresh_token: optional(string()),
   scope: string(),
   token_type: string(),
-  id_token: string()
+  id_token: string(),
 })
 
-export type Credentials = Output<typeof accessTokenResponseSchema>
+export type Credentials = Output<typeof credentialsSchema>
 
 export const createAuthRedirectURL = (scopes: string[]) => {
   const params = new URLSearchParams()
@@ -53,8 +47,8 @@ export const fetchAccessToken = async (callbackCode: string) => {
     method: 'POST'
   })
   const json = await fetch(req).then(res => res.json())
-  console.log(json)
-  return parse(accessTokenResponseSchema, json)
+
+  return parse(credentialsSchema, json)
 }
 
 type FetchResult <Schema extends BaseSchema> = {

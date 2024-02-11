@@ -2,8 +2,7 @@ import type { APIRoute } from 'astro'
 import { Hono } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
 import { parse, safeParse } from 'valibot'
-import { makeOauth2Client, type Credentials, accessTokenResponseSchema, fetchUserInfo } from '../../utils/google-oauth'
-import { google } from 'googleapis'
+import { makeOauth2Client, type Credentials, credentialsSchema, fetchUserInfo } from '../../utils/google-oauth'
 
 const app = new Hono<{
   Variables: {
@@ -19,7 +18,7 @@ const googleRoutes = app.basePath('/google')
         error: 'NOT_LOGINED'
       }, 400)
     }
-    const credentials = safeParse(accessTokenResponseSchema, JSON.parse(credentialsText))
+    const credentials = safeParse(credentialsSchema, JSON.parse(credentialsText))
     if (!credentials.success) {
       return c.json({
         error: 'NOT_LOGINED'
@@ -35,13 +34,6 @@ const googleRoutes = app.basePath('/google')
     return c.json({success: userInfo.success, ...(userInfo.success ? {
       data: userInfo.data
     } : {})})
-  })
-  .get('/get-nnote', async c => {
-    const driveClient = google.drive({ version: 'v2', auth: c.var.googleOauthClient })
-
-    const list = await driveClient.files.list()
-
-    return c.json(list)
   })
 
 export type Routes = typeof app | typeof googleRoutes
