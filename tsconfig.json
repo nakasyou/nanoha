@@ -8,5 +8,6 @@
       "bun-types"
     ],
     "noUncheckedIndexedAccess": true
-  }
+  },
+  "exclude": ["dist"]
 }

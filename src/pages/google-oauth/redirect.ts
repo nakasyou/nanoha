@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro'
-import { makeOauth2Client } from '../../utils/google-oauth/oauth2client'
+import { createAuthRedirectURL } from '../../utils/google-oauth'
 
 // Access scopes for read-only Drive activity.
 const scopes = [
@@ -7,12 +7,7 @@ const scopes = [
   'https://www.googleapis.com/auth/userinfo.profile'
 ]
 
-
 export const GET: APIRoute = (c) => {
-  const authorizationUrl = makeOauth2Client().generateAuthUrl({
-    access_type: 'offline',
-    scope: scopes,
-    include_granted_scopes: true
-  })
+  const authorizationUrl = createAuthRedirectURL(scopes)
   return c.redirect(authorizationUrl)
 }
