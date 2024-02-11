@@ -1,4 +1,4 @@
-name: Deploy from Astro via Deno
+name: Deploy to CF Pages
 on:
   push:
   pull_request:
@@ -22,18 +22,13 @@ jobs:
         with:
           path: |
             node_modules
-            /home/runner/.cache/deno
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/deno.lock', '**/bun.lock') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/bun.lockb', '**/yarn.lock') }}
       - name: Bun Install
         run: bun i
-      - name: Build Astro from Bun
-        run: bun run build
-      - run: |
-          mkdir ./dist/dist
-          cp -r ./dist/client ./dist/dist/client
-      - name: Deploy Astro Website
-        uses: denoland/deployctl@v1
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
         with:
-          project: "nanohanote"
-          entrypoint: server/entry.mjs
-          root: dist
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=nanoha
+
