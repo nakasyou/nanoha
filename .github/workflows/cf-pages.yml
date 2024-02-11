@@ -17,6 +17,9 @@ jobs:
         uses: oven-sh/setup-bun@v1
       - name: Bun Install
         run: bun i
+      - name: build
+        run: |
+          bun run build
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
