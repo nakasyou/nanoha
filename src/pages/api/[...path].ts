@@ -3,6 +3,7 @@ import { Hono } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
 import { parse, safeParse } from 'valibot'
 import { makeOauth2Client, type Credentials, accessTokenResponseSchema, fetchUserInfo } from '../../utils/google-oauth'
+import { google } from 'googleapis'
 
 const app = new Hono<{
   Variables: {
@@ -29,7 +30,11 @@ const googleRoutes = app.basePath('/google')
     await next()
   })
   .get('/get-user-info', async c => {
-    return c.json(await fetchUserInfo(c.var.googleOauthCredentials.access_token))
+    const userInfo = await fetchUserInfo(c.var.googleOauthCredentials.access_token)
+
+    return c.json({success: userInfo.success, ...(userInfo.success ? {
+      data: userInfo.data
+    } : {})})
   })
   .get('/get-nnote', async c => {
     const driveClient = google.drive({ version: 'v2', auth: c.var.googleOauthClient })
