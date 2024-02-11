@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro'
 import { Hono } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
-import { parse, safeParse } from 'valibot'
-import { makeOauth2Client, type Credentials, credentialsSchema, fetchUserInfo } from '../../utils/google-oauth'
+import { safeParse } from 'valibot'
+import { type Credentials, credentialsSchema, fetchUserInfo } from '../../utils/google-oauth'
 
 const app = new Hono<{
   Variables: {

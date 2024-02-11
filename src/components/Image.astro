@@ -1,8 +1,26 @@
 ---
+export interface Svg {
+  type: 'svg'
+  svg: string
+}
+export interface Webp {
+  type: 'webp'
+  sizes: {
+    200: string
+    400: string
+    600: string
+    800: string
+    1200: string
+  }
+}
 export interface Props {
   alt: string
-  src: ImageMetadata
+  src: Svg | Webp
   class?: string
 }
 ---
-<img src={Astro.props.src.src} class={Astro.props.class} alt={Astro.props.alt} />
+{
+  Astro.props.src.type === 'svg' ?
+    <span class={Astro.props.class} set:html={Astro.props.src.svg} /> :
+    <img srcset={Object.entries(Astro.props.src.sizes).map(([size, src]) => `${src} ${size}w`).join(',\n')} class={Astro.props.class} alt={Astro.props.alt} />
+}
