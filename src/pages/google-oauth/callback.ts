@@ -17,5 +17,5 @@ export const GET: APIRoute = async (c) => {
     path: '/'
   })
 
-  return new Response('a')
+  return c.redirect('/app')
 }

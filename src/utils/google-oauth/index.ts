@@ -24,7 +24,6 @@ export const createAuthRedirectURL = (scopes: string[]) => {
   params.append('redirect_uri', redirectUri)
 
   const result = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
-  console.log(result)
   return result
 }
 
@@ -50,12 +49,29 @@ export const fetchAccessToken = async (callbackCode: string) => {
 
   return parse(credentialsSchema, json)
 }
-
+export const refreshAccessToken = async (refreshToken: string) => {
+  const data = new URLSearchParams({
+    refresh_token: refreshToken,
+    client_id: import.meta.env.GOOGLE_OAUTH_CLIENT_ID,
+    client_secret: import.meta.env.GOOGLE_OAUTH_CLIENT_SECRET,
+    redirect_uri: redirectUri,
+    grant_type: 'refresh_token',
+    access_type: 'offline',
+  })
+  const res = await fetch('https://www.googleapis.com/oauth2/v4/token', {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: data,
+    method: 'POST'
+  })
+  return parse(credentialsSchema, await res.json())
+}
 type FetchResult <Schema extends BaseSchema> = {
   response: Response
 } & ({
   success: true
-  data: Schema
+  data: Output<Schema>
 } | {
   success: false
 })
@@ -71,7 +87,6 @@ const makeFetchAPIFunc = <Schema extends BaseSchema>(scope: string, schema: Sche
   })
   const res = await fetch(req)
   const result = await res.json()
-  console.log(result)
   const parsed = safeParse(schema, result)
   if (parsed.success) {
     return {
