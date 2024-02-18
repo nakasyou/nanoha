@@ -1,0 +1,52 @@
+---
+import PageLayout from '../layouts/Page.astro'
+import fg from 'fast-glob'
+import fs from 'node:fs/promises'
+
+const packages = await Promise.all((await fg(['./node_modules/*/package.json', './node_modules/@*/*/package.json'])).map(async (entry) => {
+  return JSON.parse(await fs.readFile(entry, {
+    encoding: 'utf8'
+  }))
+}))
+
+export const prerender = true
+---
+<PageLayout title="謝辞 | Nanoha" description="Nanohaで使われているnpmパッケージです。">
+  <div class="mx-7">
+    <div>
+      <div class="text-2xl">謝辞 | Acknowledgements</div>
+      <hr class="my-1" />
+      <div>Nanohaで使われているnpmパッケージです。</div>
+    </div>
+    <div class="font-mono grid grid-cols-1 sm:grid-cols-2 place-items-center gap-2">
+      {
+        packages.map(packageData => <div>
+          <details>
+            <summary class="text-xl list-none text-center font-bold">
+              {packageData.name}
+            </summary>
+            <div class="text-center">
+              {
+                packageData.author && <div>By {packageData.author.name ?? packageData.author}</div>
+              }
+              {
+                packageData.license && <div>License: {packageData.license}</div>
+              }
+              <div>
+                <a class="underline hover:no-underline" href={`https://npmjs.com/package/${packageData.name}`}>NPM</a>
+              </div>
+              <div>
+                {
+                  packageData.homepage && <a class="underline hover:no-underline" href={packageData.homepage}>HomePage</a>
+                }
+                {
+                  packageData.repository && <a class="underline hover:no-underline" href={packageData.repository}>Repo</a>
+                }
+              </div>
+            </div>
+          </details>
+        </div>)
+      }
+    </div>
+  </div>
+</PageLayout>
