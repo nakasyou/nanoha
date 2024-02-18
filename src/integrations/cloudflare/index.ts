@@ -33,8 +33,11 @@ export default (): AstroIntegration => {
 
         await fs.writeFile('dist/_routes.json', JSON.stringify({
           version: 1,
-          exclude: clientFiles.map(path => path.replace('./dist/client', '')),
-          include: []
+          exclude: [...new Set([
+            ...clientFiles.map(path => path.replace('./dist/client', '')),
+            ...clientFiles.map(path => path.replace('./dist/client', '').replace(/index\.html$/, ''))
+          ])],
+          include: ['/*']
         }, null, 2))
 
         for (const file of clientFiles) {
