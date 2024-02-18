@@ -43,7 +43,7 @@
   "devDependencies": {
     "@astrojs/solid-js": "^3.0.1",
     "bun-types": "^1.0.7",
-    "esbuild": "^0.19.5",
+    "esbuild": "^0.20.0",
     "hono": "^4.0.1",
     "queue-tick": "^1.0.1"
   }
