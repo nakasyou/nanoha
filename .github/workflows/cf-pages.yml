@@ -16,7 +16,9 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
       - name: Bun Install
-        run: bun i
+        run: |
+          rm -rf bun.lockb
+          bun i
       - name: build
         run: |
           bun run build
