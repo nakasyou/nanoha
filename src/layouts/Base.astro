@@ -57,7 +57,7 @@ nomalizedUrl.protocol = 'https://'
     }
     {
       // Eruda
-      isPhone && import.meta.env.DEV && <>
+      ((isPhone && import.meta.env.DEV) || import.meta.env.ERUDA) && <>
         <script is:inline src="//cdn.jsdelivr.net/npm/eruda"></script>
         <script is:inline>eruda.init();</script>
       </>

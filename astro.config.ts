@@ -55,6 +55,11 @@ export default defineConfig({
           };
         }
       }
-    }]
+    }],
+    build: {
+      rollupOptions: {
+        //external: ['@qwik-client-manifest']
+      }
+    }
   }
 });
