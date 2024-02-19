@@ -79,13 +79,14 @@ export default (): AstroIntegration => {
         )
 
         for (const file of clientFiles) {
-          const content = await Bun.file(file).arrayBuffer()
-          await Bun.write(
-            path.join('dist', file.replace('./dist/client/', '')),
-            content,
-            {
-              createPath: true
-            }
+          const content = await fs.readFile(file)
+          const targetPath = path.join('dist', file.replace('./dist/client/', ''))
+          await fs.mkdir(path.dirname(targetPath), {
+            recursive: true
+          })
+          await fs.writeFile(
+            targetPath,
+            content
           )
         }
       }
