@@ -1,4 +1,4 @@
-import { component$ } from '@builder.io/qwik'
+import { component$, useSignal } from '@builder.io/qwik'
 
 /*
 <div id="create-note-dialog" hidden>
@@ -24,8 +24,28 @@ import { component$ } from '@builder.io/qwik'
       </div>
     </div>*/
 export const CreateNote = component$(() => {
-  
-  return <div onClick$={() => console.log('a')}>
-    aaa
+  const isOpenedCreateNoteDialog = useSignal(false)
+  return <div>
+    <div>
+      {
+        isOpenedCreateNoteDialog.value && <div class="fixed top-0 left-0 w-full h-[100dvh] bg-[#000a] p-5">
+          <div class="rounded-lg border bg-background">
+            <div class="text-2xl">新しいノートを作成</div>
+            <div class="flex flex-col gap-2">
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="fixed right-0 bottom-0 m-5">
+      <button onClick$={() => {
+        isOpenedCreateNoteDialog.value = true
+      }}>
+        <div class="flex items-center filled-tonal-button gap-2">
+          <div class="text-xl">+</div>
+          <div class="hidden md:block">新しいノート</div>
+        </div>
+      </button>
+    </div>
   </div>
 })
