@@ -1,5 +1,4 @@
-
-import { Show } from 'solid-js'
+import { Show, createEffect } from 'solid-js'
 import { Dialog, createDialog } from '../../../utils/Dialog'
 import EditorCore from './EditorCoreX'
 import type { Sheets } from './Sheet'
@@ -33,6 +32,9 @@ export const ScanedImageEditor = (props: Props) => {
     }
     scanInputRef.click()
   }
+  createEffect(() => {
+    console.log(props.noteData.canToJsonData)
+  })
   return (
     <Dialog
       type="custom"
@@ -44,7 +46,7 @@ export const ScanedImageEditor = (props: Props) => {
           result && nowScanedImageBlob
             ? {
                 sheets: props.noteData.canToJsonData.sheets,
-                image: nowScanedImageBlob,
+                image: nowScanedImageBlob
               }
             : null
         )
@@ -60,29 +62,34 @@ export const ScanedImageEditor = (props: Props) => {
         </Show>
       </div>
       <div>
-        <Show when={props.noteData.blobs.scanedImage}>
-          <div>
-            <EditorCore
-              scanedImage={props.noteData.blobs.scanedImage}
-              changeSheets={(sheets) => {
-                props.setNoteData('canToJsonData', 'sheets', sheets)
-              }}
-              sheets={props.noteData.canToJsonData.sheets}
-              rescan={() => {
-                props.setNoteData('canToJsonData', 'sheets', [])
-                props.setNoteData('blobs', 'scanedImage', undefined)
-              }}
-            />
-          </div>
-          <div class="flex justify-center gap-5 items-center">
-            <button class="outlined-button" onClick={() => dialog.close(false)}>
-              キャンセル
-            </button>
-            <button class="filled-button" onClick={() => dialog.close(true)}>
-              完了
-            </button>
-          </div>
-        </Show>
+        {props.noteData.blobs.scanedImage && (
+          <>
+            <div>
+              <EditorCore
+                scanedImage={props.noteData.blobs.scanedImage}
+                changeSheets={(sheets) => {
+                  props.setNoteData('canToJsonData', 'sheets', sheets)
+                }}
+                sheets={props.noteData.canToJsonData.sheets}
+                rescan={() => {
+                  props.setNoteData('canToJsonData', 'sheets', [])
+                  props.setNoteData('blobs', 'scanedImage', undefined)
+                }}
+              />
+            </div>
+            <div class="flex justify-center gap-5 items-center">
+              <button
+                class="outlined-button"
+                onClick={() => dialog.close(false)}
+              >
+                キャンセル
+              </button>
+              <button class="filled-button" onClick={() => dialog.close(true)}>
+                完了
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </Dialog>
   )

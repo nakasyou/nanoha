@@ -23,7 +23,7 @@ export default (props: Props) => {
   const [editMode, setEditMode] = createSignal<'move' | 'paint' | 'clear'>(
     'move'
   )
-
+  
   const [imageUrl, setImageUrl] = createSignal<string>()
   const [imageSize, setImageSize] = createSignal<{
     w: number
@@ -73,6 +73,9 @@ export default (props: Props) => {
       setEditorContainerRect(editorContainer.getBoundingClientRect())
     })
     observer.observe(editorContainer)
+    setTimeout(() => {
+      setEditorContainerRect(editorContainer.getBoundingClientRect())
+    }, 500)
   })
 
   const getPositionByImage = (evt: MouseEvent) => {
@@ -146,7 +149,7 @@ export default (props: Props) => {
     }
   }
   createEffect(() => {
-    console.log(editorPosition())
+    console.log(editorContainerRect())
   })
   const pointerMove = (evt: PointerEvent) => {
     evt.preventDefault()
@@ -245,6 +248,16 @@ export default (props: Props) => {
     }
   }
   const [getRescanConfirm, setRescanConfirm] = createSignal(false)
+
+  let forGetTouchRef!: HTMLDivElement
+
+  onMount(() => {
+    document.onpointerdown = pointerDown
+    document.onpointermove = pointerMove
+    document.onpointerup = pointerUp
+    document.onpointercancel = pointerUp
+    document.onwheel = onWheel
+  })
   return (
     <div>
       <Show when={getRescanConfirm()}>
@@ -271,6 +284,7 @@ export default (props: Props) => {
               width: imageSize().w + 'px',
               height: imageSize().h + 'px',
             }}
+            ref={forGetTouchRef}
           >
             <div
               class="origin-top-left"
@@ -314,11 +328,6 @@ export default (props: Props) => {
                 width: editorContainerRect().width + 'px',
                 height: editorContainerRect().height + 'px',
               }}
-              onPointerDown={pointerDown}
-              onPointerMove={pointerMove}
-              onPointerUp={pointerUp}
-              onPointerCancel={pointerUp}
-              onWheel={onWheel}
             ></div>
           </div>
         </div>
