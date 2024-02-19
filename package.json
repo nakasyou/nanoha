@@ -45,6 +45,7 @@
     "bun-types": "^1.0.7",
     "esbuild": "^0.19.5",
     "hono": "^4.0.1",
-    "queue-tick": "^1.0.1"
+    "queue-tick": "^1.0.1",
+    "yallist": "^4.0.0"
   }
 }
