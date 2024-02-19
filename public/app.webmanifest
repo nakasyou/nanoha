@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "Nanoha",
+  "short_name": "Nanoha",
+  "start_url": "/app",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "Perfect learning with Nanoha",
+  "icons": [
+    {
+      "type": "image/png",
+      "sizes": "512x512",
+      "src": "/nanoha-512x512.png"
+    }
+  ]
+}
