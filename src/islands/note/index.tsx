@@ -1,3 +1,5 @@
+
+/** @jsx preserve */
 //import { onMount } from 'solid-js'
 import App from './App'
 import type { NoteLoadType } from './note-load-types'
@@ -13,5 +15,5 @@ export default (props: Props) => {
       }
     })
   })*/
-  return <App {...props} />
+  return <App {...props}/>
 }

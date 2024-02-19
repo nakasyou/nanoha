@@ -15,15 +15,14 @@ export default defineConfig({
   site: "https://nanoha.pages.dev",
   adapter: cloudflare(),
   integrations: [
+    solidJs({
+      exclude: '**/*.qwik.tsx'
+    }),
+    qwikdev({
+      include: '**/*.qwik.tsx'
+    }),
     tailwind() as AstroIntegration,
     sitemap(),
-    qwikdev({
-      include: "**/*.qwik.tsx"
-    }),
-    solidJs({
-      include: "**/*.tsx",
-      exclude: "**/*.qwik.tsx"
-    })
   ],
   image: {
     service: passthroughImageService()
@@ -55,11 +54,6 @@ export default defineConfig({
           };
         }
       }
-    }],
-    build: {
-      rollupOptions: {
-        //external: ['@qwik-client-manifest']
-      }
-    }
+    }]
   }
 });

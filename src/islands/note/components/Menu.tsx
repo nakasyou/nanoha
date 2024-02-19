@@ -1,3 +1,4 @@
+
 import { noteBookState, notes, setNoteBookState } from '../store'
 import IconX from '@tabler/icons/x.svg?raw'
 import { removeIconSize } from '../utils/icon/removeIconSize'

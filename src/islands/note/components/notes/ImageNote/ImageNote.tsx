@@ -1,3 +1,4 @@
+
 import type { NoteComponent, NoteComponentProps } from "../../notes-utils"
 import { type SetStoreFunction } from "solid-js/store"
 import type { ImageNoteData } from "./types"

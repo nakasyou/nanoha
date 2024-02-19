@@ -1,3 +1,4 @@
+
 import type { NoteComponent, NoteComponentProps } from '../../notes-utils'
 import StarterKit from '@tiptap/starter-kit'
 import type { TextNoteData } from './types'
