@@ -1,7 +1,6 @@
 import { For, Suspense, lazy, onMount } from 'solid-js'
 import { NotesDB } from '../note/notes-schema'
 
-
 const NoteListLoader = lazy(async () => {
   const db = new NotesDB()
 

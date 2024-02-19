@@ -1,6 +1,7 @@
 ---
 import App from '../../layouts/App.astro'
-import { CreateNote } from '../../islands/app/qwik/CreateNote.qwik'
+import { CreateNote } from '../../islands/app/CreateNote.qwik'
+import { NoteList } from '../../islands/note-list/list'
 
 //export const prerender = true
 ---
@@ -10,43 +11,8 @@ import { CreateNote } from '../../islands/app/qwik/CreateNote.qwik'
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-0">
         <div class="text-2xl">すべてのノート</div>
       </div>
+      <NoteList client:only="solid-js" />
     </div>
   </div>
   <CreateNote />
 </App>
-<script>
-  /*import { NotesDB } from '../../islands/note/notes-schema'
-  import { saveNoteDatas } from '../../islands/note/utils/file-format'
-
-  const db = new NotesDB()
-
-  const createNoteButton = document.getElementById('create-note-button')
-  const createNoteDialog = document.getElementById('create-note-dialog')!
-  const createNoteAction = document.getElementById('create-note-action')!
-  const createNoteSave = document.getElementById('create-note-save') as HTMLSelectElement
-  const createNoteName = document.getElementById('create-note-name') as HTMLInputElement
-
-  createNoteButton?.addEventListener('click', () => {
-    createNoteDialog.hidden = false
-  })
-  createNoteAction.addEventListener('click', async () => {
-    const noteFileBlob = await saveNoteDatas([{
-      id: crypto.randomUUID(),
-      blobs: {},
-      type: 'text',
-      canToJsonData: {
-        html: 'これは新しいノートである'
-      }
-    }])
-    
-    const noteFileBuff = new Uint8Array(await noteFileBlob.arrayBuffer())
-
-    const added = await db.notes.add({
-      name: createNoteName.value,
-      updated: new Date(),
-      nnote: noteFileBuff
-    })
-
-    location.href = `/app/notes/local-${added}`
-  })*/
-</script>

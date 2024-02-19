@@ -1,8 +1,7 @@
 /** @jsxImportSource @builder.io/qwik */
-
 import { component$, useSignal, useStore, $ } from '@builder.io/qwik'
-import { NotesDB } from '../../note/notes-schema'
-import { saveNoteDatas } from '../../note/utils/file-format'
+import { NotesDB } from '../note/notes-schema'
+import { saveNoteDatas } from '../note/utils/file-format'
 
 export const CreateNote = component$(() => {
   const isOpenedCreateNoteDialog = useSignal(false)
