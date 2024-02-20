@@ -37,7 +37,7 @@
     "svelte": "^4.2.1",
     "tailwindcss": "^3.0.24",
     "typescript": "^5.3.3",
-    "valibot": "^0.28.1",
+    "valibot": "^0.29.0",
     "vite-imagetools": "^6.2.9"
   },
   "devDependencies": {
