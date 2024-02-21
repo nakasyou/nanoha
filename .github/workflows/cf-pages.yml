@@ -1,7 +1,8 @@
 name: Deploy to CF Pages
 on:
-  push:
-  pull_request:
+  workflow_dispatch: 
+  #push:
+  #pull_request:
 
 jobs:
   deploy:
