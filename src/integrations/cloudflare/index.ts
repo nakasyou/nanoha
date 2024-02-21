@@ -21,7 +21,7 @@ export default (): AstroIntegration => {
               },
               async load(id, options) {
                 if (id.startsWith('@qwik-client-manifest')) {
-                  const manifestPath = (await fg('.tmp-*/q-manifest.json'))[0]! ?? './dist/q-manifest.json'
+                  const manifestPath = (await fg('./**/q-manifest.json'))[0]!
                   const manifestJson = await fs.readFile(manifestPath, {
                     encoding: 'utf-8'
                   })
