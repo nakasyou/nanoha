@@ -2,6 +2,19 @@
     & h1 {
         @apply text-3xl font-bold;
     }}
+.nanohanote-textnote-styler {
+    & h2 {
+        @apply text-2xl font-bold;
+    }}
+.nanohanote-textnote-styler {
+    & h3 {
+        @apply text-xl font-bold;
+    }}
+.nanohanote-textnote-styler {
+    & h4 {
+        @apply text-lg font-bold;
+    }}
+
 .textnote-tiptap-container .tiptap {
     @apply p-2
 }
