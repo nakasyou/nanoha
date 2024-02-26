@@ -14,7 +14,14 @@
     & h4 {
         @apply text-lg font-bold;
     }}
-
+.nanohanote-textnote-styler {
+    & ul {
+        @apply list-disc list-inside;
+    }}
+.nanohanote-textnote-styler {
+    & ol {
+        @apply list-decimal list-inside;
+    }}
 .textnote-tiptap-container .tiptap {
     @apply p-2
 }
