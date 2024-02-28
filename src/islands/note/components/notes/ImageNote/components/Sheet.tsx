@@ -1,5 +1,6 @@
 
 import { For, createEffect, createSignal } from "solid-js"
+import { noteBookState } from "../../../../store"
 
 export interface Position {
   x: number
@@ -34,10 +35,11 @@ export default (props: Props) => {
     }
   }))
   createEffect(() => {
+    const sheetDefaultState = noteBookState.sheetDefaultState
     setSheets(props.sheets.map(sheet => {
       return {
         sheet,
-        isHide: false
+        isHide: !sheetDefaultState
       }
     }))
   })
@@ -60,7 +62,7 @@ export default (props: Props) => {
           }
         }}
         class="stroke-primary-container"
-        stroke-opacity={getSheets()[index()]!.isHide ? "1.0" : "0.5"}
+        stroke-opacity={props.isPlayMode ? (getSheets()[index()]!.isHide ? "1.0" : "0.5") : "0.5"}
       />
     }}</For>
   </svg>
