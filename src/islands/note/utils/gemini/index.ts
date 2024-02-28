@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const genAI = new GoogleGenerativeAI(import.meta.env.GEMINI_TOKEN)
+const genAI = new GoogleGenerativeAI(globalThis.prompt as unknown as boolean ? prompt('Gemini token?') ?? '' : '')
 
 export async function generateByGemini(prompt: string) {
   const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
