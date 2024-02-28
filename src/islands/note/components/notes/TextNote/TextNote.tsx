@@ -13,13 +13,14 @@ import {
   onMount
 } from 'solid-js'
 import { removeIconSize } from '../../../utils/icon/removeIconSize'
+import * as marked from "marked"
 
 import IconNote from '@tabler/icons/note.svg?raw'
 import IconBold from '@tabler/icons/bold.svg?raw'
 import IconUnderline from '@tabler/icons/underline.svg?raw'
 
-import { Editor } from '@tiptap/core'
-import { Dialog } from '../../utils/Dialog'
+import { Editor, textPasteRule } from '@tiptap/core'
+import { Dialog, createDialog } from '../../utils/Dialog'
 import { Controller } from '../../note-components/Controller'
 import { noteBookState } from '../../../store'
 import { Player } from './Player'
@@ -27,6 +28,7 @@ import { Player } from './Player'
 import './TextNoteStyle.css'
 import type { SetStoreFunction } from 'solid-js/store'
 import { getVisualViewport } from '../../../window-apis'
+import { generateByGemini } from '../../../utils/gemini'
 
 export interface Props extends NoteComponentProps {
   noteData: TextNoteData
@@ -86,8 +88,44 @@ export const TextNote = ((props: Props) => {
     props.setNoteData('canToJsonData', 'html', getEditor()?.getHTML() || '')
     props.updated()
   }
+
+  const [getIsGeminiShowed, setIsGeminiShowed] = createSignal(false)
+  const geminiDialog = createDialog()
   return (
     <div>
+      <Show when={getIsGeminiShowed()}>
+        <Dialog dialog={geminiDialog} title="Generate with Gemini" type="custom" onClose={data => {
+          setIsGeminiShowed(false)
+        }}>
+          <div>
+            {
+              (() => {
+                const [getPrompt, setPrompt] = createSignal('')
+                const [getGenerating, setGenerating] = createSignal(false)
+                return <div>
+                  <textarea placeholder='Prompt' onInput={e => setPrompt(e.target.value)} />
+                  <button onClick={async () => {
+                    setGenerating(true)
+                    const prompt = getPrompt()
+                    const text = await generateByGemini(`「${prompt}」についてのテキストを作成してください。また、作ったテキスト中の年代・地名・語句などの重要な単語は、\`((\`と\`))\`で囲みなさい、これは、1文に1つ以上入れなさい。`)
+
+                    const html = marked.parse(text.replace(/\(\(.*?\)\)/g, str => {
+                      return '<span data-nanohasheet="true">' + str.slice(2, -2) + '</span>'
+                    }))
+                    console.log(html)
+                    getEditor()?.commands.insertContent(html)
+                    setGenerating(false)
+                    geminiDialog.close(0)
+                  }} disabled={getGenerating()}>Generate</button>
+                  <Show when={getGenerating()}>
+                    Genetating...
+                  </Show>
+                </div>
+              })()
+            }
+          </div>
+        </Dialog>
+      </Show>
       <Show when={!noteBookState.isEditMode}>
         <div>
           <Player html={getEditor()?.getHTML() || ''} />
@@ -127,6 +165,7 @@ export const TextNote = ((props: Props) => {
             <div class="flex justify-center gap-2 fixed left-0 w-full" style={{
               top: (getVisualViewport()?.data?.height ?? 0) + (getVisualViewport()?.data?.pageTop ?? 0) - 32 + 'px'
             }}>
+              <div class="flex justify-center">
               {
                 ([
                   {
@@ -162,6 +201,15 @@ export const TextNote = ((props: Props) => {
                   </button>
                 })
               }
+              </div>
+              <div>
+
+              </div>
+              <div>
+                <button onClick={async () => {
+                  setIsGeminiShowed(true)
+                }}>Generate</button>
+              </div>
             </div>
             <Controller
               noteIndex={props.index}
