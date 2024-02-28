@@ -2,6 +2,7 @@
 import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js'
 import type { Sheets } from './Sheet'
 import Sheet from './Sheet'
+import { noteBookState } from '../../../../store'
 
 const getImageElementByUrl = (url: string): Promise<HTMLImageElement> => new Promise((resolve, reject) => {
   const result = new Image()

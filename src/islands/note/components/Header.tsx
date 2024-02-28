@@ -3,6 +3,8 @@ import IconArrowLeft from "@tabler/icons/arrow-left.svg?raw"
 import IconPlayerPlay from "@tabler/icons/player-play.svg?raw"
 import IconPencil from "@tabler/icons/pencil.svg?raw"
 import IconMenu2 from "@tabler/icons/menu-2.svg?raw"
+import IconEye from "@tabler/icons/eye.svg?raw"
+import IconEyeOff from "@tabler/icons/eye-off.svg?raw"
 
 import { removeIconSize } from "../utils/icon/removeIconSize"
 
@@ -25,6 +27,13 @@ const Header = (props: Props) => {
             保存済み
           </Show>
         </div>
+        <Show when={!noteBookState.isEditMode}>
+          <div>
+            <div onClick={() => {
+              setNoteBookState('sheetDefaultState', !noteBookState.sheetDefaultState)
+            }} innerHTML={noteBookState.sheetDefaultState ? removeIconSize(IconEye) : removeIconSize(IconEyeOff)} />
+          </div>
+        </Show>
         <div class="flex items-center justify-center lg:flex-col">
           <div>
             <Show
