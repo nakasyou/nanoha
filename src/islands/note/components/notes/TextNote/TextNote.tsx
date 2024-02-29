@@ -27,7 +27,7 @@ import { Player } from './Player'
 import './TextNoteStyle.css'
 import type { SetStoreFunction } from 'solid-js/store'
 import { getVisualViewport } from '../../../window-apis'
-
+import DOMPurify from 'dompurify'
 export interface Props extends NoteComponentProps {
   noteData: TextNoteData
   setNoteData: SetStoreFunction<TextNoteData>
@@ -44,6 +44,8 @@ export const TextNote = ((props: Props) => {
   const [getIsActiveUndlerline, setIsActiveUndlerline] = createSignal(false)
 
   onMount(() => {
+    const rawContent = props.noteData.canToJsonData.html
+    const safeRawContent = DOMPurify.sanitize(rawContent)
     const editor = new Editor({
       element: editorRef,
       extensions: [
@@ -53,7 +55,7 @@ export const TextNote = ((props: Props) => {
         }),
         Underline
       ],
-      content: props.noteData.canToJsonData.html
+      content: safeRawContent
     })
     setEditor(editor)
 
