@@ -4,6 +4,19 @@ import { NotesDB } from '../note/notes-schema'
 const NoteListLoader = lazy(async () => {
   const db = new NotesDB()
 
+  onMount(async () => {
+    if (location.hash.slice(1)) {
+      const url = location.hash.slice(1)
+      const blob = await fetch(url).then(res => res.blob())
+      const noteFileBuff = new Uint8Array(await noteFileBlob.arrayBuffer())
+      const added = await db.notes.add({
+        name: newNoteData.name,
+        updated: new Date(),
+        nnote: noteFileBuff
+      })
+      location.href = `/app/notes/local-${added}`
+    }
+  })
   const allNotes = await db.notes.toArray()
 
   return {
