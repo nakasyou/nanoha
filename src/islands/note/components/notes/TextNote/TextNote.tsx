@@ -43,7 +43,7 @@ export const TextNote = ((props: Props) => {
   const [getIsActiveBold, setIsActiveBold] = createSignal(false)
   const [getIsActiveUndlerline, setIsActiveUndlerline] = createSignal(false)
 
-  onMount(() => {
+  const startEditor = () => {
     const editor = new Editor({
       element: editorRef,
       extensions: [
@@ -57,29 +57,35 @@ export const TextNote = ((props: Props) => {
     })
     setEditor(editor)
 
-    editor.on('focus', (evt) => {
-      setIsFocused(evt.editor.isFocused)
-    })
     editor.on('transaction', () => {
       setIsActiveSheet(editor.isActive('sheet'))
       setIsActiveBold(editor.isActive('bold'))
       setIsActiveUndlerline(editor.isActive('underline'))
     })
+  }
+  onMount(() => {
+    startEditor()
+    /*editorRef.onclick = () => {
+      setIsFocused(true)
+    }*/
+    editorRef.onfocus = () => {
+      props.focus()
+    }
   })
 
   const [isActive, setIsActive] = createSignal(false)
 
+  createEffect(() => {
+    if (!isActive()) {
+      getEditor()?.destroy()
+    } else {
+      startEditor()
+    }
+  })
   props.on('focus', (evt) => {
     setIsActive(evt.isActive)
   })
 
-  createEffect(() => {
-    const isFocused = getIsFocused() || false
-    if (isFocused) {
-      // このノートがFocusしたことを他のノートに伝える
-      props.focus()
-    }
-  })
 
   const [isShowCloseDialog, setIsShowCloseDialog] = createSignal(false)
   const saveContent = () => {
@@ -119,6 +125,7 @@ export const TextNote = ((props: Props) => {
             ref={editorRef}
             onFocusOut={saveContent}
             onInput={saveContent}
+            contentEditable={true}
             class="textnote-tiptap-container rounded my-2 border boader-outlined nanohanote-textnote-styler"
           />
         </div>

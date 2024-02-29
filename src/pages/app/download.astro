@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/Base.astro'
+import { Download as DownloadComponent } from '../../islands/app/Download.qwik'
+
+const url = Astro.url.searchParams.get('url')
+
+---
+<BaseLayout title="download" description='download from net'>
+  {
+    url ? <DownloadComponent url={url}/> : <div>URLを指定してください</div>
+  }
+</BaseLayout>
