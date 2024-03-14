@@ -1,8 +1,7 @@
-import { createEffect, createMemo, createSignal } from "solid-js"
+import { createEffect, createMemo, createSignal, onMount } from "solid-js"
 import { noteBookState } from "../../../store"
 
 export const Player = (props: { html: string }) => {
-
   const html = createMemo((): string => {
     let newHtml = props.html
     //newHtml = newHtml.replace(/class=\"nanoha-sheet/, 'class="nanoha-sheet nanoha-sheet-playing')
@@ -45,7 +44,6 @@ export const Player = (props: { html: string }) => {
       }
     }
   })
-
   createEffect(() => {
     const sheetDefaultState = noteBookState.sheetDefaultState
     for (const sheetElement of sheetElements) {
