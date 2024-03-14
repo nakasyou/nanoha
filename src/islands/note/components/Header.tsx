@@ -31,7 +31,7 @@ const Header = (props: Props) => {
           <div>
             <div onClick={() => {
               setNoteBookState('sheetDefaultState', !noteBookState.sheetDefaultState)
-            }} innerHTML={noteBookState.sheetDefaultState ? removeIconSize(IconEye) : removeIconSize(IconEyeOff)} />
+            }} class="w-8 h-8 touch-manipulation" innerHTML={noteBookState.sheetDefaultState ? removeIconSize(IconEye) : removeIconSize(IconEyeOff)} />
           </div>
         </Show>
         <div class="flex items-center justify-center lg:flex-col">
