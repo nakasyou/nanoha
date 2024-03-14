@@ -22,6 +22,6 @@ export const Download = component$<{ url: string }>((props) => {
         })()
     })
     return <div>
-        aa
+        Downloading from internet...
     </div>
 })
