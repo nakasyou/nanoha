@@ -1,8 +1,8 @@
 import { hc } from "hono/client"
 import { Show, createSignal, onMount } from "solid-js"
 import type { Routes } from "../../pages/api/[...path]"
-import homeIcon from '@tabler/icons/home.svg?raw'
-import userIcon from '@tabler/icons/user.svg?raw'
+import homeIcon from '@tabler/icons/outline/home.svg?raw'
+import userIcon from '@tabler/icons/outline/user.svg?raw'
 import { removeIconSize } from "../note/utils/icon/removeIconSize"
 
 export const Navbar = () => {

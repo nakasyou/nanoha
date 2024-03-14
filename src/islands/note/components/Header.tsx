@@ -1,10 +1,10 @@
 
-import IconArrowLeft from "@tabler/icons/arrow-left.svg?raw"
-import IconPlayerPlay from "@tabler/icons/player-play.svg?raw"
-import IconPencil from "@tabler/icons/pencil.svg?raw"
-import IconMenu2 from "@tabler/icons/menu-2.svg?raw"
-import IconEye from "@tabler/icons/eye.svg?raw"
-import IconEyeOff from "@tabler/icons/eye-off.svg?raw"
+import IconArrowLeft from "@tabler/icons/outline/arrow-left.svg?raw"
+import IconPlayerPlay from "@tabler/icons/outline/player-play.svg?raw"
+import IconPencil from "@tabler/icons/outline/pencil.svg?raw"
+import IconMenu2 from "@tabler/icons/outline/menu-2.svg?raw"
+import IconEye from "@tabler/icons/outline/eye.svg?raw"
+import IconEyeOff from "@tabler/icons/outline/eye-off.svg?raw"
 
 import { removeIconSize } from "../utils/icon/removeIconSize"
 

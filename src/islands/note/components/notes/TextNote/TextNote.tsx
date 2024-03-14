@@ -14,9 +14,9 @@ import {
 } from 'solid-js'
 import { removeIconSize } from '../../../utils/icon/removeIconSize'
 
-import IconNote from '@tabler/icons/note.svg?raw'
-import IconBold from '@tabler/icons/bold.svg?raw'
-import IconUnderline from '@tabler/icons/underline.svg?raw'
+import IconNote from '@tabler/icons/outline/note.svg?raw'
+import IconBold from '@tabler/icons/outline/bold.svg?raw'
+import IconUnderline from '@tabler/icons/outline/underline.svg?raw'
 
 import { Editor } from '@tiptap/core'
 import { Dialog } from '../../utils/Dialog'

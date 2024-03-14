@@ -2,9 +2,9 @@
 import { createEffect, onMount, onCleanup, createSignal, Show } from 'solid-js'
 import Sheet, { type Sheets } from './Sheet'
 
-import IconArrowsMove from '@tabler/icons/arrows-move.svg?raw'
-import IconHighlight from '@tabler/icons/highlight.svg?raw'
-import IconEraser from '@tabler/icons/eraser.svg?raw'
+import IconArrowsMove from '@tabler/icons/outline/arrows-move.svg?raw'
+import IconHighlight from '@tabler/icons/outline/highlight.svg?raw'
+import IconEraser from '@tabler/icons/outline/eraser.svg?raw'
 
 import { removeIconSize } from '../../../../utils/icon/removeIconSize'
 import { Dialog } from '../../../utils/Dialog'
