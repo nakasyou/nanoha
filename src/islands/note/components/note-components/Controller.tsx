@@ -1,8 +1,8 @@
 
 import { removeIconSize } from "../../utils/icon/removeIconSize"
-import IconX from '@tabler/icons/x.svg?raw'
-import IconArrowNarrowUp from '@tabler/icons/arrow-narrow-up.svg?raw'
-import IconArrowNarrowDown from '@tabler/icons/arrow-narrow-down.svg?raw'
+import IconX from '@tabler/icons/outline/x.svg?raw'
+import IconArrowNarrowUp from '@tabler/icons/outline/arrow-narrow-up.svg?raw'
+import IconArrowNarrowDown from '@tabler/icons/outline/arrow-narrow-down.svg?raw'
 
 export const Controller = (props: {
   onRemove (): void

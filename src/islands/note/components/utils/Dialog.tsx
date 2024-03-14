@@ -1,5 +1,5 @@
 
-import IconX from '@tabler/icons/x.svg?raw'
+import IconX from '@tabler/icons/outline/x.svg?raw'
 import { removeIconSize } from '../../utils/icon/removeIconSize'
 import { Show, createSignal } from 'solid-js'
 

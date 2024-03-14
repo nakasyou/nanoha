@@ -1,12 +1,12 @@
 
 import { createSignal } from "solid-js"
-import IconPlus from '@tabler/icons/plus.svg?raw'
-import IconNote from '@tabler/icons/notebook.svg?raw'
-import IconPhotoScan from '@tabler/icons/photo-scan.svg?raw'
+import IconPlus from '@tabler/icons/outline/plus.svg?raw'
+import IconNote from '@tabler/icons/outline/notebook.svg?raw'
+import IconPhotoScan from '@tabler/icons/outline/photo-scan.svg?raw'
 
 import { removeIconSize } from "../utils/icon/removeIconSize"
 import { noteBookState, setNoteBookState } from '../store'
-import Pencil from '@tabler/icons/pencil.svg?raw'
+import Pencil from '@tabler/icons/outline/pencil.svg?raw'
 
 export interface Props {
   onAddTextNote?: () =>  void

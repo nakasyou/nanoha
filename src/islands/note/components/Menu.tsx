@@ -1,6 +1,6 @@
 
 import { noteBookState, notes, setNoteBookState } from '../store'
-import IconX from '@tabler/icons/x.svg?raw'
+import IconX from '@tabler/icons/outline/x.svg?raw'
 import { removeIconSize } from '../utils/icon/removeIconSize'
 import { save, type LoadError } from '../utils/file-format'
 import { Dialog } from './utils/Dialog'
