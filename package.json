@@ -28,7 +28,7 @@
     "array-move": "^4.0.0",
     "astro": "4.5.12",
     "classnames": "^2.3.2",
-    "dexie": "^3.2.4",
+    "dexie": "^4.0.1",
     "fast-glob": "^3.3.2",
     "fflate": "^0.8.0",
     "mikanui": "^0.1.12",
