@@ -1,7 +1,7 @@
 ---
 import App from '../../layouts/App.astro'
 import { CreateNote } from '../../islands/app/CreateNote.qwik'
-import { NoteList } from '../../islands/note-list/list'
+import { NoteList } from '../../islands/note-list/list.qwik'
 
 //export const prerender = true
 ---
@@ -11,7 +11,7 @@ import { NoteList } from '../../islands/note-list/list'
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-0">
         <div class="text-2xl">すべてのノート</div>
       </div>
-      <NoteList client:only="solid-js" />
+      <NoteList />
     </div>
   </div>
   <CreateNote />
