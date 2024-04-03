@@ -15,7 +15,7 @@ if ((/^local\-.+$/).test(noteId)) {
   }
 }
 ---
-<Base title="" description="nanohanote app" useViewTransitions={true} noIndex={true} bodyClass="bg-background text-on-background">
+<Base title="" description="nanohanote app" useViewTransitions={false} noIndex={true} bodyClass="bg-background text-on-background">
   <NanohaNoteApp client:load noteLoadType={noteLoadType} />
 </Base>
 <style is:global>

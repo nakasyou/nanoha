@@ -1,17 +1,18 @@
 /** @jsxImportSource @builder.io/qwik */
-import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik'
+import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik'
 import { NotesDB, type Notes } from '../note/notes-schema'
 
-export const NoteList = component$(() => {
+export const NoteList = component$((props) => {
   const notes = useSignal<Notes[] | null>(null)
-  let db = null //useSignal<NotesDB | null>(null)
+
+  const update = $(async () => {
+    notes.value = null
+    const notesDB = new NotesDB()
+    notes.value = await notesDB.notes.toArray()
+  })
 
   useVisibleTask$(() => {
-    const notesDB = new NotesDB()
-    db = notesDB
-    ;(async () => {
-      notes.value = await notesDB.notes.toArray()
-    })()
+    update()
   })
   return (
     <div>
@@ -19,9 +20,9 @@ export const NoteList = component$(() => {
         notes.value.length === 0 ? (
           <div>ノートがありません</div>
         ) : (
-          <div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             {notes.value.map((note) => (
-              <div class="border p-2 bg-surface rounded border-outline">
+              <div class="border bg-surface rounded border-outline p-2">
                 <a href={`/app/notes/local-${note.id}`}>
                   <div class="text-lg">{note.name}</div>
                 </a>
@@ -42,12 +43,12 @@ export const NoteList = component$(() => {
                   <button
                     class="underline hover:no-underline"
                     onClick$={async (e) => {
-                      /*e.preventDefault()
-                    if (!confirm(`ノート「${note.name}」を削除しますか？`)) {
-                      return
-                    }
-                    await db.notes.delete(note.id!)
-                    props.update()*/
+                      e.preventDefault()
+                      if (!confirm(`ノート「${note.name}」を削除しますか？`)) {
+                        return
+                      }
+                      await new NotesDB().notes.delete(note.id!)
+                      update()
                     }}
                   >
                     削除
