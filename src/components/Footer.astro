@@ -1,5 +1,6 @@
 ---
 import IconBrandGithub from '@tabler/icons/outline/brand-github.svg?raw'
+import { removeIconSize } from '../islands/note/utils/icon/removeIconSize'
 ---
 <div class="bg-surface-container text-surface-container">
   <div class="mx-5">
@@ -7,7 +8,7 @@ import IconBrandGithub from '@tabler/icons/outline/brand-github.svg?raw'
       <div>
         <div class="font-bold">SOCIAL</div>
         <div class="grid grid-cols-4">
-          <a href='https://github.com/nakasyou/nanoha' title="GitHub" set:html={IconBrandGithub} />
+          <a href='https://github.com/nakasyou/nanoha' title="GitHub" class="w-10 h-10" set:html={removeIconSize(IconBrandGithub)} />
         </div>
       </div>
       <div>
