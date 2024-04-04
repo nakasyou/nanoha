@@ -1,4 +1,3 @@
-
 import { createEffect, onMount, onCleanup, createSignal, Show } from 'solid-js'
 import Sheet, { type Sheets } from './Sheet'
 
@@ -234,10 +233,12 @@ export default (props: Props) => {
   }
   const onWheel = (evt: WheelEvent) => {
     const lastEditorPosition = editorPosition()
-    setEditorPosition({
+    scaleDatas.baseScale *= evt.deltaY > 0 ? 0.9 : 1.1
+    scaleDatas.end()
+        /*setEditorPosition({
       ...lastEditorPosition,
       size: lastEditorPosition.size * (evt.deltaY > 0 ? 0.9 : 1.1),
-    })
+    })*/
   }
   const sheetClicked = (sheetIndex: number) => {
     if (editMode() === 'clear') {
@@ -252,11 +253,18 @@ export default (props: Props) => {
   let forGetTouchRef!: HTMLDivElement
 
   onMount(() => {
-    document.onpointerdown = pointerDown
-    document.onpointermove = pointerMove
-    document.onpointerup = pointerUp
-    document.onpointercancel = pointerUp
-    document.onwheel = onWheel
+    document.addEventListener('pointerdown', pointerDown)
+    document.addEventListener('pointermove', pointerMove)
+    document.addEventListener('pointerup', pointerUp)
+    document.addEventListener('pointercancel', pointerUp)
+    document.addEventListener('wheel', onWheel)
+  })
+  onCleanup(() => {
+    document.removeEventListener('pointerdown', pointerDown)
+    document.removeEventListener('pointermove', pointerMove)
+    document.removeEventListener('pointerup', pointerUp)
+    document.removeEventListener('pointercancel', pointerUp)
+    document.removeEventListener('wheel', onWheel)
   })
   return (
     <div>
