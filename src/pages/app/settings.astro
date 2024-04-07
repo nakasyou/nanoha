@@ -1,0 +1,17 @@
+---
+import App from '../../layouts/App.astro'
+import { CreateNote } from '../../islands/app/CreateNote.qwik'
+import { NoteList } from '../../islands/note-list/list.qwik'
+import { GeminiApiToken } from '../../islands/settings/index.qwik'
+---
+<App title="Notes | Nanoha" description="Settings | Nanoha" useViewTransitions={false} bodyClass="text-on-background bg-background">
+  <div class="px-5 py-2 h-full overflow-auto">
+    <div class="text-3xl">Settings</div>
+    <hr class="my-1" />
+    <div>
+      <div class="text-lg">Gemini API Token</div>
+      <div>AI機能を使うのに必須です</div>
+      <GeminiApiToken />
+    </div>
+  </div>
+</App>

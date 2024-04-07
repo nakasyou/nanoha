@@ -14,6 +14,7 @@ export const NoteList = component$((props) => {
   useVisibleTask$(() => {
     update()
   })
+  console.log(1)
   return (
     <div>
       {notes.value ? (
