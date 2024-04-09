@@ -18,7 +18,7 @@ import { removeIconSize } from '../islands/note/utils/icon/removeIconSize'
         <slot />
       </div>
     </div>
-    <div class="grid grid-cols-2 lg:grid-rows-2 place-items-center">
+    <div class="grid grid-cols-2 lg:grid-rows-2 lg:grid-cols-1 place-items-center">
       <a href="/app" title="Home">
         <div set:html={removeIconSize(iconHome)} class="w-10 h-10" /> 
       </a>
