@@ -1,11 +1,30 @@
 ---
 import Base from './Base.astro'
 import { Navbar } from '../islands/app/navbar'
+import iconHome from '@tabler/icons/outline/home.svg?raw'
+import iconSettings from '@tabler/icons/outline/settings.svg?raw'
+import { removeIconSize } from '../islands/note/utils/icon/removeIconSize'
 ---
-<Base title="Notes | Nanoha" description="Notes | Nanoha" useViewTransitions={true} bodyClass="text-on-background bg-background">
-  <div class="flex flex-col md:flex-row">
-    <div class="px-5 py-2 h-[100dvh] overflow-auto grow">
-      <slot />
+
+<Base
+  title="Notes | Nanoha"
+  description="Notes | Nanoha"
+  useViewTransitions={true}
+  bodyClass="text-on-background bg-background h-[100dvh]"
+>
+  <div class="flex flex-col lg:flex-row-reverse h-full">
+    <div class="px-5 py-2 overflow-auto grow h-full flex-1">
+      <div class="">
+        <slot />
+      </div>
+    </div>
+    <div class="grid grid-cols-2 lg:grid-rows-2 lg:grid-cols-1 place-items-center">
+      <a href="/app" title="Home">
+        <div set:html={removeIconSize(iconHome)} class="w-10 h-10" /> 
+      </a>
+      <a href="/app/settings" title="Home">
+        <div set:html={removeIconSize(iconSettings)} class="w-10 h-10" /> 
+      </a>
     </div>
   </div>
 </Base>

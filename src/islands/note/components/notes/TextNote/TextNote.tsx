@@ -181,7 +181,7 @@ export const TextNote = ((props: Props) => {
                 <button
                   class="grid drop-shadow-none"
                   onClick={() => {
-                    getEditor()?.chain().focus()[data.toggle]()
+                    getEditor()?.chain().focus()[data.toggle]().run()
                   }}
                   classList={{
                     'bg-secondary-container text-secondary rounded':

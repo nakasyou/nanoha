@@ -1,5 +1,5 @@
 /** @jsxImportSource @builder.io/qwik */
-import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik'
+import { $, component$, useOnDocument, useSignal, useVisibleTask$ } from '@builder.io/qwik'
 import { NotesDB, type Notes } from '../note/notes-schema'
 
 export const NoteList = component$((props) => {
@@ -11,9 +11,12 @@ export const NoteList = component$((props) => {
     notes.value = await notesDB.notes.toArray()
   })
 
-  useVisibleTask$(() => {
+  useOnDocument('load', $(() => {
     update()
-  })
+  }))
+  useOnDocument('astro:page-load', $(() => {
+    update()
+  }))
   return (
     <div>
       {notes.value ? (

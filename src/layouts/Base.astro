@@ -40,14 +40,18 @@ nomalizedUrl.protocol = 'https://'
     <meta property="og:description" content={Astro.props.description}>
     <meta property="og:site_name" content="Nanoha">
     <meta property="og:type" content={Astro.props.ogpType ?? 'website'}>
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-NZHP315KF8"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+    {
+      import.meta.env.PROD && <>
+        <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-NZHP315KF8"></script>
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
 
-      gtag('config', 'G-NZHP315KF8');
-    </script>
+          gtag('config', 'G-NZHP315KF8');
+        </script>
+      </>
+    }
     {
       Astro.props.noIndex && <meta name="robots" content="noindex" />
     }
@@ -66,5 +70,10 @@ nomalizedUrl.protocol = 'https://'
   </head>
   <body class={Astro.props.bodyClass}>
     <slot />
+    <script is:inline>
+      document.addEventListener('astro:page-load', () => {
+        document.dispatchEvent(new CustomEvent("nanoha:qwik-init"))
+      })
+    </script>
   </body>
 </html>
