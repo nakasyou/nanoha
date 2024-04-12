@@ -7,6 +7,7 @@ import {
   useSignal,
   useVisibleTask$
 } from '@builder.io/qwik'
+import { getGeminiApiToken } from '../shared/store'
 
 export const GeminiApiToken = component$(() => {
   const hasGeminiApiToken = useSignal<boolean | null>(null)
@@ -14,7 +15,7 @@ export const GeminiApiToken = component$(() => {
   const inputApiTokenValue = useSignal('')
 
   const onload = $(() => {
-    hasGeminiApiToken.value = !!localStorage.getItem('GEMINI_API_TOKEN')
+    hasGeminiApiToken.value = !!getGeminiApiToken()
   })
   useOnDocument('load', onload)
   useOnDocument('astro:page-load', onload)

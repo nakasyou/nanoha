@@ -17,6 +17,7 @@ import { removeIconSize } from '../../../utils/icon/removeIconSize'
 import IconNote from '@tabler/icons/outline/note.svg?raw'
 import IconBold from '@tabler/icons/outline/bold.svg?raw'
 import IconUnderline from '@tabler/icons/outline/underline.svg?raw'
+import IconSparkles from '@tabler/icons/outline/sparkles.svg?raw'
 
 import { Editor, isActive } from '@tiptap/core'
 import { Dialog } from '../../utils/Dialog'
@@ -27,6 +28,7 @@ import { Player } from './Player'
 import './TextNoteStyle.css'
 import type { SetStoreFunction } from 'solid-js/store'
 import { getVisualViewport } from '../../../window-apis'
+import { generateWithLLM } from '../../../../shared/ai'
 
 export interface Props extends NoteComponentProps {
   noteData: TextNoteData
@@ -115,6 +117,16 @@ export const TextNote = ((props: Props) => {
       editor?.destroy()
     }
   })
+
+  const handleGenerate = async () => {
+    const stream = generateWithLLM('こんにちは')
+    if (!stream) {
+      return
+    }
+    for await (const text of stream()) {
+      console.log(text)
+    }
+  }
   return (
     <div class="my-2">
       <Show when={isShowCloseDialog()}>
@@ -166,16 +178,18 @@ export const TextNote = ((props: Props) => {
       </div>
 
       <Show when={getIsActive()}>
-        <div class="flex flex-col justify-center gap-2">
-          <div
-            class="flex justify-center gap-2 fixed left-0 w-full"
-            style={{
-              top:
-                (getVisualViewport()?.data?.height ?? 0) +
-                (getVisualViewport()?.data?.pageTop ?? 0) -
-                32 + 'px'
-            }}
-          >
+        <div
+          class="fixed left-0 w-full flex justify-center"
+          style={{
+            top:
+              (getVisualViewport()?.data?.height ?? 0) +
+              (getVisualViewport()?.data?.pageTop ?? 0) -
+              32 +
+              'px'
+          }}
+        >
+          <div />
+          <div class="flex justify-center gap-2 bg-white p-1 pb-0 mb-1 rounded-md">
             <For each={controllerItems}>
               {(data) => (
                 <button
@@ -192,15 +206,24 @@ export const TextNote = ((props: Props) => {
                 </button>
               )}
             </For>
+            <button
+              class="grid drop-shadow-none"
+              onClick={() => {
+                handleGenerate()
+              }}
+            >
+              <div innerHTML={removeIconSize(IconSparkles)} class="w-8 h-8" />
+            </button>
           </div>
-          <Controller
-            noteIndex={props.index}
-            notesLength={props.notes.length}
-            onRemove={() => setIsShowCloseDialog(true)}
-            onUpNote={() => props.up()}
-            onDownNote={() => props.down()}
-          />
+          <div />
         </div>
+        <Controller
+          noteIndex={props.index}
+          notesLength={props.notes.length}
+          onRemove={() => setIsShowCloseDialog(true)}
+          onUpNote={() => props.up()}
+          onDownNote={() => props.down()}
+        />
       </Show>
     </div>
   )
