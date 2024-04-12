@@ -39,7 +39,7 @@
     "vite-imagetools": "^7.0.0"
   },
   "devDependencies": {
-    "@astrojs/solid-js": "^3.0.1",
+    "@astrojs/solid-js": "^4.1.0",
     "bun-types": "^1.0.7",
     "esbuild": "^0.20.1",
     "hono": "^4.0.1",
