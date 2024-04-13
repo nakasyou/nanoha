@@ -12,7 +12,6 @@
   "dependencies": {
     "@astrojs/cloudflare": "^10.0.0",
     "@astrojs/sitemap": "^3.0.5",
-    "@astrojs/svelte": "latest",
     "@astrojs/tailwind": "^5.1.0",
     "@builder.io/qwik": "^1.4.5",
     "@google/generative-ai": "^0.6.0",
@@ -25,7 +24,7 @@
     "@tiptap/pm": "^2.1.11",
     "@tiptap/starter-kit": "^2.2.1",
     "array-move": "^4.0.0",
-    "astro": "4.5.17",
+    "astro": "4.6.0",
     "classnames": "^2.3.2",
     "dexie": "^4.0.1",
     "fast-glob": "^3.3.2",
@@ -34,19 +33,18 @@
     "mikanui": "^0.1.12",
     "sharp": "0.33.3",
     "solid-js": "^1.7.12",
-    "svelte": "^4.2.1",
     "tailwindcss": "^3.0.24",
     "typescript": "^5.3.3",
     "valibot": "^0.30.0",
     "vite-imagetools": "^7.0.0"
   },
   "devDependencies": {
-    "@astrojs/solid-js": "^3.0.1",
     "@types/markdown-it": "^14.0.0",
+    "@astrojs/solid-js": "^4.1.0",
     "bun-types": "^1.0.7",
     "esbuild": "^0.20.1",
     "hono": "^4.0.1",
     "queue-tick": "^1.0.1",
-    "yallist": "^4.0.0"
+    "yallist": "^5.0.0"
   }
 }
