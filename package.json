@@ -12,7 +12,6 @@
   "dependencies": {
     "@astrojs/cloudflare": "^10.0.0",
     "@astrojs/sitemap": "^3.0.5",
-    "@astrojs/svelte": "latest",
     "@astrojs/tailwind": "^5.1.0",
     "@builder.io/qwik": "^1.4.5",
     "@qwikdev/astro": "^0.5.14",
@@ -32,7 +31,6 @@
     "mikanui": "^0.1.12",
     "sharp": "0.33.3",
     "solid-js": "^1.7.12",
-    "svelte": "^4.2.1",
     "tailwindcss": "^3.0.24",
     "typescript": "^5.3.3",
     "valibot": "^0.30.0",
