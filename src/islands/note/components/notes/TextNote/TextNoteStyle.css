@@ -22,6 +22,11 @@
     & ol {
         @apply list-decimal list-inside;
     }}
+.nanohanote-textnote-styler {
+    & li {
+        @apply mr-2;
+    }
+}
 .textnote-tiptap-container .tiptap {
     @apply p-2
 }

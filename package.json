@@ -30,6 +30,7 @@
     "dexie": "^4.0.1",
     "fast-glob": "^3.3.2",
     "fflate": "^0.8.0",
+    "markdown-it": "^14.1.0",
     "mikanui": "^0.1.12",
     "sharp": "0.33.3",
     "solid-js": "^1.7.12",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@astrojs/solid-js": "^3.0.1",
+    "@types/markdown-it": "^14.0.0",
     "bun-types": "^1.0.7",
     "esbuild": "^0.20.1",
     "hono": "^4.0.1",

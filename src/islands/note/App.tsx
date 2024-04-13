@@ -2,7 +2,7 @@ import Notes from './components/Notes'
 import  { createTextNote } from './components/notes/TextNote'
 import Header from './components/Header'
 import Fab from './components/Fab'
-import { Show, createEffect, createSignal, onMount, onCleanup } from 'solid-js'
+import { Show, createSignal, onMount, onCleanup } from 'solid-js'
 
 import './App.css'
 import { createImageNote } from './components/notes/ImageNote'

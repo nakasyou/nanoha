@@ -1,13 +1,11 @@
 import type { NoteComponent, NoteComponentProps } from '../../notes-utils'
 import StarterKit from '@tiptap/starter-kit'
 import type { TextNoteData } from './types'
-import { ExtensionSheet } from './tiptap/PluginSheet'
+import { ExtensionSheet, ExtensionPreviewLLM } from './tiptap/plugins'
 import { Underline } from '@tiptap/extension-underline'
 import {
   For,
-  Match,
   Show,
-  Switch,
   createEffect,
   createSignal,
   onMount
@@ -19,7 +17,7 @@ import IconBold from '@tabler/icons/outline/bold.svg?raw'
 import IconUnderline from '@tabler/icons/outline/underline.svg?raw'
 import IconSparkles from '@tabler/icons/outline/sparkles.svg?raw'
 
-import { Editor, isActive } from '@tiptap/core'
+import { Editor, } from '@tiptap/core'
 import { Dialog } from '../../utils/Dialog'
 import { Controller } from '../../note-components/Controller'
 import { noteBookState } from '../../../store'
@@ -29,6 +27,9 @@ import './TextNoteStyle.css'
 import type { SetStoreFunction } from 'solid-js/store'
 import { getVisualViewport } from '../../../window-apis'
 import { generateWithLLM } from '../../../../shared/ai'
+import markdownIt from 'markdown-it'
+
+const markdownParser = markdownIt()
 
 export interface Props extends NoteComponentProps {
   noteData: TextNoteData
@@ -45,6 +46,8 @@ export const TextNote = ((props: Props) => {
   const [getIsActiveUndlerline, setIsActiveUndlerline] = createSignal(false)
   const [getIsActive, setIsActive] = createSignal(false)
   const [isShowCloseDialog, setIsShowCloseDialog] = createSignal(false)
+  const [getIsShowLlmPromptDialog, setIsShowLlmPromptDialog] = createSignal(false)
+  const [getPrompt, setPrompt] = createSignal('')
 
   const controllerItems = [
     {
@@ -79,6 +82,7 @@ export const TextNote = ((props: Props) => {
         ExtensionSheet({
           sheetClassName: ''
         }),
+        ExtensionPreviewLLM,
         Underline
       ],
       content: props.noteData.canToJsonData.html
@@ -99,6 +103,7 @@ export const TextNote = ((props: Props) => {
   })
   const saveContent = () => {
     props.setNoteData('canToJsonData', 'html', getEditor()?.getHTML() || '')
+    console.log(getEditor()?.getJSON())
     props.updated()
   }
 
@@ -118,14 +123,37 @@ export const TextNote = ((props: Props) => {
     }
   })
 
-  const handleGenerate = async () => {
-    const stream = generateWithLLM('こんにちは')
-    if (!stream) {
+  const insertWithGenerate = async (prompt: string) => {
+    const editor = getEditor()
+    if (!editor) {
       return
     }
-    for await (const text of stream()) {
-      console.log(text)
+    const paragraphId = Math.random().toString()
+    editor.commands.setNode('llmpreview', { id: paragraphId })
+    const pre = editor.$node('llmpreview', { id: paragraphId })!
+    //console.log(pos, editor.state.selection.$anchor.p
+
+    const stream = generateWithLLM(`あなたは学習用テキスト生成AIです。
+Write about the last matter, observing the following caveats.
+- Answer in line with the language of the question.
+- Output in Markdown. 人物、年号、名詞、地名やその他などの重要な語彙は、\`((important word))\`のように二重括弧で囲みなさい。
+User request:
+${prompt}`)
+    if (!stream) {
+      alert('Gemini API Keyが設定されていません')
+      return
     }
+    let rawText = ''
+    for await (const text of stream) {
+      rawText += text
+      pre.content = rawText//markdownParser.render(rawText)
+    }
+    editor.commands.deleteNode(pre.node.type)
+    //pre.content = ''
+    editor.commands.insertContent(
+      markdownParser.render(rawText)
+        .replace(/\(\([\s\S]*?\)\)/g, str => `<span data-nanohasheet="true">${str.slice(2, -2)}</span>`)
+    )
   }
   return (
     <div class="my-2">
@@ -142,6 +170,20 @@ export const TextNote = ((props: Props) => {
           title="削除しますか?"
         >
           ノートを削除すると、元に戻せなくなる可能性があります。
+        </Dialog>
+      </Show>
+      <Show when={getIsShowLlmPromptDialog()}>
+        <Dialog onClose={(result) => {
+          setIsShowLlmPromptDialog(false)
+          if (result) {
+            insertWithGenerate(getPrompt())
+          }
+        }} type='confirm' title='Generate with AI'>
+          <div>
+            <textarea placeholder='Enter prompt...' oninput={(evt) => {
+              setPrompt(evt.currentTarget.value)
+            }}></textarea>
+          </div>
         </Dialog>
       </Show>
 
@@ -209,7 +251,7 @@ export const TextNote = ((props: Props) => {
             <button
               class="grid drop-shadow-none"
               onClick={() => {
-                handleGenerate()
+                setIsShowLlmPromptDialog(true)
               }}
             >
               <div innerHTML={removeIconSize(IconSparkles)} class="w-8 h-8" />
