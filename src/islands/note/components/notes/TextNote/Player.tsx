@@ -7,7 +7,6 @@ export const Player = (props: { html: string }) => {
     //newHtml = newHtml.replace(/class=\"nanoha-sheet/, 'class="nanoha-sheet nanoha-sheet-playing')
     return newHtml
   })
-  
   let ref: HTMLDivElement | undefined
 
   let sheetElements: HTMLSpanElement[]

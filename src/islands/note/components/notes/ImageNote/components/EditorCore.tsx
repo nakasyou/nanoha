@@ -147,9 +147,6 @@ export default (props: Props) => {
       }))
     }
   }
-  createEffect(() => {
-    console.log(editorContainerRect())
-  })
   const pointerMove = (evt: PointerEvent) => {
     evt.preventDefault()
     if (!(evt.pointerId in pointersData)) {

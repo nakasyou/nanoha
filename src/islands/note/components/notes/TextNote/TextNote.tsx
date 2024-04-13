@@ -103,7 +103,6 @@ export const TextNote = ((props: Props) => {
   })
   const saveContent = () => {
     props.setNoteData('canToJsonData', 'html', getEditor()?.getHTML() || '')
-    console.log(getEditor()?.getJSON())
     props.updated()
   }
 
@@ -131,13 +130,16 @@ export const TextNote = ((props: Props) => {
     const paragraphId = Math.random().toString()
     editor.commands.setNode('llmpreview', { id: paragraphId })
     const pre = editor.$node('llmpreview', { id: paragraphId })!
-    //console.log(pos, editor.state.selection.$anchor.p
-
     const stream = generateWithLLM(`あなたは学習用テキスト生成AIです。
 Write about the last matter, observing the following caveats.
 - Answer in line with the language of the question.
-- Output in Markdown. 人物、年号、名詞、地名やその他などの重要な語彙は、\`((important word))\`のように二重括弧で囲みなさい。
-User request:
+- Output in Markdown. 人物、年号、名詞、地名やその他などの重要な語彙は、
+
+> ((important word))
+
+のように二重括弧で囲みなさい。
+
+User request (write an answer using request language):
 ${prompt}`)
     if (!stream) {
       alert('Gemini API Keyが設定されていません')
