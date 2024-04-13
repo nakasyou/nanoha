@@ -180,11 +180,14 @@ ${prompt}`)
           if (result) {
             insertWithGenerate(getPrompt())
           }
-        }} type='confirm' title='Generate with AI'>
+        }} type='confirm' title='Generate with AI' okLabel='生成'>
           <div>
-            <textarea placeholder='Enter prompt...' oninput={(evt) => {
-              setPrompt(evt.currentTarget.value)
-            }}></textarea>
+            <label>
+              <div>AIに入力するプロンプトを入力:</div>
+              <textarea placeholder='水の電気分解について、小学生でもわかるように説明して...' oninput={(evt) => {
+                setPrompt(evt.currentTarget.value)
+              }} class='border rounded-lg w-full p-1 border-outlined bg-surface'></textarea>
+            </label>
           </div>
         </Dialog>
       </Show>
