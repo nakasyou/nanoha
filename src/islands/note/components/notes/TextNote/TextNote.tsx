@@ -142,7 +142,9 @@ Write about the last matter, observing the following caveats.
 User request (write an answer using request language):
 ${prompt}`)
     if (!stream) {
-      alert('Gemini API Keyが設定されていません')
+      if (confirm('AI 機能が設定されていません。\n設定を開きますか？')) {
+        location.href = '/app/settings#ai'
+      }
       return
     }
     let rawText = ''
