@@ -133,11 +133,11 @@ export const TextNote = ((props: Props) => {
     const stream = generateWithLLM(`あなたは学習用テキスト生成AIです。
 Write about the last matter, observing the following caveats.
 - Answer in line with the language of the question.
-- Output in Markdown. 人物、年号、名詞、地名やその他などの重要な語彙は、
+- Output in Markdown. 人物、年号、名詞、地名やその他などの重要な部分は、
 
 > ((important word))
 
-のように二重括弧で囲みなさい。
+のように二重括弧で囲みなさい。重要部分は、1回答に最低でも2個入れなさい。
 
 User request (write an answer using request language):
 ${prompt}`)
