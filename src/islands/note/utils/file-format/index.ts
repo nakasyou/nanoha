@@ -160,7 +160,6 @@ export const load = async (data: Blob): Promise<LoadResult> => {
     }
     const blobs: Record<string, Blob> = {}
     for (const [name, mime] of Object.entries(noteDefineJsonData.blobMimetypes)) {
-      console.log(noteDefineJsonData)
       const blobPath = `${noteFolder}/blobs/${name}`
       const blob = unzipped[blobPath]
       if (!blob) {

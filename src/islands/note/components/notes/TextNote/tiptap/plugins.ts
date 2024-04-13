@@ -1,5 +1,5 @@
 import {
-  Extension,
+  Node,
   Mark,
   mergeAttributes,
   type AnyExtension,
@@ -16,13 +16,49 @@ declare module '@tiptap/core' {
   }
 }
 
+export const ExtensionPreviewLLM = Node.create({
+  name: 'llmpreview',
+  group: 'block',
+
+  content: 'inline*',
+  addAttributes() {
+    return {
+      id: {
+        default: 'aa'
+      }
+    }
+  },
+  parseHTML() {
+    return [
+      {
+        tag: 'pre',
+        getAttrs: element => {
+          if (typeof element === "string") {
+            return false
+          }
+          const result = 'llmpreview' in element.dataset ? {
+            id: element.id,
+            dataset: element.dataset
+          } : false
+          return result
+        }
+      }
+    ]
+  },
+  renderHTML(props) {
+    return [
+      'pre', mergeAttributes(props.HTMLAttributes, {
+        "data-llmpreview": "true",
+      }), 0
+    ]
+  }
+})
 export const ExtensionSheet = (opts: {
   sheetClassName?: string
-
 }): AnyExtension => Mark.create({
   name: 'sheet',
   priority: 1000,
-  addOptions () {
+  addOptions() {
     return {
       HTMLAttributes: {},
     }
@@ -41,7 +77,7 @@ export const ExtensionSheet = (opts: {
       },
     ];
   },
-  
+
   renderHTML({ HTMLAttributes }) {
     return ['span', mergeAttributes(HTMLAttributes, {
       class: "nanoha-sheet " + (opts.sheetClassName || ''),

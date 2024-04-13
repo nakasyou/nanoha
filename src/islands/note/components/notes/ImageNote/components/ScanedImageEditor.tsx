@@ -32,9 +32,6 @@ export const ScanedImageEditor = (props: Props) => {
     }
     scanInputRef.click()
   }
-  createEffect(() => {
-    console.log(props.noteData.canToJsonData)
-  })
   return (
     <Dialog
       type="custom"

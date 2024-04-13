@@ -18,7 +18,7 @@ export default (props: Props) => {
     const [isOpen, setIsOpen] = createSignal(false)
     
     return <>
-      <div class="grid gap-2 justify-center mb-3 transition duration-75 origin-bottom touch-manipulation" classList={{
+      <div class="grid gap-2 justify-center mb-3 transition duration-150 origin-bottom touch-manipulation" classList={{
         'scale-0': !isOpen(),
         'scale-100': isOpen()
       }}>

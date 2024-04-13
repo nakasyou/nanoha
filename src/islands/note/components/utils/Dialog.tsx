@@ -32,6 +32,8 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
 
   title: string
   class?: string
+
+  okLabel?: string
 } & ('custom' extends T ? {
   dialog: ReturnType<typeof createDialog<U>>
 } : {})) => {
@@ -74,11 +76,11 @@ export const Dialog = <T extends DialogStyle, U extends any = any> (props: {
       {
         (props.type === 'confirm' || props.type === 'alert') &&  <div>
         <div class="flex justify-center items-center gap-2 flex-wrap mx-5">
-          <button class="outlined-button" onClick={() => close(
+          <button class="filled-button" onClick={() => close(
             // @ts-expect-error
             true)}>
             {
-              props.type === 'alert' ? 'OK' : 'はい'
+              props.okLabel ?? (props.type === 'alert' ? 'OK' : 'はい')
             }
           </button>
           <Show when={props.type !== 'alert'}>
