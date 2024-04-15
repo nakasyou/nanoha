@@ -8,7 +8,8 @@ import {
   Show,
   createEffect,
   createSignal,
-  onMount
+  onMount,
+  onCleanup
 } from 'solid-js'
 import { removeIconSize } from '../../../utils/icon/removeIconSize'
 
@@ -38,6 +39,7 @@ export interface Props extends NoteComponentProps {
 
 export const TextNote = ((props: Props) => {
   let editorRef!: HTMLDivElement
+  let llmTextArea!: HTMLTextAreaElement
 
   const [getEditor, setEditor] = createSignal<Editor>()
 
@@ -135,7 +137,7 @@ Write about the last matter, observing the following caveats.
 - Answer in line with the language of the question.
 - Output in Markdown. 人物、年号、名詞、地名やその他などの重要な部分は、
 
-> ((important word))
+((important word))
 
 のように二重括弧で囲みなさい。重要部分は、1回答に最低でも2個入れなさい。
 
@@ -159,6 +161,34 @@ ${prompt}`)
         .replace(/\(\([\s\S]*?\)\)/g, str => `<span data-nanohasheet="true">${str.slice(2, -2)}</span>`)
     )
   }
+  const openGenerateDialog = () => {
+    const editor = getEditor()
+    if (!editor) {
+      return
+    }
+    setIsShowLlmPromptDialog(true)
+    llmTextArea.focus()
+
+    const { from, to, empty } = editor.state.selection
+    if (empty) {
+      return
+    }
+    llmTextArea.value = editor.state.doc.textBetween(from, to, ' ')
+    llmTextArea.select()
+  }
+
+  const handleAltG = (evt: KeyboardEvent) => {
+    if (evt.altKey && evt.key === 'g') {
+      openGenerateDialog()
+      evt.preventDefault()
+    }
+  }
+  onMount(() => {
+    document.addEventListener('keydown', handleAltG)
+  })
+  onCleanup(() => {
+    document.removeEventListener('keydown', handleAltG)
+  })
   return (
     <div class="my-2">
       <Show when={isShowCloseDialog()}>
@@ -182,16 +212,19 @@ ${prompt}`)
           if (result) {
             insertWithGenerate(getPrompt())
           }
-        }} type='confirm' title='Generate with AI' okLabel='生成'>
-          <div>
-            <label>
-              <div>AIに入力するプロンプトを入力:</div>
-              <textarea placeholder='水の電気分解について、小学生でもわかるように説明して...' oninput={(evt) => {
-                setPrompt(evt.currentTarget.value)
-              }} class='border rounded-lg w-full p-1 border-outlined bg-surface'></textarea>
-            </label>
-          </div>
-        </Dialog>
+        }} type='confirm' title='Generate with AI' okLabel='生成'>{close => (<div>
+          <label>
+            <div>AIに入力するプロンプトを入力:</div>
+            <textarea ref={llmTextArea} placeholder='水の電気分解について、小学生でもわかるように説明して...' oninput={(evt) => {
+              setPrompt(evt.currentTarget.value)
+            }} onKeyDown={(evt) => {
+              if (evt.key === 'Enter' && evt.shiftKey) {
+                evt.preventDefault()
+                close(true)
+              }
+            }} class='border rounded-lg w-full p-1 border-outlined bg-surface'></textarea>
+          </label>
+        </div>)}</Dialog>
       </Show>
 
       <Show when={!noteBookState.isEditMode}>
@@ -257,9 +290,7 @@ ${prompt}`)
             </For>
             <button
               class="grid drop-shadow-none"
-              onClick={() => {
-                setIsShowLlmPromptDialog(true)
-              }}
+              onClick={openGenerateDialog}
             >
               <div innerHTML={removeIconSize(IconSparkles)} class="w-8 h-8" />
             </button>
