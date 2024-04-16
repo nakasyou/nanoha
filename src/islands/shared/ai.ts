@@ -19,3 +19,13 @@ export const generateWithLLM = (prompts: string[] | string): null | AsyncGenerat
     }
   })()
 }
+export const generateWithLLMFromImage = () => {
+  const apiKey = getGeminiApiToken()
+  if (!apiKey) {
+    return null
+  }
+  const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({
+    model: 'gemini-pro-vision'
+  })
+  model.generateContentStream()
+}

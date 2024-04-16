@@ -17,6 +17,7 @@ import IconNote from '@tabler/icons/outline/note.svg?raw'
 import IconBold from '@tabler/icons/outline/bold.svg?raw'
 import IconUnderline from '@tabler/icons/outline/underline.svg?raw'
 import IconSparkles from '@tabler/icons/outline/sparkles.svg?raw'
+import IconCamera from '@tabler/icons/outline/camera.svg?raw'
 
 import { Editor, } from '@tiptap/core'
 import { Dialog } from '../../utils/Dialog'
@@ -50,6 +51,7 @@ export const TextNote = ((props: Props) => {
   const [isShowCloseDialog, setIsShowCloseDialog] = createSignal(false)
   const [getIsShowLlmPromptDialog, setIsShowLlmPromptDialog] = createSignal(false)
   const [getPrompt, setPrompt] = createSignal('')
+  const [getIsShownFromImageDialog, setIsShownFromImageDialog] = createSignal(false)
 
   const controllerItems = [
     {
@@ -228,6 +230,43 @@ ${prompt}`)
         </div>)}</Dialog>
       </Show>
 
+      <Show when={getIsShownFromImageDialog()}>
+        <Dialog onClose={(result) => {
+          setIsShowLlmPromptDialog(false)
+          if (result) {
+            insertWithGenerate(getPrompt())
+          }
+        }} type='confirm' title='画像から生成 with AI' okLabel='生成'>{close => {
+          let imageInput!: HTMLInputElement
+          const [getImageUrl, setImageUrl] = createSignal<string>()
+          return <>
+            <Show when={getImageUrl()}>
+              <img src={getImageUrl()} alt="Preview Image" class="w-full h-64 object-contain" />
+            </Show>
+            <div class='flex justify-center flex-wrap gap-2 p-2'>
+              <button onClick={() => {
+                imageInput.capture = 'camera'
+                imageInput.click()
+              }} class='filled-tonal-button'>カメラを開く</button>
+              <span>
+                または
+                <button onClick={() => {
+                  imageInput.capture = ''
+                  imageInput.click()
+                }} class='text-button'>ファイルを開く</button>
+              </span>
+            </div>
+            <input onInput={() => {
+              const file = imageInput.files?.[0]
+              if (!file) {
+                return
+              }
+              setImageUrl(URL.createObjectURL(file))
+            }} type="file" accept="image/*" capture="camera" hidden ref={imageInput} /> 
+          </>
+        }}</Dialog>
+      </Show>
+
       <Show when={!noteBookState.isEditMode}>
         <Player html={getEditor()?.getHTML() || ''} />
       </Show>
@@ -294,6 +333,12 @@ ${prompt}`)
               onClick={openGenerateDialog}
             >
               <div innerHTML={removeIconSize(IconSparkles)} class="w-8 h-8" />
+            </button>
+            <button
+              class="grid drop-shadow-none"
+              onClick={() => setIsShownFromImageDialog(true)}
+            >
+              <div innerHTML={removeIconSize(IconCamera)} class="w-8 h-8" />
             </button>
           </div>
           <div />
