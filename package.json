@@ -14,7 +14,7 @@
     "@astrojs/sitemap": "^3.0.5",
     "@astrojs/tailwind": "^5.1.0",
     "@builder.io/qwik": "^1.4.5",
-    "@google/generative-ai": "^0.6.0",
+    "@google/generative-ai": "^0.7.0",
     "@qwikdev/astro": "^0.5.14",
     "@solid-primitives/keyed": "^1.2.0",
     "@tabler/icons": "^3.0.2",
