@@ -1,5 +1,4 @@
-
-import { noteBookState, notes, setNoteBookState } from '../store'
+import { noteBookMetadata, noteBookState, notes, setNoteBookMetadata, setNoteBookState } from '../store'
 import IconX from '@tabler/icons/outline/x.svg?raw'
 import { removeIconSize } from '../utils/icon/removeIconSize'
 import { save, type LoadError } from '../utils/file-format'
@@ -20,6 +19,9 @@ const CloseBtn = () => {
 }
 export const Menu = () => {
   const [getLoadError, setLoadError] = createSignal<LoadError>()
+  const [getCanEditTitle, setCanEditTitle] = createSignal(false)
+  const [getNewTitle, setNewTitle] = createSignal('')
+
   const onSave = async () => {
     const fileDataBlob = await save(notes.notes())
 
@@ -89,13 +91,34 @@ export const Menu = () => {
               </div>
             </div>
             <div class="flex-1">
-              <div class="mx-5">
-                <div class="text-2xl text-center">Menu</div>
+              <div>
+                <div class='text-center'>
+                  <Show when={getCanEditTitle()} fallback={<>
+                    <div class='text-3xl'>{ noteBookMetadata.noteName }</div>
+                    <button onClick={() => {
+                      setCanEditTitle(true)
+                      setNewTitle(noteBookMetadata.noteName)
+                    }} class='text-button'>編集</button>
+                  </>}>
+                    <div>
+                      <label>
+                        <div>新しい名前を入力:</div>
+                        <input value={noteBookMetadata.noteName} onInput={evt => setNewTitle(evt.currentTarget.value)} class='p-1 rounded-full border text-xl text-center' />
+                      </label>
+                    </div>
+                    <div>
+                      <button onClick={() => {
+                        setNoteBookMetadata('noteName', getNewTitle())
+                        setNoteBookState('isSaved', false)
+                        setCanEditTitle(false)
+                      }} class='text-button'>完了</button>
+                    </div>
+                  </Show>
+                </div>
               </div>
               <div class="text-center">
-                <div>無題のノートブック</div>
                 <div>
-                  保存場所: None
+                  保存場所: ローカル
                 </div>
               </div>
               {/* セーブ/ロード */}

@@ -7,7 +7,7 @@ import { Show, createSignal, onMount, onCleanup } from 'solid-js'
 import './App.css'
 import { createImageNote } from './components/notes/ImageNote'
 import { Menu } from './components/Menu'
-import { noteBookState, notes, setNoteBookState } from './store'
+import { noteBookState, notes, setNoteBookState, setNoteBookMetadata, noteBookMetadata } from './store'
 import type { Props } from '.'
 import { Dialog } from './components/utils/Dialog'
 import { NotesDB } from './notes-schema'
@@ -43,12 +43,14 @@ export default (props: Props) => {
         setLoadError(`ノートID${props.noteLoadType.id}はローカルに存在しませんでした。`)
         return
       }
+      setNoteBookMetadata('noteName', noteResponse.name)
       await loadFromBlob(new Blob([noteResponse.nnote]))
       save = async () => {
         const data = await saveFromNotes(notes.notes())
         db.notes.update(noteResponse, {
           nnote: new Uint8Array(await data.arrayBuffer()),
-          updated: new Date()
+          updated: new Date(),
+          name: noteBookMetadata.noteName
         })
       }
     }
