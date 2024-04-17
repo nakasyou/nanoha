@@ -1,31 +1,42 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenerativeAI, type Part } from '@google/generative-ai'
 import { getGeminiApiToken } from './store'
 
-export const generateWithLLM = (prompts: string[] | string): null | AsyncGenerator<string, void, unknown> => {
+type Prompt = string | Blob
+
+export const generateWithLLM = (input: Prompt[] | Prompt, modelLabel: 'gemini-pro' | 'gemini-pro-vision'): null | AsyncGenerator<string, void, unknown> => {
   const apiKey = getGeminiApiToken()
   if (!apiKey) {
     return null
   }
   const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({
-    model: 'gemini-pro'
+    model: modelLabel
   })
   return (async function* () {
-    const stream = await model.generateContentStream(typeof prompts === 'string' ? prompts : prompts.map(prompt => ({
-      text: prompt
-    })))
+    const prompts = Array.isArray(input) ? input : [input]
+
+    const inputPrompts = await Promise.all(prompts.map(async (prompt) => {
+      if (prompt instanceof Blob) {
+        const b64Image = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve((reader.result as string).split(',')[1]!)
+          reader.readAsDataURL(prompt)
+        })
+      
+        return {
+          inlineData: {
+            data: b64Image,
+            mimeType: prompt.type
+          }
+        }
+      }
+      return {
+        text: prompt
+      }
+    }))
+    const stream = await model.generateContentStream(inputPrompts)
     for await (const res of stream.stream) {
       const text = res.text()
       yield text
     }
   })()
-}
-export const generateWithLLMFromImage = () => {
-  const apiKey = getGeminiApiToken()
-  if (!apiKey) {
-    return null
-  }
-  const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({
-    model: 'gemini-pro-vision'
-  })
-  model.generateContentStream()
 }

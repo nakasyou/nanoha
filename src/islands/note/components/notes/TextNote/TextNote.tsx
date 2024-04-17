@@ -52,6 +52,7 @@ export const TextNote = ((props: Props) => {
   const [getIsShowLlmPromptDialog, setIsShowLlmPromptDialog] = createSignal(false)
   const [getPrompt, setPrompt] = createSignal('')
   const [getIsShownFromImageDialog, setIsShownFromImageDialog] = createSignal(false)
+  const [getImageBlobToGenerate, setImageBlobToGenarate] = createSignal<Blob>()
 
   const controllerItems = [
     {
@@ -127,13 +128,6 @@ export const TextNote = ((props: Props) => {
   })
 
   const insertWithGenerate = async (prompt: string) => {
-    const editor = getEditor()
-    if (!editor) {
-      return
-    }
-    const paragraphId = Math.random().toString()
-    editor.commands.setNode('llmpreview', { id: paragraphId })
-    const pre = editor.$node('llmpreview', { id: paragraphId })!
     const stream = generateWithLLM(`あなたは学習用テキスト生成AIです。
 Write about the last matter, observing the following caveats.
 - Answer in line with the language of the question.
@@ -144,13 +138,25 @@ Write about the last matter, observing the following caveats.
 のように二重括弧で囲みなさい。重要部分は、1回答に最低でも2個入れなさい。
 
 User request (write an answer using request language):
-${prompt}`)
+${prompt}`, 'gemini-pro')
     if (!stream) {
       if (confirm('AI 機能が設定されていません。\n設定を開きますか？')) {
         location.href = '/app/settings#ai'
       }
       return
     }
+    await insertFromStream(stream)
+  }
+  const insertFromStream = async (stream: AsyncGenerator<string, void, unknown>) => {
+    const editor = getEditor()
+    if (!editor) {
+      return
+    }
+    const paragraphId = Math.random().toString()
+    editor.commands.setNode('llmpreview', { id: paragraphId })
+    console.log(editor, paragraphId)
+    const pre = editor.$node('llmpreview', { id: paragraphId })!
+    pre.content = '生成中...'
     let rawText = ''
     for await (const text of stream) {
       rawText += text
@@ -231,10 +237,21 @@ ${prompt}`)
       </Show>
 
       <Show when={getIsShownFromImageDialog()}>
-        <Dialog onClose={(result) => {
-          setIsShowLlmPromptDialog(false)
+        <Dialog onClose={async (result) => {
+          setIsShownFromImageDialog(false)
           if (result) {
-            insertWithGenerate(getPrompt())
+            const file = getImageBlobToGenerate()!
+            const stream = generateWithLLM([
+              `画像から文章をすべて抜き出しなさい。Markdownにしなさい。また、重要な語彙は、((重要単語))のように二重括弧で示しなさい。重要語彙は、1行につき1つ以上`,
+              file
+            ], 'gemini-pro-vision')
+                if (!stream) {
+                  if (confirm('AI 機能が設定されていません。\n設定を開きますか？')) {
+                    location.href = '/app/settings#ai'
+                  }
+                  return
+                }
+            await insertFromStream(stream)
           }
         }} type='confirm' title='画像から生成 with AI' okLabel='生成'>{close => {
           let imageInput!: HTMLInputElement
@@ -261,6 +278,7 @@ ${prompt}`)
               if (!file) {
                 return
               }
+              setImageBlobToGenarate(() => file)
               setImageUrl(URL.createObjectURL(file))
             }} type="file" accept="image/*" capture="camera" hidden ref={imageInput} /> 
           </>
