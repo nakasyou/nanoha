@@ -4,7 +4,6 @@ import { removeIconSize } from '../utils/icon/removeIconSize'
 import { save, type LoadError } from '../utils/file-format'
 import { Dialog } from './utils/Dialog'
 import { Show, createSignal } from 'solid-js'
-import { loadFromBlob } from './load-process'
 
 const CloseBtn = () => {
   return (
@@ -26,31 +25,11 @@ export const Menu = () => {
     const fileDataBlob = await save(notes.notes())
 
     const atagForDownload = document.createElement('a')
-    atagForDownload.download = 'project.zip'
+    atagForDownload.download = 'project.nnote'
 
     atagForDownload.href = URL.createObjectURL(fileDataBlob)
 
     atagForDownload.click()
-  }
-  const onLoad = () => {
-    const inputElement = document.createElement('input')
-    inputElement.type = 'file'
-    inputElement.oninput = async () => {
-      const files = inputElement.files
-      if (!files) {
-        return
-      }
-      const targetFile = files[0]
-      if (!targetFile) {
-        return
-      }
-
-      const error = await loadFromBlob(targetFile)
-      if (error) {
-        setLoadError(error)
-      }
-    }
-    inputElement.click()
   }
 
   return (
@@ -124,11 +103,8 @@ export const Menu = () => {
               {/* セーブ/ロード */}
               <div>
                 <div class="flex justify-center items-center gap-4">
-                  <button class="filled-tonal-button" onClick={onLoad}>
-                    Load
-                  </button>
                   <button class="filled-button" onClick={onSave}>
-                    Save
+                    エクスポート
                   </button>
                 </div>
               </div>
