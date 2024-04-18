@@ -1,5 +1,5 @@
 /** @jsxImportSource @builder.io/qwik */
-import { component$, useSignal, useStore, $ } from '@builder.io/qwik'
+import { component$, useSignal, useStore, $, type QRL, type NoSerialize, noSerialize } from '@builder.io/qwik'
 import { NotesDB } from '../note/notes-schema'
 import { load, saveNoteDatas } from '../note/utils/file-format'
 import iconPlus from '@tabler/icons/outline/plus.svg?raw'
@@ -9,14 +9,14 @@ import { removeIconSize } from '../note/utils/icon/removeIconSize'
 export const CreateNote = component$(() => {
   const isOpenedCreateNoteDialog = useSignal(false)
   const createMode = useSignal<'new' | 'file'>('new')
-  const targetNnote = useSignal<Blob>()
+  const targetNnote = useSignal<NoSerialize<File>>()
   const createError = useSignal('')
 
   const newNoteData = useStore<{
     save: string
-    name: string
+    name: string | null
   }>({
-    name: '無題のノートブック',
+    name: null,
     save: 'local'
   })
   
@@ -45,7 +45,7 @@ export const CreateNote = component$(() => {
     const noteFileBuff = new Uint8Array(await noteFileBlob.arrayBuffer())
 
     const added = await db.notes.add({
-      name: newNoteData.name,
+      name: newNoteData.name ?? `無題のノートブック`,
       updated: new Date(),
       nnote: noteFileBuff
     })
@@ -89,7 +89,7 @@ export const CreateNote = component$(() => {
                 <span>名前: </span>
                 <input onInput$={(evt) => {
                   newNoteData.name = (evt.target as HTMLInputElement)?.value
-                }} id="create-note-name" value={newNoteData.name} class="p-2 rounded-lg border bg-background text-on-background" />
+                }} id="create-note-name" value={newNoteData.name ?? `無題のノートブック`} class="p-2 rounded-lg border bg-background text-on-background" />
               </label>
               <label>
                 <span>保存先: </span>
@@ -104,7 +104,9 @@ export const CreateNote = component$(() => {
                   <label>
                     nnoteファイル:
                     <input type='file' onInput$={evt => {
-                      targetNnote.value = (evt.target as HTMLInputElement).files?.[0]
+                      const file = (evt.target as HTMLInputElement).files?.[0]
+                      targetNnote.value = noSerialize(file)
+                      newNoteData.name = newNoteData.name ?? file?.name.replace(/\.nnote$/, '') ?? null
                     }} />
                   </label>
                 </div>
