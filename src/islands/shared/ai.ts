@@ -9,7 +9,7 @@ export const generateWithLLM = (input: Prompt[] | Prompt, modelLabel: 'gemini-pr
     return null
   }
   const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({
-    model: modelLabel
+    model: modelLabel,
   })
   return (async function* () {
     const prompts = Array.isArray(input) ? input : [input]
@@ -33,10 +33,15 @@ export const generateWithLLM = (input: Prompt[] | Prompt, modelLabel: 'gemini-pr
         text: prompt
       }
     }))
-    const stream = await model.generateContentStream(inputPrompts)
-    for await (const res of stream.stream) {
-      const text = res.text()
-      yield text
+    try {
+      const stream = await model.generateContentStream(inputPrompts)
+      for await (const res of stream.stream) {
+        res.candidates
+        const text = res.text()
+        yield text
+      }
+    } catch (e) {
+      yield `生成中にエラーが発生しました: \n${JSON.stringify(e)}`
     }
   })()
 }
