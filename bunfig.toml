@@ -2,3 +2,6 @@
 # whether to save a non-Bun lockfile alongside bun.lockb
 # only "yarn" is supported
 #print = "yarn"
+
+[install.scopes]
+"@jsr" = "https://npm.jsr.io"

@@ -1,25 +1,39 @@
 /** @jsxImportSource @builder.io/qwik */
-import { component$, useSignal, useStore, $ } from '@builder.io/qwik'
+import { component$, useSignal, useStore, $, type QRL, type NoSerialize, noSerialize } from '@builder.io/qwik'
 import { NotesDB } from '../note/notes-schema'
-import { saveNoteDatas } from '../note/utils/file-format'
+import { load, saveNoteDatas } from '../note/utils/file-format'
 import iconPlus from '@tabler/icons/outline/plus.svg?raw'
 import iconX from '@tabler/icons/outline/x.svg?raw'
 import { removeIconSize } from '../note/utils/icon/removeIconSize'
 
 export const CreateNote = component$(() => {
   const isOpenedCreateNoteDialog = useSignal(false)
+  const createMode = useSignal<'new' | 'file'>('new')
+  const targetNnote = useSignal<NoSerialize<File>>()
+  const createError = useSignal('')
 
   const newNoteData = useStore<{
     save: string
-    name: string
+    name: string | null
   }>({
-    name: '無題のノートブック',
+    name: null,
     save: 'local'
   })
   
   const create = $(async () => {
     const db = new NotesDB()
-    const noteFileBlob = await saveNoteDatas([{
+
+    if (createMode.value === 'file') {
+      if (!targetNnote.value) {
+        createError.value = 'ファイルを指定してください'
+        return
+      }
+      const loadResult = await load(targetNnote.value)
+      if (!loadResult.success) {
+        createError.value = `Error: ${loadResult.error}`
+      }
+    }
+    const noteFileBlob = targetNnote.value ?? await saveNoteDatas([{
       id: crypto.randomUUID(),
       blobs: {},
       type: 'text',
@@ -31,7 +45,7 @@ export const CreateNote = component$(() => {
     const noteFileBuff = new Uint8Array(await noteFileBlob.arrayBuffer())
 
     const added = await db.notes.add({
-      name: newNoteData.name,
+      name: newNoteData.name ?? `無題のノートブック`,
       updated: new Date(),
       nnote: noteFileBuff
     })
@@ -64,7 +78,19 @@ export const CreateNote = component$(() => {
                 isOpenedCreateNoteDialog.value = false
               }}/>
             </div>
+            <div>
+              <div class='grid grid-cols-2 gap-1 border-b m-2'>
+                <button onClick$={() => createMode.value = 'new'} class={createMode.value === 'new' ? 'border-secondary border-b' : ''}>新しく作る</button>
+                <button onClick$={() => createMode.value = 'file'} class={createMode.value === 'file' ? 'border-secondary border-b' : ''}>ファイルから読み込む</button>
+              </div>
+            </div>
             <div class="flex flex-col gap-2">
+              <label>
+                <span>名前: </span>
+                <input onInput$={(evt) => {
+                  newNoteData.name = (evt.target as HTMLInputElement)?.value
+                }} id="create-note-name" value={newNoteData.name ?? `無題のノートブック`} class="p-2 rounded-lg border bg-background text-on-background" />
+              </label>
               <label>
                 <span>保存先: </span>
                 <select onInput$={(evt) => {
@@ -73,12 +99,18 @@ export const CreateNote = component$(() => {
                   <option value="local" class="text-write border border-outline">ローカル</option>
                 </select>
               </label>
-              <label>
-                <span>名前: </span>
-                <input onInput$={(evt) => {
-                  newNoteData.name = (evt.target as HTMLInputElement)?.value
-                }} id="create-note-name" value={newNoteData.name} class="p-2 rounded-lg border bg-background text-on-background" />
-              </label>
+              {
+                createMode.value === 'file' && <div>
+                  <label>
+                    nnoteファイル:
+                    <input type='file' onInput$={evt => {
+                      const file = (evt.target as HTMLInputElement).files?.[0]
+                      targetNnote.value = noSerialize(file)
+                      newNoteData.name = newNoteData.name ?? file?.name.replace(/\.nnote$/, '') ?? null
+                    }} />
+                  </label>
+                </div>
+              }
               <div class="grid justify-center">
                 <button onClick$={() => {
                   create()
@@ -86,6 +118,7 @@ export const CreateNote = component$(() => {
                   作成
                 </button>
               </div>
+              <div>{ createError.value }</div>
             </div>
           </div>
         </div>

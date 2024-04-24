@@ -14,5 +14,12 @@ export const [noteBookState, setNoteBookState] = createStore<NoteBookState>({
   sheetDefaultState: false
 })
 
+export interface NoteBookMetadata {
+  noteName: string
+}
+export const [noteBookMetadata, setNoteBookMetadata] = createStore<NoteBookMetadata>({
+  noteName: ''
+})
+
 export const notes = createNotes()
 
