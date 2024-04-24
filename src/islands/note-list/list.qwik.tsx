@@ -9,6 +9,7 @@ import {
 } from '@builder.io/qwik'
 import { type Notes, NotesDB } from '../note/notes-schema'
 import classnames from 'classnames'
+import { Button } from '../../components/Button.qwik'
 
 const NoteListItem = component$<{
   note: Notes
@@ -72,15 +73,15 @@ export const NoteList = component$((props) => {
   useOnDocument('astro:page-load', loaded)
   return (
     <div>
-      <div class="py-2">
-        <button
+      <div class="">
+        <Button
           onClick$={() => {
             isShownSortModeDialog.value = true
             setTimeout(() => {
               isStartedSortModeDialog.value = true
             }, 50)
           }}
-          class="text-on-surface-variant"
+          class="text-on-surface-variant rounded-full p-2"
         >
           {
             {
@@ -88,7 +89,7 @@ export const NoteList = component$((props) => {
               name: '名前'
             }[sortMode.value]
           }
-        </button>
+        </Button>
       </div>
       <div class="px-1">
         {notes.value ? (
@@ -123,10 +124,10 @@ export const NoteList = component$((props) => {
       >
         <div
           class={classnames([
-            'transition-transform duration-150 w-full md:w-1/2 md:h-full rounded-l-3xl bg-background p-4 flex flex-col',
+            'transition-transform duration-150 w-full lg:w-1/2 lg:h-full rounded-t-3xl lg:rounded-tr-none lg:rounded-l-3xl bg-background p-4 flex flex-col',
             isStartedSortModeDialog.value
-              ? 'translate-y-0 md:translate-x-full' // Open
-              : '-translate-y-full md:translate-x-[200%]' // Close
+              ? 'translate-y-0 lg:translate-x-full' // Open
+              : 'translate-y-full lg:translate-y-0 lg:translate-x-[200%]' // Close
           ])}
           onClick$={(evt) => {
             evt.stopPropagation()
@@ -135,7 +136,7 @@ export const NoteList = component$((props) => {
           <div class="text-2xl text-center">Sorting</div>
           <div class="grow flex items-center">
             <div class="grid grid-rows-2 rounded-3xl w-full">
-              <button
+              <Button
                 onClick$={() => (sortMode.value = 'updated')}
                 class={classnames(
                   'p-2 rounded-t-3xl',
@@ -145,8 +146,8 @@ export const NoteList = component$((props) => {
                 )}
               >
                 最終更新
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick$={() => (sortMode.value = 'name')}
                 class={classnames(
                   'p-2 rounded-b-3xl',
@@ -156,7 +157,7 @@ export const NoteList = component$((props) => {
                 )}
               >
                 名前
-              </button>
+              </Button>
             </div>
           </div>
         </div>
