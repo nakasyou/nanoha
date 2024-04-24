@@ -62,8 +62,14 @@ export const NoteList = component$((props) => {
   const update = $(async () => {
     notes.value = null
     const notesDB = new NotesDB()
-    notesDB
-    notes.value = await notesDB.notes.toArray()
+    notes.value = (await notesDB.notes.toArray())
+      .sort((a, b) => {
+        if (sortMode.value === 'updated') {
+          return a.updated.getTime() - b.updated.getTime()
+        } else {
+          return a.name < b.name ? -1 : 1
+        }
+      })
   })
 
   const loaded = $(() => {
@@ -137,7 +143,10 @@ export const NoteList = component$((props) => {
           <div class="grow flex items-center">
             <div class="grid grid-rows-2 rounded-3xl w-full">
               <Button
-                onClick$={() => (sortMode.value = 'updated')}
+                onClick$={() => {
+                  sortMode.value = 'updated'
+                  update()
+                }}
                 class={classnames(
                   'p-2 rounded-t-3xl',
                   sortMode.value === 'updated'
@@ -148,7 +157,10 @@ export const NoteList = component$((props) => {
                 最終更新
               </Button>
               <Button
-                onClick$={() => (sortMode.value = 'name')}
+                onClick$={() => {
+                  sortMode.value = 'name'
+                  update()
+                }}
                 class={classnames(
                   'p-2 rounded-b-3xl',
                   sortMode.value === 'name'
