@@ -2,7 +2,7 @@ import Notes from './components/Notes'
 import  { createTextNote } from './components/notes/TextNote'
 import Header from './components/Header'
 import Fab from './components/Fab'
-import { Show, createSignal, onMount, onCleanup } from 'solid-js'
+import { Show, createSignal, onMount, onCleanup, createEffect } from 'solid-js'
 
 import './App.css'
 import { createImageNote } from './components/notes/ImageNote'
@@ -67,6 +67,18 @@ export default (props: Props) => {
     saveStep()
   })
   const [getLoadError, setLoadError] = createSignal<string>()
+
+  createEffect(() => {
+    if (!noteBookState.isEditMode) {
+      for (const note of notes.notes()) {
+        for (const handler of (note.events?.focus ?? [])) {
+          handler({
+            isActive: false
+          })
+        }
+      }
+    }
+  })
   return <div class="bg-background h-[100dvh] touch-manipulation">
     <Show when={getLoadError()}>
       <Dialog onClose={() => setLoadError(void 0)} type="alert" title="Load Error">{ getLoadError() }</Dialog>
