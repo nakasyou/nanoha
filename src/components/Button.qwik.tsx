@@ -43,13 +43,13 @@ export const Button = component$((props: HTMLAttributes<HTMLButtonElement>) => {
     <button
       {...props}
       ref={buttonRef}
-      onClick$={(evt) => {
+      onPointerDown$={(evt) => {
         if (buttonWave.value && buttonRef.value) {
           buttonWave.value.do({
             pos: evt,
           });
-          props.onClick$ && typeof props.onClick$ === "function" &&
-            props.onClick$(evt, buttonRef.value);
+          props.onPointerDown$ && typeof props.onPointerDown$ === "function" &&
+            props.onPointerDown$(evt, buttonRef.value);
         }
       }}
     >
