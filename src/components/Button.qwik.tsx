@@ -24,6 +24,9 @@ export const Button = component$((props: HTMLAttributes<HTMLButtonElement>) => {
     >
   >();
   const initWave = $(() => {
+    if (!buttonRef.value) {
+      return
+    }
     buttonWave.value = noSerialize(
       wave({ color: "#aaa", duration: 500, target: buttonRef.value }),
     );
@@ -31,14 +34,10 @@ export const Button = component$((props: HTMLAttributes<HTMLButtonElement>) => {
 
   useVisibleTask$(({ track }) => {
     track(buttonRef);
-    if (!buttonRef.value) {
-      return;
-    }
     initWave()
   });
-  useOnDocument('nanoha:init', $(() => {
-    initWave()
-  }))
+  useOnDocument('astro:page-load', initWave)
+  useOnDocument('load', initWave)
 
   return (
     <button
