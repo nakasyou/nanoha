@@ -30,6 +30,7 @@ import type { SetStoreFunction } from 'solid-js/store'
 import { getVisualViewport } from '../../../window-apis'
 import { generateWithLLM } from '../../../../shared/ai'
 import markdownIt from 'markdown-it'
+import { sleep } from '../../../utils/promise/sleep'
 
 const markdownParser = markdownIt()
 
@@ -128,6 +129,12 @@ export const TextNote = ((props: Props) => {
   })
 
   const insertWithGenerate = async (prompt: string) => {
+    const editor = getEditor()
+    if (!editor) {
+      return
+    }
+    //editor.chain().insertContent(``).focus().run()
+
     const stream = generateWithLLM(`あなたは学習用テキスト生成AIです。
 Write about the last matter, observing the following caveats.
 - Answer in line with the language of the question.
@@ -154,13 +161,14 @@ ${prompt}`, 'gemini-pro')
     }
     const paragraphId = Math.random().toString()
     editor.commands.setNode('llmpreview', { id: paragraphId })
-    console.log(editor, paragraphId)
+
     const pre = editor.$node('llmpreview', { id: paragraphId })!
     pre.content = '生成中...'
     let rawText = ''
     for await (const text of stream) {
       rawText += text
-      pre.content = rawText//markdownParser.render(rawText)
+      editor.commands.insertContent(text)
+      //pre.content = rawText//markdownParser.render(rawText)
     }
     editor.commands.deleteNode(pre.node.type)
     //pre.content = ''
