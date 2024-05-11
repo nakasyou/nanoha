@@ -21,6 +21,7 @@ export default (props: Props) => {
 
   const [getMounted, setMounted] = createSignal(false)
 
+  setNoteBookState('loadType', props.noteLoadType)
   onCleanup(() => {
     timeoutEnded = true
   })
