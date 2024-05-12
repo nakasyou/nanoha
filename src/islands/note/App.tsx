@@ -10,7 +10,7 @@ import { Menu } from './components/Menu'
 import { noteBookState, notes, setNoteBookState, setNoteBookMetadata, noteBookMetadata } from './store'
 import type { Props } from '.'
 import { Dialog } from './components/utils/Dialog'
-import { NotesDB } from './notes-schema'
+import { NotesDB } from '../shared/storage'
 import { loadFromBlob } from './components/load-process'
 import { save as saveFromNotes } from './utils/file-format'
 

@@ -5,9 +5,8 @@ import {
   type QRL,
   useOnDocument,
   useSignal,
-  useVisibleTask$
 } from '@builder.io/qwik'
-import { type Notes, NotesDB } from '../note/notes-schema'
+import { type Notes, NotesDB } from '../shared/storage'
 import classnames from 'classnames'
 
 const NoteListItem = component$<{
