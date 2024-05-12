@@ -5,9 +5,14 @@ import type { NoteLoadType } from '../note/note-load-types'
 import { handleLoaded } from '../shared/q-utils'
 import { loadNoteFromType, type Notes } from '../shared/storage'
 import { getGeminiApiToken } from '../shared/store'
+import { load } from '../note/utils/file-format'
+import type { NoteData } from '../note/components/notes-utils'
 
 interface Store {
-  note: NoSerialize<Notes> | 'pending' | 'notfound'
+  note: NoSerialize<{
+    name: string
+    data: NoteData<any, string>[]
+  }> | 'pending' | 'notfound' | 'invalid'
   aiChecked: boolean | null
   isStarted: boolean
 }
@@ -28,6 +33,10 @@ const InitialScreen = component$(() => {
     }
     if (store.note === 'pending') {
       loadingState.value = 'ノートを読み込んでいます...'
+      return
+    }
+    if (store.note === 'invalid') {
+      loadError.value = 'ノートの読み込みに失敗しました'
       return
     }
     if (store.aiChecked === null) {
@@ -57,6 +66,14 @@ const InitialScreen = component$(() => {
     </div>
   </div>
 })
+
+export const AIQuiz = component$(() => {
+  const store = useContext(STORE_CTX)
+  
+  return <div onClick$={() => console.log(store.note)}>
+    This is AIQuiz
+  </div>
+})
 const Header = component$(() => {
   return <div>
     This is header
@@ -77,7 +94,21 @@ export default component$<{
 
   handleLoaded($(async () => {
     const gotNote = await loadNoteFromType(props.noteLoadType)
-    store.note = gotNote ? noSerialize(gotNote) : 'notfound'
+    //store.note = gotNote ? noSerialize(gotNote) : 'notfound'
+    if (!gotNote) {
+      store.note = 'notfound'
+      return
+    }
+
+    const loaded = await load(new Blob([gotNote.nnote]))
+    if (!loaded.success) {
+      store.note = 'invalid'
+      return
+    }
+    store.note = noSerialize({
+      name: gotNote.name,
+      data: loaded.notes
+    })
 
     store.aiChecked = !!getGeminiApiToken()
   }))
@@ -87,7 +118,7 @@ export default component$<{
     </div>
     <div class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow">
       {
-        store.isStarted ? <InitialScreen /> : ''
+        store.isStarted ? <AIQuiz /> : <InitialScreen />
       }
     </div>
   </div>
