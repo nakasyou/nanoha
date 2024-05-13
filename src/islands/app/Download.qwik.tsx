@@ -1,6 +1,6 @@
 /** @jsxImportSource @builder.io/qwik */
 import { component$, useTask$, useVisibleTask$ } from '@builder.io/qwik'
-import { NotesDB } from '../note/notes-schema';
+import { NotesDB } from '../shared/storage';
 
 export const Download = component$<{ url: string }>((props) => {
     useVisibleTask$(() => {
