@@ -30,7 +30,6 @@ import type { SetStoreFunction } from 'solid-js/store'
 import { getVisualViewport } from '../../../window-apis'
 import { generateWithLLM } from '../../../../shared/ai'
 import markdownIt from 'markdown-it'
-import { sleep } from '../../../utils/promise/sleep'
 
 const markdownParser = markdownIt()
 
@@ -135,7 +134,7 @@ export const TextNote = ((props: Props) => {
     }
     //editor.chain().insertContent(``).focus().run()
 
-    const stream = generateWithLLM(`あなたは学習用テキスト生成AIです。
+    const stream = generateWithLLM([`あなたは学習用テキスト生成AIです。
 Write about the last matter, observing the following caveats.
 - Answer in line with the language of the question.
 - Output in Markdown. 重要な部分（覚えるべき単語や語彙）は、
@@ -145,7 +144,7 @@ Write about the last matter, observing the following caveats.
 のように二重括弧で囲みなさい。重要部分は、1回答に最低でも2個入れなさい。
 
 User request (write an answer using request language):
-${prompt}`, 'gemini-pro')
+${prompt}`], 'gemini-pro')
     if (!stream) {
       if (confirm('AI 機能が設定されていません。\n設定を開きますか？')) {
         location.href = '/app/settings#ai'

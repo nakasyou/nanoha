@@ -3,15 +3,24 @@
 import { $, type NoSerialize, component$, useSignal, noSerialize, createContextId, useStore, useContextProvider, useContext, useVisibleTask$, type JSXOutput } from '@builder.io/qwik'
 import type { NoteLoadType } from '../note/note-load-types'
 import { handleLoaded } from '../shared/q-utils'
-import { loadNoteFromType, type Notes } from '../shared/storage'
+import { loadNoteFromType } from '../shared/storage'
 import { getGeminiApiToken } from '../shared/store'
 import { load } from '../note/utils/file-format'
-import type { NoteData } from '../note/components/notes-utils'
+import type { MargedNote, NoteData } from '../note/components/notes-utils'
+import { generateWithLLM } from '../shared/ai'
+import { PROMPT_TO_GENERATE_QUESTION, QUESTION_SCHEMA, type Question } from './constants'
+import type { TextNoteCanToJsonData } from '../note/components/notes/TextNote/types'
+import TurndownService from 'turndown'
+import { parse } from 'valibot'
+
+const turnDown = new TurndownService({
+  headingStyle: 'atx'
+})
 
 interface Store {
   note: NoSerialize<{
     name: string
-    data: NoteData<any, string>[]
+    notes: NoteData<any, string>[]
   }> | 'pending' | 'notfound' | 'invalid'
   aiChecked: boolean | null
   isStarted: boolean
@@ -67,10 +76,60 @@ const InitialScreen = component$(() => {
   </div>
 })
 
+const createQuestionsGenerator = (notes: MargedNote[]): (() => Promise<Question[]>) => {
+  const chunks: string[] = []
+
+  for (const note of notes) {
+    if (note.type !== 'text') {
+      continue
+    }
+    const html = (note.canToJsonData as TextNoteCanToJsonData).html
+    const content = turnDown.turndown(html)
+    chunks.push(content)
+  }
+
+  return async () => {
+    const randomChunkIndex = Math.floor(Math.random() * chunks.length)
+    const randomChunk = chunks[randomChunkIndex]!
+
+    const generator = generateWithLLM([
+      `${PROMPT_TO_GENERATE_QUESTION}\n${randomChunk}`
+    ], 'gemini-pro')
+    if (!generator) {
+      return alert('生成時にエラーが発生しました')
+    }
+
+    const result: Question[] = []
+    let generatedText = ''
+    for await (const res of generator) {
+      generatedText += res
+      const splitted = generatedText.split('\n')
+
+      for (const [index, line] of Object.entries(splitted)) {
+        try {
+          result.push(parse(QUESTION_SCHEMA, JSON.parse(line)))
+          splitted.splice(parseInt(index), 1)
+        } catch (_e) {
+          continue
+        }
+      }
+      generatedText = splitted.join('\n')
+    }
+    return result
+  }
+}
 export const AIQuiz = component$(() => {
   const store = useContext(STORE_CTX)
-  
-  return <div onClick$={() => console.log(store.note)}>
+
+  const questions = useSignal<Question[]>([])
+
+  return <div onClick$={() => {
+    if (typeof store.note === 'string' || !store.note) {
+      return
+    }
+    const generator = createQuestionsGenerator(store.note.notes)
+    generator()
+  }}>
     This is AIQuiz
   </div>
 })
@@ -107,7 +166,7 @@ export default component$<{
     }
     store.note = noSerialize({
       name: gotNote.name,
-      data: loaded.notes
+      notes: loaded.notes
     })
 
     store.aiChecked = !!getGeminiApiToken()

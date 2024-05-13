@@ -1,9 +1,12 @@
-import { GoogleGenerativeAI, type Part } from '@google/generative-ai'
+import { GoogleGenerativeAI, type Content } from '@google/generative-ai'
 import { getGeminiApiToken } from './store'
 
-type Prompt = string | Blob
-
-export const generateWithLLM = (input: Prompt[] | Prompt, modelLabel: 'gemini-pro' | 'gemini-pro-vision'): null | AsyncGenerator<string, void, unknown> => {
+type Generated = null | AsyncGenerator<string, void, unknown>
+interface GenerateWithLLM {
+  (input: string[], modelLabel: 'gemini-pro', systemPrompt?: string): Generated
+  (input: (string | Blob)[], modelLabel: 'gemini-pro-vision', systemPrompt?: string): Generated
+}
+export const generateWithLLM: GenerateWithLLM = (input, modelLabel, systemPrompt) => {
   const apiKey = getGeminiApiToken()
   if (!apiKey) {
     return null
@@ -12,28 +15,38 @@ export const generateWithLLM = (input: Prompt[] | Prompt, modelLabel: 'gemini-pr
     model: modelLabel
   })
   return (async function* () {
-    const prompts = Array.isArray(input) ? input : [input]
-
-    const inputPrompts = await Promise.all(prompts.map(async (prompt) => {
+    const inputPrompts = await Promise.all(input.map(async (prompt): Promise<Content> => {
       if (prompt instanceof Blob) {
         const b64Image = await new Promise<string>((resolve) => {
           const reader = new FileReader();
           reader.onloadend = () => resolve((reader.result as string).split(',')[1]!)
           reader.readAsDataURL(prompt)
         })
-      
         return {
-          inlineData: {
-            data: b64Image,
-            mimeType: prompt.type
-          }
+          parts: [
+            {
+              inlineData: {
+                data: b64Image,
+                mimeType: prompt.type
+              }
+            }
+          ],
+          role: 'user'
         }
       }
       return {
-        text: prompt
+        parts: [
+          {
+            text: prompt
+          }
+        ],
+        role: 'user'
       }
     }))
-    const stream = await model.generateContentStream(inputPrompts)
+    const stream = await model.generateContentStream({
+      contents: inputPrompts,
+      systemInstruction: systemPrompt
+    })
     for await (const res of stream.stream) {
       const text = res.text()
       yield text
