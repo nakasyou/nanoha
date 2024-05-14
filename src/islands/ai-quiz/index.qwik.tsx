@@ -76,7 +76,7 @@ const InitialScreen = component$(() => {
   </div>
 })
 
-const createQuestionsGenerator = (notes: MargedNote[]): (() => Promise<Question[]>) => {
+const createQuestionsGenerator = (notes: MargedNote[]): ((cb?: (q: Question) => void) => Promise<Question[]>) => {
   const chunks: string[] = []
 
   for (const note of notes) {
@@ -88,7 +88,7 @@ const createQuestionsGenerator = (notes: MargedNote[]): (() => Promise<Question[
     chunks.push(content)
   }
 
-  return async () => {
+  return async (cb) => {
     const randomChunkIndex = Math.floor(Math.random() * chunks.length)
     const randomChunk = chunks[randomChunkIndex]!
 
@@ -104,13 +104,14 @@ const createQuestionsGenerator = (notes: MargedNote[]): (() => Promise<Question[
     let generatedText = ''
     for await (const res of generator) {
       generatedText += res
-      console.log(res)
       const splitted = generatedText.split('\n')
 
       for (const [index, line] of Object.entries(splitted)) {
         try {
-          result.push(parse(QUESTION_SCHEMA, JSON.parse(line)))
+          const question = parse(QUESTION_SCHEMA, JSON.parse(line))
+          result.push(question)
           splitted.splice(parseInt(index), 1)
+          cb?.(question)
         } catch (_e) {
           continue
         }
@@ -134,19 +135,39 @@ export const AIQuiz = component$(() => {
       return
     }
     const generator = createQuestionsGenerator(store.note.notes)
-    questions.value = [...questions.value, ...await generator()]
-    console.log(questions.value)
+    await generator((q) => {
+      questions.value = [...questions.value, q]
+    })
   })
 
   useVisibleTask$(() => {
-    console.log('generate')
-    generateNext()
+    //generateNext()
+    questions.value = [
+      {
+        answers: ['水素', '酸素'],
+        question: '水の電気分解で、陰極に現れる気体は？',
+        correctIndex: 0,
+        explanation: ''
+      }
+    ]
   })
   return <div>
     {
-      currentQuestion.value ? <div>
-        {currentQuestion.value.question}
-      </div> : <div>No Question</div>
+      currentQuestion.value ? <div class="p-4">
+        <div>問{currentQuestionIndex.value + 1}</div>
+        <div class="text-center text-2xl flex items-center justify-between">
+          <div>{currentQuestion.value.question}</div>
+          <div class="text-base text-on-surface-variant">✨AI Generated</div>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          {
+            currentQuestion.value.answers.map(answer => (
+              <button
+                class="block rounded-lg p-1 text-primary-container bg-on-primary-container"
+              >{ answer }</button>))
+          }
+        </div>
+      </div> : <div class="text-center font-bold">生成中...</div>
     }
   </div>
 })
