@@ -155,10 +155,11 @@ export const AIQuiz = component$(() => {
     {
       currentQuestion.value ? <div class="p-4">
         <div>問{currentQuestionIndex.value + 1}</div>
-        <div class="text-center text-2xl flex items-center justify-between">
+        <div class="text-center text-2xl grid grid-cols-1 lg:grid-cols-2 items-center justify-between">
           <div>{currentQuestion.value.question}</div>
-          <div class="text-base text-on-surface-variant">✨AI Generated</div>
+          <div class="text-base text-on-surface-variant text-right">✨AI Generated</div>
         </div>
+        <hr class="my-2" />
         <div class="grid grid-cols-3 gap-2">
           {
             currentQuestion.value.answers.map(answer => (
