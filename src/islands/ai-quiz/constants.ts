@@ -20,7 +20,7 @@ interface Question {
   explanation: string
 }
 \`\`\`
-一つのJSONは改行せずに、JSONL形式で出力しなさい。
+1つのJSONは絶対に改行したりフォーマットしたりせずにMinifyされた状態にし、JSONL形式で出力しなさい。
 
 ソーステキスト:
 `.trim()

@@ -1,6 +1,6 @@
 /** @jsxImportSource @builder.io/qwik */
 
-import { $, type NoSerialize, component$, useSignal, noSerialize, createContextId, useStore, useContextProvider, useContext, useVisibleTask$, type JSXOutput } from '@builder.io/qwik'
+import { $, type NoSerialize, component$, useSignal, noSerialize, createContextId, useStore, useContextProvider, useContext, useVisibleTask$, type JSXOutput, useComputed$ } from '@builder.io/qwik'
 import type { NoteLoadType } from '../note/note-load-types'
 import { handleLoaded } from '../shared/q-utils'
 import { loadNoteFromType } from '../shared/storage'
@@ -96,13 +96,15 @@ const createQuestionsGenerator = (notes: MargedNote[]): (() => Promise<Question[
       `${PROMPT_TO_GENERATE_QUESTION}\n${randomChunk}`
     ], 'gemini-pro')
     if (!generator) {
-      return alert('生成時にエラーが発生しました')
+      alert('生成時にエラーが発生しました')
+      return []
     }
 
     const result: Question[] = []
     let generatedText = ''
     for await (const res of generator) {
       generatedText += res
+      console.log(res)
       const splitted = generatedText.split('\n')
 
       for (const [index, line] of Object.entries(splitted)) {
@@ -122,20 +124,35 @@ export const AIQuiz = component$(() => {
   const store = useContext(STORE_CTX)
 
   const questions = useSignal<Question[]>([])
+  const currentQuestionIndex = useSignal(0)
+  const currentQuestion = useComputed$(() => {
+    return questions.value[currentQuestionIndex.value]
+  })
 
-  return <div onClick$={() => {
+  const generateNext = $(async () => {
     if (typeof store.note === 'string' || !store.note) {
       return
     }
     const generator = createQuestionsGenerator(store.note.notes)
-    generator()
-  }}>
-    This is AIQuiz
+    questions.value = [...questions.value, ...await generator()]
+    console.log(questions.value)
+  })
+
+  useVisibleTask$(() => {
+    console.log('generate')
+    generateNext()
+  })
+  return <div>
+    {
+      currentQuestion.value ? <div>
+        {currentQuestion.value.question}
+      </div> : <div>No Question</div>
+    }
   </div>
 })
 const Header = component$(() => {
   return <div>
-    This is header
+    This is Header
   </div>
 })
 
