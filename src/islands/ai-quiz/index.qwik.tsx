@@ -1,6 +1,6 @@
 /** @jsxImportSource @builder.io/qwik */
 
-import { $, type NoSerialize, component$, useSignal, noSerialize, createContextId, useStore, useContextProvider, useContext, useVisibleTask$, type JSXOutput, useComputed$ } from '@builder.io/qwik'
+import { $, type NoSerialize, component$, useSignal, noSerialize, createContextId, useStore, useContextProvider, useContext, useVisibleTask$, type JSXOutput, useComputed$, useStylesScoped$ } from '@builder.io/qwik'
 import type { NoteLoadType } from '../note/note-load-types'
 import { handleLoaded } from '../shared/q-utils'
 import { loadNoteFromType } from '../shared/storage'
@@ -13,6 +13,10 @@ import type { TextNoteCanToJsonData } from '../note/components/notes/TextNote/ty
 import TurndownService from 'turndown'
 import { parse } from 'valibot'
 import classNames from 'classnames'
+import { wave } from '@ns/ha'
+import iconSend from '@tabler/icons/outline/send.svg?raw'
+import { removeIconSize } from '../note/utils/icon/removeIconSize'
+import iconChevronRight from '@tabler/icons/outline/chevron-right.svg?raw'
 
 const turnDown = new TurndownService({
   headingStyle: 'atx'
@@ -122,6 +126,57 @@ const createQuestionsGenerator = (notes: MargedNote[]): ((cb?: (q: Question) => 
     return result
   }
 }
+
+const QUESTIONS = 5
+
+
+const NextButton = component$<{
+  onClick$: () => void
+}>((props) => (<div>
+  <button class="flex items-center" onClick$={props.onClick$}>
+    <div>Next</div>
+    <div dangerouslySetInnerHTML={removeIconSize(iconChevronRight)} class="w-16 h-16" />
+  </button>
+</div>))
+
+const IncorrectScreen = component$<{
+  question: Question
+  yourAnswer: string
+
+  onNext$: () => void
+}>((props) => {
+  return <div class="py-3 h-full flex flex-col justify-around">
+    <div>
+      <div class="text-3xl text-center my-2">😒不正解..</div>
+      <div class="grid place-items-center grid-cols-1 lg:grid-cols-2">
+        <div class="text-xl">{props.question.question}</div>
+
+        <div class="flex lg:block flex-wrap gap-2 my-2">
+          <div>✖あなたの回答: <span class="text-error">{props.yourAnswer}</span></div>
+          <div>✅正解: <span class="text-green-400">{props.question.answers[props.question.correctIndex]}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2">
+      <div class="grid justify-center">
+        {/* 解説 */}
+        <div class="font-bold">✨NanohaAIによる解説</div>
+        <div>
+          {
+            props.question.explanation
+          }
+        </div>
+        <div class="flex items-center">
+          <input placeholder='Ask NanohaAI (WIP)' class="rounded-full p-2 border m-1" />
+          <button dangerouslySetInnerHTML={removeIconSize(iconSend)} class="w-8 h-8" title='send message'></button>
+        </div>
+      </div>
+      <NextButton onClick$={() => {
+        props.onNext$()
+      }}/>
+    </div>
+  </div>
+})
 export const AIQuiz = component$(() => {
   const store = useContext(STORE_CTX)
 
@@ -130,6 +185,11 @@ export const AIQuiz = component$(() => {
   const currentQuestion = useComputed$(() => {
     return questions.value[currentQuestionIndex.value]
   })
+
+  const yourAnswer = useSignal('')
+  const screenType = useSignal<'question' | 'incorrect'>('question')
+
+  const isShownCorrectDialog = useSignal(false)
 
   const generateNext = $(async () => {
     if (typeof store.note === 'string' || !store.note) {
@@ -141,37 +201,88 @@ export const AIQuiz = component$(() => {
     })
   })
 
-  useVisibleTask$(() => {
-    //generateNext()
-    questions.value = [
+  useVisibleTask$(async () => {
+    while (true) {
+      await generateNext()
+      if (questions.value.length >= QUESTIONS) {
+        break
+      }
+    }
+    /*questions.value = [
       {
         answers: ['水素', '酸素'],
         question: '水の電気分解で、陰極に現れる気体は？',
         correctIndex: 0,
-        explanation: ''
+        explanation: 'なぜなら、あいうえお'
       }
-    ]
+    ]*/
   })
-  return <div>
+
+  const handleCorrect = $(() => {
+    isShownCorrectDialog.value = true
+    setTimeout(() => {
+      currentQuestionIndex.value += 1
+    }, 500)
+    setTimeout(() => {
+      isShownCorrectDialog.value = false
+    }, 800)
+  })
+  const handleIncorrect = $(() => {
+    screenType.value = 'incorrect'
+  })
+
+  useStylesScoped$(`
+    .correctDialog {
+      animation: correctDialogAnimation 0.7s ease-in-out forwards;
+    }
+    @keyframes correctDialogAnimation {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+  `)
+  return <div class="h-full">
+    {isShownCorrectDialog.value && (<div class="fixed w-full h-[100dvh] grid place-items-center left-0 top-0">
+      <div class="text-green-400 text-5xl font-bold correctDialog">
+        😊正解!!
+      </div>
+    </div>)}
     {
-      currentQuestion.value ? <div class="p-4">
-        <div>問{currentQuestionIndex.value + 1}</div>
-        <div class="text-center text-2xl grid grid-cols-1 lg:grid-cols-2 items-center justify-between">
-          <div>{currentQuestion.value.question}</div>
+      screenType.value === 'question' ? (currentQuestion.value ? <div class="p-4">
+        <div>問{currentQuestionIndex.value + 1}/{QUESTIONS}</div>
+        <div>
+          <div class="text-2xl text-center">{currentQuestion.value.question}</div>
+          <hr class="my-2" />
           <div class="text-base text-on-surface-variant text-right">✨AI Generated</div>
         </div>
-        <hr class="my-2" />
-        <div class={classNames("grid gap-2", [
+        <div class={classNames("grid gap-2 my-3", [
           currentQuestion.value.answers.length === 2 ? 'grid-cols-2' : 'grid-cols-3'
         ])}>
           {
-            currentQuestion.value.answers.map(answer => (
+            currentQuestion.value.answers.map((answer, idx) => (
               <button
-                class="block rounded-full p-2 text-on-secondary-container bg-secondary-container text-xl"
+                class="block filled-button text-xl"
+                onClick$={() => {
+                  if (currentQuestion.value?.correctIndex === idx) {
+                    handleCorrect()
+                  } else {
+                    yourAnswer.value = answer
+                    handleIncorrect()
+                  }
+                }}
               >{ answer }</button>))
           }
         </div>
-      </div> : <div class="text-center font-bold">生成中...</div>
+      </div> : <div class="text-center font-bold">生成中...</div>) : <IncorrectScreen question={currentQuestion.value!} yourAnswer={yourAnswer.value} onNext$={() => {
+        screenType.value = 'question'
+        currentQuestionIndex.value += 1
+      }}/>
     }
   </div>
 })

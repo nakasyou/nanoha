@@ -12,7 +12,7 @@ export const generateWithLLM: GenerateWithLLM = (input, modelLabel, systemPrompt
     return null
   }
   const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({
-    model: modelLabel
+    model: modelLabel,
   })
   return (async function* () {
     const inputPrompts = await Promise.all(input.map(async (prompt): Promise<Content> => {
@@ -43,13 +43,17 @@ export const generateWithLLM: GenerateWithLLM = (input, modelLabel, systemPrompt
         role: 'user'
       }
     }))
-    const stream = await model.generateContentStream({
-      contents: inputPrompts,
-      systemInstruction: systemPrompt
-    })
-    for await (const res of stream.stream) {
-      const text = res.text()
-      yield text
+    try {
+      const stream = await model.generateContentStream({
+        contents: inputPrompts,
+        systemInstruction: systemPrompt
+      })
+      for await (const res of stream.stream) {
+        const text = res.text()
+        yield text
+      }
+    } catch (e) {
+      yield `生成中にエラーが発生しました: \n${JSON.stringify(e)}`
     }
   })()
 }
