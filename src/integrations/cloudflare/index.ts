@@ -71,7 +71,7 @@ export default (): AstroIntegration => {
                   ).filter(p => !p.startsWith('/_astro') && !p.startsWith('/build')),
                 ]),
                 '/_astro/*',
-                '/bulld/*'
+                '/build/*'
               ],
               include: ['/*']
             },
