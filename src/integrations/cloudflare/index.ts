@@ -63,13 +63,15 @@ export default (): AstroIntegration => {
                 ...new Set([
                   ...clientFiles.map((path) =>
                     path.replace('./dist/client', '')
-                  ),
+                  ).filter(p => !p.startsWith('/_astro') && !p.startsWith('/build')),
                   ...clientFiles.map((path) =>
                     path
                       .replace('./dist/client', '')
                       .replace(/index\.html$/, '')
-                  )
-                ])
+                  ).filter(p => !p.startsWith('/_astro') && !p.startsWith('/build')),
+                ]),
+                '/_astro/*',
+                '/bulld/*'
               ],
               include: ['/*']
             },
