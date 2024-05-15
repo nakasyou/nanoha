@@ -137,11 +137,11 @@ export const TextNote = ((props: Props) => {
     const stream = generateWithLLM([`あなたは学習用テキスト生成AIです。
 Write about the last matter, observing the following caveats.
 - Answer in line with the language of the question.
-- Output in Markdown. 重要な部分（覚えるべき単語や語彙）は、
+- Output in Markdown. そのなかでも重要な部分（覚えるべき単語や語彙）は、
 
-((重要な単語))
+**重要な単語**
 
-のように二重括弧で囲みなさい。重要部分は、1回答に最低でも2個入れなさい。
+のように太字を使いなさい。重要部分は、1回答に最低でも2個入れなさい。
 
 User request (write an answer using request language):
 ${prompt}`], 'gemini-pro')
@@ -172,8 +172,9 @@ ${prompt}`], 'gemini-pro')
     editor.commands.deleteNode(pre.node.type)
     //pre.content = ''
     editor.commands.insertContent(
-      markdownParser.render(rawText)
-        .replace(/\(\([\s\S]*?\)\)/g, str => `<span data-nanohasheet="true">${str.slice(2, -2)}</span>`)
+      markdownParser.render(
+        rawText.replace(/\*\*[\s\S]*?\*\*/g, str => `((${str.slice(2, -2)}))`)
+      ).replace(/\(\([\s\S]*?\)\)/g, str => `<span data-nanohasheet="true">${str.slice(2, -2)}</span>`)
     )
     saveContent()
   }
@@ -249,7 +250,7 @@ ${prompt}`], 'gemini-pro')
           if (result) {
             const file = getImageBlobToGenerate()!
             const stream = generateWithLLM([
-              `画像から文章をすべて抜き出しなさい。Markdownにしなさい。また、重要な語彙は、((重要単語))のように二重括弧で示しなさい。重要語彙は、1行につき1つ以上`,
+              `画像の文章をそのまま、Markdownとして書き出しなさい。書き出す上で、重要な単語は、太字で表現しなさい。`,
               file
             ], 'gemini-pro-vision')
                 if (!stream) {

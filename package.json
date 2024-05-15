@@ -1,7 +1,7 @@
 {
   "name": "nanohanote",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "scripts": {
     "dev": "astro dev --host",
     "start": "astro dev",
@@ -14,7 +14,8 @@
     "@astrojs/sitemap": "^3.0.5",
     "@astrojs/tailwind": "^5.1.0",
     "@builder.io/qwik": "^1.4.5",
-    "@google/generative-ai": "^0.9.0",
+    "@ns/ha": "npm:@jsr/ns__ha@^0.1.2",
+    "@google/generative-ai": "^0.11.0",
     "@qwikdev/astro": "^0.5.14",
     "@solid-primitives/keyed": "^1.2.0",
     "@tabler/icons": "^3.0.2",
@@ -25,7 +26,7 @@
     "@tiptap/starter-kit": "^2.2.1",
     "@types/turndown": "^5.0.4",
     "array-move": "^4.0.0",
-    "astro": "4.6.1",
+    "astro": "4.8.2",
     "classnames": "^2.3.2",
     "dexie": "^4.0.1",
     "fast-glob": "^3.3.2",
@@ -41,12 +42,13 @@
     "vite-imagetools": "^7.0.0"
   },
   "devDependencies": {
-    "@types/markdown-it": "^14.0.0",
     "@astrojs/solid-js": "^4.1.0",
+    "@types/markdown-it": "^14.0.0",
     "bun-types": "^1.0.7",
-    "esbuild": "^0.20.1",
+    "esbuild": "^0.21.1",
     "hono": "^4.0.1",
     "queue-tick": "^1.0.1",
+    "unplugin-parcel-macros": "^0.0.3",
     "yallist": "^5.0.0"
   }
 }

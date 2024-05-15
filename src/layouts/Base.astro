@@ -71,8 +71,11 @@ nomalizedUrl.protocol = 'https://'
   <body class={Astro.props.bodyClass}>
     <slot />
     <script is:inline>
+      document.addEventListener('load', () => {
+        document.dispatchEvent(new CustomEvent("nanoha:init"))
+      })
       document.addEventListener('astro:page-load', () => {
-        document.dispatchEvent(new CustomEvent("nanoha:qwik-init"))
+        document.dispatchEvent(new CustomEvent("nanoha:init"))
       })
     </script>
   </body>
