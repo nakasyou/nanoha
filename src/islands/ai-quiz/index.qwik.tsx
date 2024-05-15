@@ -16,6 +16,7 @@ import classNames from 'classnames'
 import { wave } from '@ns/ha'
 import iconSend from '@tabler/icons/outline/send.svg?raw'
 import { removeIconSize } from '../note/utils/icon/removeIconSize'
+import iconChevronRight from '@tabler/icons/outline/chevron-right.svg?raw'
 
 const turnDown = new TurndownService({
   headingStyle: 'atx'
@@ -129,9 +130,20 @@ const createQuestionsGenerator = (notes: MargedNote[]): ((cb?: (q: Question) => 
 const QUESTIONS = 5
 
 
+const NextButton = component$<{
+  onClick$: () => void
+}>((props) => (<div>
+  <button class="flex items-center" onClick$={props.onClick$}>
+    <div>Next</div>
+    <div dangerouslySetInnerHTML={removeIconSize(iconChevronRight)} class="w-16 h-16" />
+  </button>
+</div>))
+
 const IncorrectScreen = component$<{
   question: Question
   yourAnswer: string
+
+  onNext$: () => void
 }>((props) => {
   return <div class="py-3 h-full flex flex-col justify-around">
     <div>
@@ -145,18 +157,23 @@ const IncorrectScreen = component$<{
         </div>
       </div>
     </div>
-    <div class="grid justify-center">
-      {/* 解説 */}
-      <div class="font-bold">✨NanohaAIによる解説</div>
-      <div>
-        {
-          props.question.explanation
-        }
+    <div class="grid grid-cols-1 lg:grid-cols-2">
+      <div class="grid justify-center">
+        {/* 解説 */}
+        <div class="font-bold">✨NanohaAIによる解説</div>
+        <div>
+          {
+            props.question.explanation
+          }
+        </div>
+        <div class="flex items-center">
+          <input placeholder='Ask NanohaAI (WIP)' class="rounded-full p-2 border m-1" />
+          <button dangerouslySetInnerHTML={removeIconSize(iconSend)} class="w-8 h-8" title='send message'></button>
+        </div>
       </div>
-      <div class="flex items-center">
-        <input placeholder='Ask NanohaAI (WIP)' class="rounded-full p-2 border m-1" />
-        <button dangerouslySetInnerHTML={removeIconSize(iconSend)} class="w-8 h-8" title='send message'></button>
-      </div>
+      <NextButton onClick$={() => {
+        props.onNext$()
+      }}/>
     </div>
   </div>
 })
@@ -262,7 +279,10 @@ export const AIQuiz = component$(() => {
               >{ answer }</button>))
           }
         </div>
-      </div> : <div class="text-center font-bold">生成中...</div>) : <IncorrectScreen question={currentQuestion.value!} yourAnswer={yourAnswer.value} />
+      </div> : <div class="text-center font-bold">生成中...</div>) : <IncorrectScreen question={currentQuestion.value!} yourAnswer={yourAnswer.value} onNext$={() => {
+        screenType.value = 'question'
+        currentQuestionIndex.value += 1
+      }}/>
     }
   </div>
 })
