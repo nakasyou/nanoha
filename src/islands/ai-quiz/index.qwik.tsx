@@ -12,6 +12,7 @@ import { PROMPT_TO_GENERATE_QUESTION, QUESTION_SCHEMA, type Question } from './c
 import type { TextNoteCanToJsonData } from '../note/components/notes/TextNote/types'
 import TurndownService from 'turndown'
 import { parse } from 'valibot'
+import classNames from 'classnames'
 
 const turnDown = new TurndownService({
   headingStyle: 'atx'
@@ -160,11 +161,13 @@ export const AIQuiz = component$(() => {
           <div class="text-base text-on-surface-variant text-right">✨AI Generated</div>
         </div>
         <hr class="my-2" />
-        <div class="grid grid-cols-3 gap-2">
+        <div class={classNames("grid gap-2", [
+          currentQuestion.value.answers.length === 2 ? 'grid-cols-2' : 'grid-cols-3'
+        ])}>
           {
             currentQuestion.value.answers.map(answer => (
               <button
-                class="block rounded-lg p-1 text-primary-container bg-on-primary-container"
+                class="block rounded-full p-2 text-on-secondary-container bg-secondary-container text-xl"
               >{ answer }</button>))
           }
         </div>
