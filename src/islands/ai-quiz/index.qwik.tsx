@@ -168,7 +168,6 @@ const IncorrectScreen = component$<{
       return `No source`
     }
     const sourceNoteIndex = props.quiz.sourceNoteIndex
-    console.log('sourceNoteIndex', sourceNoteIndex)
     const note = store.note!.notes[sourceNoteIndex]
     return note?.canToJsonData.html
   })
@@ -326,7 +325,7 @@ export const AIQuiz = component$(() => {
     {
       screenType.value === 'question' ? (currentQuestion.value ? <div class="p-4 flex flex-col h-full">
         <div>
-          <div>問{currentQuestionIndex.value}/{Math.max(QUESTIONS, generatedQuestions.value)}</div>
+          <div>問<span>{currentQuestionIndex.value}</span>/<span>{Math.max(QUESTIONS, generatedQuestions.value)}</span></div>
           <div class="text-2xl text-center">{currentQuestion.value.question.question}</div>
           <hr class="my-2" />
           <div class="text-base text-on-surface-variant text-right">✨AI Generated</div>
