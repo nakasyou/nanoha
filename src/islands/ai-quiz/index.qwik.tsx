@@ -85,6 +85,7 @@ interface Quiz {
   question: Question
   sourceNoteIndex: number
 }
+
 const createQuestionsGenerator = (notes: MargedNote[]): ((cb: (q: Quiz) => void) => Promise<void>) => {
   const chunks: string[] = []
 
@@ -154,55 +155,77 @@ const NextButton = component$<{
 </div>))
 
 const IncorrectScreen = component$<{
-  question: Question
+  quiz: Quiz
   yourAnswer: string
-
-  sourceNote: JSXOutput
 
   onNext$: () => void
 }>((props) => {
+  const store = useContext(STORE_CTX)
   const explanationMode = useSignal<'ai' | 'source'>('ai')
-  return <div class="py-3 h-full flex flex-col justify-around">
-    <div>
-      <div class="text-3xl text-center my-2">😒不正解..</div>
-      <div class="grid place-items-center grid-cols-1 lg:grid-cols-2">
-        <div class="text-xl text-center">{props.question.question}</div>
 
-        <div class="flex lg:block flex-wrap gap-2 my-2 text-center justify-center">
-          <div class="text-center">✖あなたの回答: <span class="text-error">{props.yourAnswer}</span></div>
-          <div class="text-center">✅正解: <span class="text-green-400">{props.question.answers[props.question.correctIndex]}</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 place-items-center">
-      <div class="grid justify-center">
-        {/* 解説 */}
-        <div class="flex gap-2">
-          <div class="font-bold">{ explanationMode.value === 'ai' ? '✨NanohaAIによる解説' : '📒使用されたノート' }</div>
-          <button onClick$={() => {
-            explanationMode.value = explanationMode.value === 'ai' ? 'source' : 'ai'
-          }} class="underline hover:no-underline">{ explanationMode.value === 'ai' ? 'ソースを表示' : '解説を表示' }</button>
-        </div>
-        <div class="text-on-surface-variant max-h-[30dvh] overflow-auto">
-          {
-            explanationMode.value === 'ai' ? props.question.explanation : props.sourceNote
-          }
-        </div>
-        <div class="flex items-center">
-          <input placeholder='Ask NanohaAI (WIP)' class="rounded-full p-2 border m-1" />
-          <button dangerouslySetInnerHTML={removeIconSize(iconSend)} class="w-8 h-8" title='send message'></button>
-        </div>
-      </div>
-      <div class="hidden lg:block">
-        <NextButton onClick$={() => {
-          props.onNext$()
-        }}/>
-      </div>
-    </div>
-    <div class="flex lg:hidden justify-center">
+  const sourceNote = useComputed$<string>(() => {
+    if (typeof store.note === 'string') {
+      return `No source`
+    }
+    const sourceNoteIndex = props.quiz.sourceNoteIndex
+    console.log('sourceNoteIndex', sourceNoteIndex)
+    const note = store.note!.notes[sourceNoteIndex]
+    return note?.canToJsonData.html
+  })
+
+  return <div class="flex flex-col h-full">
+    <div class="flex justify-end">
       <NextButton onClick$={() => {
         props.onNext$()
       }}/>
+    </div>
+    <div class="py-3 h-full flex flex-col justify-around grow">
+      <div>
+        <div class="flex justify-around items-center">
+          <div class="text-3xl text-center my-2">😒不正解..</div>
+        </div>
+        <div class="grid place-items-center grid-cols-1 lg:grid-cols-2">
+          <div class="text-xl text-center">{props.quiz.question.question}</div>
+
+          <div class="flex lg:block flex-wrap gap-2 my-2 text-center justify-center">
+            <div class="text-center">✖あなたの回答: <span class="text-error">{props.yourAnswer}</span></div>
+            <div class="text-center">✅正解: <span class="text-green-400">{props.quiz.question.answers[props.quiz.question.correctIndex]}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 place-items-center">
+        <div class="grid justify-center">
+          {/* 解説 */}
+          <div class="flex gap-2">
+            <div class="font-bold block lg:hidden">{ explanationMode.value === 'ai' ? '✨NanohaAIによる解説' : '📒使用されたノート' }</div>
+            <div class="font-bold hidden lg:block">✨NanohaAIによる解説</div>
+            <button onClick$={() => {
+              explanationMode.value = explanationMode.value === 'ai' ? 'source' : 'ai'
+            }} class="underline hover:no-underline block lg:hidden">{ explanationMode.value === 'ai' ? 'ソースを表示' : '解説を表示' }</button>
+          </div>
+          <div class="text-on-surface-variant max-h-[30dvh] overflow-auto">
+            <div class="block lg:hidden">
+              {
+                explanationMode.value === 'ai' && props.quiz.question.explanation
+              }
+              {
+                explanationMode.value === 'source' && <div dangerouslySetInnerHTML={sourceNote.value}></div>
+              }
+            </div>
+            <div class="hidden lg:block">
+              { props.quiz.question.explanation }
+            </div>
+          </div>
+          <div class="flex items-center">
+            <input placeholder='Ask NanohaAI (WIP)' class="rounded-full p-2 border m-1" />
+            <button dangerouslySetInnerHTML={removeIconSize(iconSend)} class="w-8 h-8" title='send message'></button>
+          </div>
+        </div>
+        <div class="hidden lg:block">
+          <div class="font-bold">📒使用されたノート</div>
+          <div class="text-on-surface-variant max-h-[30dvh] overflow-auto" dangerouslySetInnerHTML={sourceNote.value}></div>
+        </div>
+      </div>
     </div>
   </div>
 })
@@ -219,15 +242,6 @@ export const AIQuiz = component$(() => {
   const screenType = useSignal<'question' | 'incorrect'>('question')
 
   const isShownCorrectDialog = useSignal(false)
-
-  const sourceNote = useComputed$(() => {
-    const sourceNoteIndex = currentQuestion.value?.sourceNoteIndex
-    if (!sourceNoteIndex || typeof store.note === 'string') {
-      return <div>source</div>
-    }
-    const note = store.note!.notes[sourceNoteIndex]
-    return <div>{note?.canToJsonData.html}</div>
-  })
 
   const generateNext = $(async () => {
     if (typeof store.note === 'string' || !store.note) {
@@ -336,10 +350,10 @@ export const AIQuiz = component$(() => {
             }
           </div>
         </div>
-      </div> : <div class="text-center font-bold">生成中...</div>) : <IncorrectScreen question={currentQuestion.value!.question} yourAnswer={yourAnswer.value} onNext$={() => {
+      </div> : <div class="text-center font-bold">生成中...</div>) : <IncorrectScreen quiz={currentQuestion.value!} yourAnswer={yourAnswer.value} onNext$={() => {
         screenType.value = 'question'
         handleNext()
-      }} sourceNote={sourceNote} />
+      }} />
     }
   </div>
 })
