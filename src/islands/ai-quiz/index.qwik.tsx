@@ -81,7 +81,11 @@ const InitialScreen = component$(() => {
   </div>
 })
 
-const createQuestionsGenerator = (notes: MargedNote[]): ((cb?: (q: Question) => void) => Promise<Question[]>) => {
+interface Quiz {
+  question: Question
+  sourceNoteIndex: number
+}
+const createQuestionsGenerator = (notes: MargedNote[]): ((cb: (q: Quiz) => void) => Promise<void>) => {
   const chunks: string[] = []
 
   for (const note of notes) {
@@ -94,6 +98,17 @@ const createQuestionsGenerator = (notes: MargedNote[]): ((cb?: (q: Question) => 
   }
 
   return async (cb) => {
+    const q = 
+      {
+        question: {answers: ['酸素と水素', '酸素と窒素', '水素と水'],
+        correctIndex: 0,
+        explanation: '水を電気分解すると、水は水素と酸素に分解されます。このプロセスでは、水分子 (H2O) に電気エネルギーが供給され、水素ガス (H2) と酸素ガス (O2) として元素に分解されます。水の電気分解は、水分子が電気回路を通って陽極と陰極に移動するプロセスです。陰極（負極）では、水分子が電子を獲得し、水素ガス（H2）に還元されます。一方、陽極（正極）では、水分子が酸化され、酸素ガス（O2）が生成されます。',
+        question: '水の電気分解では、水を何に分解しますか?'},
+        sourceNoteIndex: 0
+      }
+    
+    cb(q)
+    return
     const randomChunkIndex = Math.floor(Math.random() * chunks.length)
     const randomChunk = chunks[randomChunkIndex]!
 
@@ -102,7 +117,7 @@ const createQuestionsGenerator = (notes: MargedNote[]): ((cb?: (q: Question) => 
     ], 'gemini-pro')
     if (!generator) {
       alert('生成時にエラーが発生しました')
-      return []
+      return
     }
 
     const result: Question[] = []
@@ -116,14 +131,13 @@ const createQuestionsGenerator = (notes: MargedNote[]): ((cb?: (q: Question) => 
           const question = parse(QUESTION_SCHEMA, JSON.parse(line))
           result.push(question)
           splitted.splice(parseInt(index), 1)
-          cb?.(question)
+          cb({ question, sourceNoteIndex: randomChunkIndex })
         } catch (_e) {
           continue
         }
       }
       generatedText = splitted.join('\n')
     }
-    return result
   }
 }
 
@@ -134,7 +148,7 @@ const NextButton = component$<{
   onClick$: () => void
 }>((props) => (<div>
   <button class="flex items-center" onClick$={props.onClick$}>
-    <div>Next</div>
+    <div class="font-bold text-lg">Next</div>
     <div dangerouslySetInnerHTML={removeIconSize(iconChevronRight)} class="w-16 h-16" />
   </button>
 </div>))
@@ -143,27 +157,35 @@ const IncorrectScreen = component$<{
   question: Question
   yourAnswer: string
 
+  sourceNote: JSXOutput
+
   onNext$: () => void
 }>((props) => {
+  const explanationMode = useSignal<'ai' | 'source'>('ai')
   return <div class="py-3 h-full flex flex-col justify-around">
     <div>
       <div class="text-3xl text-center my-2">😒不正解..</div>
       <div class="grid place-items-center grid-cols-1 lg:grid-cols-2">
-        <div class="text-xl">{props.question.question}</div>
+        <div class="text-xl text-center">{props.question.question}</div>
 
-        <div class="flex lg:block flex-wrap gap-2 my-2">
-          <div>✖あなたの回答: <span class="text-error">{props.yourAnswer}</span></div>
-          <div>✅正解: <span class="text-green-400">{props.question.answers[props.question.correctIndex]}</span></div>
+        <div class="flex lg:block flex-wrap gap-2 my-2 text-center justify-center">
+          <div class="text-center">✖あなたの回答: <span class="text-error">{props.yourAnswer}</span></div>
+          <div class="text-center">✅正解: <span class="text-green-400">{props.question.answers[props.question.correctIndex]}</span></div>
         </div>
       </div>
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2">
+    <div class="grid grid-cols-1 lg:grid-cols-2 place-items-center">
       <div class="grid justify-center">
         {/* 解説 */}
-        <div class="font-bold">✨NanohaAIによる解説</div>
-        <div>
+        <div class="flex gap-2">
+          <div class="font-bold">{ explanationMode.value === 'ai' ? '✨NanohaAIによる解説' : '📒使用されたノート' }</div>
+          <button onClick$={() => {
+            explanationMode.value = explanationMode.value === 'ai' ? 'source' : 'ai'
+          }} class="underline hover:no-underline">{ explanationMode.value === 'ai' ? 'ソースを表示' : '解説を表示' }</button>
+        </div>
+        <div class="text-on-surface-variant max-h-[30dvh] overflow-auto">
           {
-            props.question.explanation
+            explanationMode.value === 'ai' ? props.question.explanation : props.sourceNote
           }
         </div>
         <div class="flex items-center">
@@ -171,6 +193,13 @@ const IncorrectScreen = component$<{
           <button dangerouslySetInnerHTML={removeIconSize(iconSend)} class="w-8 h-8" title='send message'></button>
         </div>
       </div>
+      <div class="hidden lg:block">
+        <NextButton onClick$={() => {
+          props.onNext$()
+        }}/>
+      </div>
+    </div>
+    <div class="flex lg:hidden justify-center">
       <NextButton onClick$={() => {
         props.onNext$()
       }}/>
@@ -180,16 +209,25 @@ const IncorrectScreen = component$<{
 export const AIQuiz = component$(() => {
   const store = useContext(STORE_CTX)
 
-  const questions = useSignal<Question[]>([])
-  const currentQuestionIndex = useSignal(0)
-  const currentQuestion = useComputed$(() => {
-    return questions.value[currentQuestionIndex.value]
-  })
+  const futureQuestions = useSignal<Quiz[]>([])
+  const currentQuestion = useSignal<Quiz | null>(null)
+  const generatedQuestions = useSignal<number>(0)
+
+  const currentQuestionIndex = useSignal<number>(0)
 
   const yourAnswer = useSignal('')
   const screenType = useSignal<'question' | 'incorrect'>('question')
 
   const isShownCorrectDialog = useSignal(false)
+
+  const sourceNote = useComputed$(() => {
+    const sourceNoteIndex = currentQuestion.value?.sourceNoteIndex
+    if (!sourceNoteIndex || typeof store.note === 'string') {
+      return <div>source</div>
+    }
+    const note = store.note!.notes[sourceNoteIndex]
+    return <div>{note?.canToJsonData.html}</div>
+  })
 
   const generateNext = $(async () => {
     if (typeof store.note === 'string' || !store.note) {
@@ -197,14 +235,32 @@ export const AIQuiz = component$(() => {
     }
     const generator = createQuestionsGenerator(store.note.notes)
     await generator((q) => {
-      questions.value = [...questions.value, q]
+      futureQuestions.value = [...futureQuestions.value, q]
+      generatedQuestions.value += 1
     })
   })
 
+  const handleNext = $(() => {
+    const nextQuestionIndex = Math.floor(Math.random() * futureQuestions.value.length)
+    currentQuestion.value = futureQuestions.value[nextQuestionIndex] ?? null
+
+    const newFutureQuestions = [...futureQuestions.value]
+    newFutureQuestions.splice(nextQuestionIndex, 1)
+
+    futureQuestions.value = newFutureQuestions
+
+    currentQuestionIndex.value += 1
+  })
+
   useVisibleTask$(async () => {
+    let isFirstGenerated = false
     while (true) {
       await generateNext()
-      if (questions.value.length >= QUESTIONS) {
+      if (!isFirstGenerated && generatedQuestions.value !== 0) {
+        handleNext()
+        isFirstGenerated = true
+      }
+      if (generatedQuestions.value >= QUESTIONS) {
         break
       }
     }
@@ -221,7 +277,7 @@ export const AIQuiz = component$(() => {
   const handleCorrect = $(() => {
     isShownCorrectDialog.value = true
     setTimeout(() => {
-      currentQuestionIndex.value += 1
+      handleNext()
     }, 500)
     setTimeout(() => {
       isShownCorrectDialog.value = false
@@ -248,41 +304,42 @@ export const AIQuiz = component$(() => {
     }
   `)
   return <div class="h-full">
-    {isShownCorrectDialog.value && (<div class="fixed w-full h-[100dvh] grid place-items-center left-0 top-0">
+    {isShownCorrectDialog.value && (<div class="fixed w-full h-[100dvh] grid place-items-center left-0 top-0 z-50">
       <div class="text-green-400 text-5xl font-bold correctDialog">
         😊正解!!
       </div>
     </div>)}
     {
-      screenType.value === 'question' ? (currentQuestion.value ? <div class="p-4">
-        <div>問{currentQuestionIndex.value + 1}/{QUESTIONS}</div>
+      screenType.value === 'question' ? (currentQuestion.value ? <div class="p-4 flex flex-col h-full">
         <div>
-          <div class="text-2xl text-center">{currentQuestion.value.question}</div>
+          <div>問{currentQuestionIndex.value}/{Math.max(QUESTIONS, generatedQuestions.value)}</div>
+          <div class="text-2xl text-center">{currentQuestion.value.question.question}</div>
           <hr class="my-2" />
           <div class="text-base text-on-surface-variant text-right">✨AI Generated</div>
         </div>
-        <div class={classNames("grid gap-2 my-3", [
-          currentQuestion.value.answers.length === 2 ? 'grid-cols-2' : 'grid-cols-3'
-        ])}>
-          {
-            currentQuestion.value.answers.map((answer, idx) => (
-              <button
-                class="block filled-button text-xl"
-                onClick$={() => {
-                  if (currentQuestion.value?.correctIndex === idx) {
-                    handleCorrect()
-                  } else {
-                    yourAnswer.value = answer
-                    handleIncorrect()
-                  }
-                }}
-              >{ answer }</button>))
-          }
+        <div class="grow grid items-center">
+          <div class='flex flex-col gap-2 justify-around grow'>
+            {
+              currentQuestion.value.question.answers.map((answer, idx) => (
+                <button
+                  key={idx}
+                  class="block filled-button text-xl"
+                  onClick$={() => {
+                    if (currentQuestion.value?.question?.correctIndex === idx) {
+                      handleCorrect()
+                    } else {
+                      yourAnswer.value = answer
+                      handleIncorrect()
+                    }
+                  }}
+                >{ answer }</button>))
+            }
+          </div>
         </div>
-      </div> : <div class="text-center font-bold">生成中...</div>) : <IncorrectScreen question={currentQuestion.value!} yourAnswer={yourAnswer.value} onNext$={() => {
+      </div> : <div class="text-center font-bold">生成中...</div>) : <IncorrectScreen question={currentQuestion.value!.question} yourAnswer={yourAnswer.value} onNext$={() => {
         screenType.value = 'question'
-        currentQuestionIndex.value += 1
-      }}/>
+        handleNext()
+      }} sourceNote={sourceNote} />
     }
   </div>
 })
