@@ -29,6 +29,12 @@ interface Store {
   }> | 'pending' | 'notfound' | 'invalid'
   aiChecked: boolean | null
   isStarted: boolean
+  isFinished: boolean
+
+  result: {
+    correctQuestions: Question[]
+    incorrectQuestions: Question[]
+  }
 }
 const STORE_CTX = createContextId<Store>('store')
 
@@ -286,6 +292,14 @@ export const AIQuiz = component$(() => {
       }
     ]*/
   })
+  useVisibleTask$(({ track }) => {
+    track(generatedQuestions)
+    track(currentQuestionIndex)
+
+    if (Math.max(generatedQuestions.value, QUESTIONS) < currentQuestionIndex.value) {
+      store.isFinished = true
+    }
+  })
 
   const handleCorrect = $(() => {
     isShownCorrectDialog.value = true
@@ -356,6 +370,12 @@ export const AIQuiz = component$(() => {
     }
   </div>
 })
+
+const FinishedScreen = component$(() => {
+  return <div class="h-full p-2">
+    <div class="text-3xl text-center font-bold">Finished!</div>
+  </div>
+})
 const Header = component$(() => {
   return <div>
     This is Header
@@ -368,7 +388,12 @@ export default component$<{
   const store = useStore<Store>({
     note: 'pending',
     aiChecked: null,
-    isStarted: false
+    isStarted: false,
+    isFinished: false,
+    result: {
+      correctQuestions: [],
+      incorrectQuestions: []
+    }
   }, {
     deep: false
   })
@@ -400,7 +425,7 @@ export default component$<{
     </div>
     <div class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow">
       {
-        store.isStarted ? <AIQuiz /> : <InitialScreen />
+        store.isStarted ? (store.isFinished ? <FinishedScreen /> : <AIQuiz />) : <InitialScreen />
       }
     </div>
   </div>
