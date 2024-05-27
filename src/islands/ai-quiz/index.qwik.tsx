@@ -302,6 +302,18 @@ export const AIQuiz = component$(() => {
   })
 
   const handleCorrect = $(() => {
+    const question = currentQuestion.value?.question
+    if (!question) {
+      return
+    }
+    store.result = {
+      ...store.result,
+      correctQuestions: [
+        ...store.result.correctQuestions,
+        question
+      ]
+    }
+
     isShownCorrectDialog.value = true
     setTimeout(() => {
       handleNext()
@@ -311,7 +323,18 @@ export const AIQuiz = component$(() => {
     }, 800)
   })
   const handleIncorrect = $(() => {
+    const question = currentQuestion.value?.question
+    if (!question) {
+      return
+    }
     screenType.value = 'incorrect'
+    store.result = {
+      ...store.result,
+      incorrectQuestions: [
+        ...store.result.incorrectQuestions,
+        question
+      ]
+    }
   })
 
   useStylesScoped$(`
@@ -372,8 +395,28 @@ export const AIQuiz = component$(() => {
 })
 
 const FinishedScreen = component$(() => {
-  return <div class="h-full p-2">
-    <div class="text-3xl text-center font-bold">Finished!</div>
+  const store = useContext(STORE_CTX)
+
+  const result = useComputed$(() => {
+    return {
+      all: store.result.correctQuestions.length + store.result.incorrectQuestions.length,
+      correct: store.result.correctQuestions.length,
+      incorrect: store.result.incorrectQuestions.length
+    }
+  })
+  return <div class="h-full p-2 grid place-items-center">
+    <div>
+      <div class="text-3xl text-center font-bold">Finished!</div>
+      <div class="flex justify-center items-center font-mono gap-2">
+        <div class="grid grid-cols-2 font-bold text-lg gap-1">
+          <div>✅正解</div><div>{result.value.correct}</div>
+          <div>✖不正解</div><div>{result.value.incorrect}</div>
+        </div>
+        <div class="text-3xl font-bold">
+          / {result.value.all}
+        </div>
+      </div>
+    </div>
   </div>
 })
 const Header = component$(() => {
