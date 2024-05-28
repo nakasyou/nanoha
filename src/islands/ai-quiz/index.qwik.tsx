@@ -35,6 +35,7 @@ interface Store {
     correctQuestions: Question[]
     incorrectQuestions: Question[]
   }
+  futureQuizs: Quiz[]
 }
 const STORE_CTX = createContextId<Store>('store')
 
@@ -150,7 +151,6 @@ const createQuestionsGenerator = (notes: MargedNote[]): ((cb: (q: Quiz) => void)
 
 const QUESTIONS = 5
 
-
 const NextButton = component$<{
   onClick$: () => void
 }>((props) => (<div>
@@ -237,7 +237,6 @@ const IncorrectScreen = component$<{
 export const AIQuiz = component$(() => {
   const store = useContext(STORE_CTX)
 
-  const futureQuestions = useSignal<Quiz[]>([])
   const currentQuestion = useSignal<Quiz | null>(null)
   const generatedQuestions = useSignal<number>(0)
 
@@ -254,19 +253,19 @@ export const AIQuiz = component$(() => {
     }
     const generator = createQuestionsGenerator(store.note.notes)
     await generator((q) => {
-      futureQuestions.value = [...futureQuestions.value, q]
+      store.futureQuizs = [...store.futureQuizs, q]
       generatedQuestions.value += 1
     })
   })
 
   const handleNext = $(() => {
-    const nextQuestionIndex = Math.floor(Math.random() * futureQuestions.value.length)
-    currentQuestion.value = futureQuestions.value[nextQuestionIndex] ?? null
+    const nextQuestionIndex = Math.floor(Math.random() * store.futureQuizs.length)
+    currentQuestion.value = store.futureQuizs[nextQuestionIndex] ?? null
 
-    const newFutureQuestions = [...futureQuestions.value]
+    const newFutureQuestions = [...store.futureQuizs]
     newFutureQuestions.splice(nextQuestionIndex, 1)
 
-    futureQuestions.value = newFutureQuestions
+    store.futureQuizs = newFutureQuestions
 
     currentQuestionIndex.value += 1
   })
@@ -404,17 +403,37 @@ const FinishedScreen = component$(() => {
       incorrect: store.result.incorrectQuestions.length
     }
   })
+  const handleRetry = $(() => {
+    store.isFinished = false
+  })
+  const handleNewQuestions = $(() => {
+    store.isFinished = false
+    store.isStarted = false
+    store.result = {
+      correctQuestions: [],
+      incorrectQuestions: [],
+    }
+    store.futureQuizs = []
+  })
   return <div class="h-full p-2 grid place-items-center">
-    <div>
+    <div class="flex flex-col gap-2">
       <div class="text-3xl text-center font-bold">Finished!</div>
-      <div class="flex justify-center items-center font-mono gap-2">
-        <div class="grid grid-cols-2 font-bold text-lg gap-1">
-          <div>✅正解</div><div>{result.value.correct}</div>
-          <div>✖不正解</div><div>{result.value.incorrect}</div>
+      <div class="flex justify-center items-center gap-2">
+        <div class="grid grid-cols-3 text-lg gap-1 place-items-center">
+          <div>✅正解</div>
+          <div class="font-bold font-mono">{result.value.correct}</div>
+          <div class="row-span-2">
+            <div class="text-center text-3xl">
+              / <span class="font-bold font-mon">{result.value.all}</span>
+            </div>
+          </div>
+          <div>✖不正解</div>
+          <div class="font-bold font-mono">{result.value.incorrect}</div>
         </div>
-        <div class="text-3xl font-bold">
-          / {result.value.all}
-        </div>
+      </div>
+      <div>
+        <button class="block filled-button text-xl" onClick$={handleRetry}>再チャレンジ</button>
+        <button class="block filled-button text-xl" onClick$={handleNewQuestions}>新しい問題</button>
       </div>
     </div>
   </div>
@@ -436,7 +455,8 @@ export default component$<{
     result: {
       correctQuestions: [],
       incorrectQuestions: []
-    }
+    },
+    futureQuizs: []
   }, {
     deep: false
   })
