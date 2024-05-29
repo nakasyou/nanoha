@@ -32,10 +32,12 @@ interface Store {
   isFinished: boolean
 
   result: {
-    correctQuestions: Question[]
-    incorrectQuestions: Question[]
+    correctQuizzes: Quiz[]
+    incorrectQuizzes: Quiz[]
   }
-  futureQuizs: Quiz[]
+  futureQuizzes: Quiz[]
+
+  targetQuizzesCount: number
 }
 const STORE_CTX = createContextId<Store>('store')
 
@@ -149,8 +151,6 @@ const createQuestionsGenerator = (notes: MargedNote[]): ((cb: (q: Quiz) => void)
   }
 }
 
-const QUESTIONS = 5
-
 const NextButton = component$<{
   onClick$: () => void
 }>((props) => (<div>
@@ -237,7 +237,7 @@ const IncorrectScreen = component$<{
 export const AIQuiz = component$(() => {
   const store = useContext(STORE_CTX)
 
-  const currentQuestion = useSignal<Quiz | null>(null)
+  const currentQuiz = useSignal<Quiz | null>(null)
   const generatedQuestions = useSignal<number>(0)
 
   const currentQuestionIndex = useSignal<number>(0)
@@ -253,24 +253,28 @@ export const AIQuiz = component$(() => {
     }
     const generator = createQuestionsGenerator(store.note.notes)
     await generator((q) => {
-      store.futureQuizs = [...store.futureQuizs, q]
+      store.futureQuizzes = [...store.futureQuizzes, q]
       generatedQuestions.value += 1
     })
   })
 
   const handleNext = $(() => {
-    const nextQuestionIndex = Math.floor(Math.random() * store.futureQuizs.length)
-    currentQuestion.value = store.futureQuizs[nextQuestionIndex] ?? null
+    const nextQuestionIndex = Math.floor(Math.random() * store.futureQuizzes.length)
+    currentQuiz.value = store.futureQuizzes[nextQuestionIndex] ?? null
 
-    const newFutureQuestions = [...store.futureQuizs]
+    const newFutureQuestions = [...store.futureQuizzes]
     newFutureQuestions.splice(nextQuestionIndex, 1)
 
-    store.futureQuizs = newFutureQuestions
+    store.futureQuizzes = newFutureQuestions
 
     currentQuestionIndex.value += 1
   })
 
   useVisibleTask$(async () => {
+    store.result = {
+      correctQuizzes: [],
+      incorrectQuizzes: [],
+    }
     let isFirstGenerated = false
     while (true) {
       await generateNext()
@@ -278,38 +282,30 @@ export const AIQuiz = component$(() => {
         handleNext()
         isFirstGenerated = true
       }
-      if (generatedQuestions.value >= QUESTIONS) {
+      if (generatedQuestions.value >= store.targetQuizzesCount) {
         break
       }
     }
-    /*questions.value = [
-      {
-        answers: ['水素', '酸素'],
-        question: '水の電気分解で、陰極に現れる気体は？',
-        correctIndex: 0,
-        explanation: 'なぜなら、あいうえお'
-      }
-    ]*/
   })
   useVisibleTask$(({ track }) => {
     track(generatedQuestions)
     track(currentQuestionIndex)
 
-    if (Math.max(generatedQuestions.value, QUESTIONS) < currentQuestionIndex.value) {
+    if (Math.max(generatedQuestions.value, store.targetQuizzesCount) < currentQuestionIndex.value) {
       store.isFinished = true
     }
   })
 
   const handleCorrect = $(() => {
-    const question = currentQuestion.value?.question
-    if (!question) {
+    const quiz = currentQuiz.value
+    if (!quiz) {
       return
     }
     store.result = {
       ...store.result,
-      correctQuestions: [
-        ...store.result.correctQuestions,
-        question
+      correctQuizzes: [
+        ...store.result.correctQuizzes,
+        quiz
       ]
     }
 
@@ -322,16 +318,16 @@ export const AIQuiz = component$(() => {
     }, 800)
   })
   const handleIncorrect = $(() => {
-    const question = currentQuestion.value?.question
-    if (!question) {
+    const quiz = currentQuiz.value
+    if (!quiz) {
       return
     }
     screenType.value = 'incorrect'
     store.result = {
       ...store.result,
-      incorrectQuestions: [
-        ...store.result.incorrectQuestions,
-        question
+      incorrectQuizzes: [
+        ...store.result.incorrectQuizzes,
+        quiz
       ]
     }
   })
@@ -359,22 +355,22 @@ export const AIQuiz = component$(() => {
       </div>
     </div>)}
     {
-      screenType.value === 'question' ? (currentQuestion.value ? <div class="p-4 flex flex-col h-full">
+      screenType.value === 'question' ? (currentQuiz.value ? <div class="p-4 flex flex-col h-full">
         <div>
-          <div>問<span>{currentQuestionIndex.value}</span>/<span>{Math.max(QUESTIONS, generatedQuestions.value)}</span></div>
-          <div class="text-2xl text-center">{currentQuestion.value.question.question}</div>
+          <div>問<span>{currentQuestionIndex.value}</span>/<span>{store.targetQuizzesCount}</span></div>
+          <div class="text-2xl text-center">{currentQuiz.value.question.question}</div>
           <hr class="my-2" />
           <div class="text-base text-on-surface-variant text-right">✨AI Generated</div>
         </div>
         <div class="grow grid items-center">
           <div class='flex flex-col gap-2 justify-around grow'>
             {
-              currentQuestion.value.question.answers.map((answer, idx) => (
+              currentQuiz.value.question.answers.map((answer, idx) => (
                 <button
                   key={idx}
                   class="block filled-button text-xl"
                   onClick$={() => {
-                    if (currentQuestion.value?.question?.correctIndex === idx) {
+                    if (currentQuiz.value?.question?.correctIndex === idx) {
                       handleCorrect()
                     } else {
                       yourAnswer.value = answer
@@ -385,7 +381,7 @@ export const AIQuiz = component$(() => {
             }
           </div>
         </div>
-      </div> : <div class="text-center font-bold">生成中...</div>) : <IncorrectScreen quiz={currentQuestion.value!} yourAnswer={yourAnswer.value} onNext$={() => {
+      </div> : <div class="text-center font-bold">生成中...</div>) : <IncorrectScreen quiz={currentQuiz.value!} yourAnswer={yourAnswer.value} onNext$={() => {
         screenType.value = 'question'
         handleNext()
       }} />
@@ -398,26 +394,39 @@ const FinishedScreen = component$(() => {
 
   const result = useComputed$(() => {
     return {
-      all: store.result.correctQuestions.length + store.result.incorrectQuestions.length,
-      correct: store.result.correctQuestions.length,
-      incorrect: store.result.incorrectQuestions.length
+      all: store.result.correctQuizzes.length + store.result.incorrectQuizzes.length,
+      correct: store.result.correctQuizzes.length,
+      incorrect: store.result.incorrectQuizzes.length,
+
+      isAllCorrect: store.result.incorrectQuizzes.length === 0,
     }
   })
   const handleRetry = $(() => {
     store.isFinished = false
+
+    store.futureQuizzes = [
+      ...store.result.incorrectQuizzes.sort(() => Math.random() > 0.5 ? 1 : -1),
+    ]
+    store.targetQuizzesCount = store.futureQuizzes.length
   })
   const handleNewQuestions = $(() => {
     store.isFinished = false
     store.isStarted = false
     store.result = {
-      correctQuestions: [],
-      incorrectQuestions: [],
+      correctQuizzes: [],
+      incorrectQuizzes: [],
     }
-    store.futureQuizs = []
+    store.futureQuizzes = []
+    store.targetQuizzesCount = 5
   })
   return <div class="h-full p-2 grid place-items-center">
     <div class="flex flex-col gap-2">
       <div class="text-3xl text-center font-bold">Finished!</div>
+      {
+        result.value.isAllCorrect && <div class="text-center text-xl">
+          全問正解!
+        </div>
+      }
       <div class="flex justify-center items-center gap-2">
         <div class="grid grid-cols-3 text-lg gap-1 place-items-center">
           <div>✅正解</div>
@@ -431,8 +440,10 @@ const FinishedScreen = component$(() => {
           <div class="font-bold font-mono">{result.value.incorrect}</div>
         </div>
       </div>
-      <div>
-        <button class="block filled-button text-xl" onClick$={handleRetry}>再チャレンジ</button>
+      <div class="flex flex-col gap-2 justify-center">
+        {
+          !result.value.isAllCorrect && <button class="block filled-button text-xl" onClick$={handleRetry}>再チャレンジ</button>
+        }
         <button class="block filled-button text-xl" onClick$={handleNewQuestions}>新しい問題</button>
       </div>
     </div>
@@ -453,10 +464,11 @@ export default component$<{
     isStarted: false,
     isFinished: false,
     result: {
-      correctQuestions: [],
-      incorrectQuestions: []
+      correctQuizzes: [],
+      incorrectQuizzes: []
     },
-    futureQuizs: []
+    futureQuizzes: [],
+    targetQuizzesCount: 5
   }, {
     deep: false
   })
