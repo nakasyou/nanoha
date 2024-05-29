@@ -35,7 +35,7 @@ interface Store {
     correctQuizzes: Quiz[]
     incorrectQuizzes: Quiz[]
   }
-  futureQuizzes: Quiz[]
+  quizzes: Quiz[]
 
   targetQuizzesCount: number
 }
@@ -108,7 +108,7 @@ const createQuestionsGenerator = (notes: MargedNote[]): ((cb: (q: Quiz) => void)
   }
 
   return async (cb) => {
-    const q = 
+    /*const q = 
       {
         question: {answers: ['酸素と水素', '酸素と窒素', '水素と水'],
         correctIndex: 0,
@@ -118,7 +118,7 @@ const createQuestionsGenerator = (notes: MargedNote[]): ((cb: (q: Quiz) => void)
       }
     
     cb(q)
-    return
+    return*/
     const randomChunkIndex = Math.floor(Math.random() * chunks.length)
     const randomChunk = chunks[randomChunkIndex]!
 
@@ -237,11 +237,10 @@ const IncorrectScreen = component$<{
 export const AIQuiz = component$(() => {
   const store = useContext(STORE_CTX)
 
-  const currentQuiz = useSignal<Quiz | null>(null)
-  const generatedQuestions = useSignal<number>(0)
-
-  const currentQuestionIndex = useSignal<number>(0)
-
+  const currentQuizIndex = useSignal<number>(0)
+  const currentQuiz = useComputed$(() => {
+    return store.quizzes[currentQuizIndex.value]
+  })
   const yourAnswer = useSignal('')
   const screenType = useSignal<'question' | 'incorrect'>('question')
 
@@ -253,21 +252,15 @@ export const AIQuiz = component$(() => {
     }
     const generator = createQuestionsGenerator(store.note.notes)
     await generator((q) => {
-      store.futureQuizzes = [...store.futureQuizzes, q]
-      generatedQuestions.value += 1
+      store.quizzes = [...store.quizzes, q]
     })
   })
 
+  /**
+   * 次の問題に進む
+   */
   const handleNext = $(() => {
-    const nextQuestionIndex = Math.floor(Math.random() * store.futureQuizzes.length)
-    currentQuiz.value = store.futureQuizzes[nextQuestionIndex] ?? null
-
-    const newFutureQuestions = [...store.futureQuizzes]
-    newFutureQuestions.splice(nextQuestionIndex, 1)
-
-    store.futureQuizzes = newFutureQuestions
-
-    currentQuestionIndex.value += 1
+    currentQuizIndex.value += 1
   })
 
   useVisibleTask$(async () => {
@@ -277,21 +270,21 @@ export const AIQuiz = component$(() => {
     }
     let isFirstGenerated = false
     while (true) {
-      await generateNext()
-      if (!isFirstGenerated && generatedQuestions.value !== 0) {
-        handleNext()
+      if (!isFirstGenerated && store.quizzes.length > 0) {
         isFirstGenerated = true
+        handleNext()
       }
-      if (generatedQuestions.value >= store.targetQuizzesCount) {
+      if (store.quizzes.length >= store.targetQuizzesCount) {
         break
       }
+      await generateNext()
     }
   })
   useVisibleTask$(({ track }) => {
-    track(generatedQuestions)
-    track(currentQuestionIndex)
+    track(() => store.targetQuizzesCount)
+    track(currentQuizIndex)
 
-    if (Math.max(generatedQuestions.value, store.targetQuizzesCount) < currentQuestionIndex.value) {
+    if (store.targetQuizzesCount <= currentQuizIndex.value) {
       store.isFinished = true
     }
   })
@@ -357,7 +350,7 @@ export const AIQuiz = component$(() => {
     {
       screenType.value === 'question' ? (currentQuiz.value ? <div class="p-4 flex flex-col h-full">
         <div>
-          <div>問<span>{currentQuestionIndex.value}</span>/<span>{store.targetQuizzesCount}</span></div>
+          <div>問<span>{currentQuizIndex.value}</span>/<span>{store.targetQuizzesCount}</span></div>
           <div class="text-2xl text-center">{currentQuiz.value.question.question}</div>
           <hr class="my-2" />
           <div class="text-base text-on-surface-variant text-right">✨AI Generated</div>
@@ -381,7 +374,11 @@ export const AIQuiz = component$(() => {
             }
           </div>
         </div>
-      </div> : <div class="text-center font-bold">生成中...</div>) : <IncorrectScreen quiz={currentQuiz.value!} yourAnswer={yourAnswer.value} onNext$={() => {
+      </div> : <div class="h-full grid place-items-center">
+        <div class="font-bold text-3xl">
+          読み込み中...
+        </div>
+      </div>) : <IncorrectScreen quiz={currentQuiz.value!} yourAnswer={yourAnswer.value} onNext$={() => {
         screenType.value = 'question'
         handleNext()
       }} />
@@ -404,10 +401,10 @@ const FinishedScreen = component$(() => {
   const handleRetry = $(() => {
     store.isFinished = false
 
-    store.futureQuizzes = [
+    store.quizzes = [
       ...store.result.incorrectQuizzes.sort(() => Math.random() > 0.5 ? 1 : -1),
     ]
-    store.targetQuizzesCount = store.futureQuizzes.length
+    store.targetQuizzesCount = store.quizzes.length
   })
   const handleNewQuestions = $(() => {
     store.isFinished = false
@@ -416,7 +413,7 @@ const FinishedScreen = component$(() => {
       correctQuizzes: [],
       incorrectQuizzes: [],
     }
-    store.futureQuizzes = []
+    store.quizzes = []
     store.targetQuizzesCount = 5
   })
   return <div class="h-full p-2 grid place-items-center">
@@ -467,8 +464,8 @@ export default component$<{
       correctQuizzes: [],
       incorrectQuizzes: []
     },
-    futureQuizzes: [],
-    targetQuizzesCount: 5
+    quizzes: [],
+    targetQuizzesCount: 2
   }, {
     deep: false
   })
