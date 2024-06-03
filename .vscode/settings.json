@@ -1,5 +1,4 @@
 {
-    "deno.enable": false,
     "[astro]": {
         "editor.tabSize": 2
     },

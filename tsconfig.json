@@ -9,5 +9,8 @@
     ],
     "noUncheckedIndexedAccess": true
   },
-  "exclude": ["dist"]
+  "exclude": [
+    "dist",
+    "./src/islands/note/**/*"
+  ]
 }

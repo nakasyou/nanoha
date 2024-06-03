@@ -1,4 +1,4 @@
-import { array, number, object, string, type Output } from "valibot"
+import { array, object, string, type Output } from "valibot"
 
 /**
  * Prompt to generate question
@@ -12,12 +12,15 @@ export const PROMPT_TO_GENERATE_QUESTION = `
 interface Question {
   /** 問題文 */
   question: string
-  /** 回答の選択肢 */
-  answers: string[]
-  /** 正解のインデックス */
-  correctIndex: number
-  /** 解説 */
+
+  /** 不正解時に表示される解説 */
   explanation: string
+
+  /** 正解 */
+  correctAnswer: string
+
+  /** 不正解と明らかなダミー */
+  damyAnswers: string[]
 }
 \`\`\`
 1つのJSONは絶対に改行したりフォーマットしたりせずにMinifyされた状態にし、JSONL形式で出力しなさい。
@@ -25,10 +28,11 @@ interface Question {
 ソーステキスト:
 `.trim()
 
-export const QUESTION_SCHEMA = object({
+export const CONTENT_SCHEMA = object({
   question: string(),
-  answers: array(string()),
-  correctIndex: number(),
-  explanation: string()
+  explanation: string(),
+  correctAnswer: string(),
+  damyAnswers: array(string()),
 })
-export type Question = Output<typeof QUESTION_SCHEMA>
+
+export type QuizContent = Output<typeof CONTENT_SCHEMA>
