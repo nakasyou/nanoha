@@ -287,7 +287,7 @@ ${prompt}`, 'gemini-pro')
       </Show>
 
       <Show when={!noteBookState.isEditMode}>
-        <Player html={getEditor()?.getHTML() || ''} />
+        <Player html={getEditor()?.getHTML() || props.noteData.canToJsonData.html} />
       </Show>
 
       <div
