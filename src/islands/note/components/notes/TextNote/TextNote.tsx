@@ -295,7 +295,7 @@ ${prompt}`, 'gemini-pro')
           hidden: !getIsActive() || !noteBookState.isEditMode
         }}
       >
-        <div class="textnote-tiptap-container rounded my-2 border boader-outlined nanohanote-textnote-styler">
+        <div class="textnote-tiptap-container rounded my-2 border boader-outlined nanohanote-textnote-styler break-words">
           <div
             id="editor"
             ref={editorRef}
