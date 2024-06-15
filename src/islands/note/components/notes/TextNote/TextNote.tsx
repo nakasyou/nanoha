@@ -29,6 +29,7 @@ import './TextNoteStyle.css'
 import type { SetStoreFunction } from 'solid-js/store'
 import { getVisualViewport } from '../../../window-apis'
 import { generateWithLLM } from '../../../../shared/ai'
+import { getGoogleGenerativeAI } from '../../../../shared/gemini'
 import markdownIt from 'markdown-it'
 
 const markdownParser = markdownIt()
@@ -133,25 +134,29 @@ export const TextNote = ((props: Props) => {
       return
     }
     //editor.chain().insertContent(``).focus().run()
-
-    const stream = generateWithLLM([`あなたは学習用テキスト生成AIです。
-Write about the last matter, observing the following caveats.
-- Answer in line with the language of the question.
-- Output in Markdown. そのなかでも重要な部分（覚えるべき単語や語彙）は、
-
-**重要な単語**
-
-のように太字を使いなさい。重要部分は、1回答に最低でも2個入れなさい。
-
-User request (write an answer using request language):
-${prompt}`], 'gemini-pro')
-    if (!stream) {
+    const ai = getGoogleGenerativeAI()
+    if (!ai) {
       if (confirm('AI 機能が設定されていません。\n設定を開きますか？')) {
         location.href = '/app/settings#ai'
       }
       return
     }
-    await insertFromStream(stream)
+    const model = ai.getGenerativeModel({
+      model: 'gemini-1.5-flash'
+    })
+    const stream = await model.startChat({
+      systemInstruction: {
+        role: 'model',
+        parts: [{
+          text: `ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。`
+        }]
+    }
+    }).sendMessageStream(prompt)
+    insertFromStream((async function*() {
+      for await (const chunk of stream.stream) {
+        yield chunk.text()
+      }
+    })())
   }
   const insertFromStream = async (stream: AsyncGenerator<string, void, unknown>) => {
     const editor = getEditor()

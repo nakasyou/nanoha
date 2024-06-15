@@ -4,10 +4,10 @@ import {
   $,
   component$,
   useOnDocument,
-  useSignal,
-  useVisibleTask$
+  useSignal
 } from '@builder.io/qwik'
 import { getGeminiApiToken } from '../shared/store'
+
 
 export const GeminiApiToken = component$(() => {
   const hasGeminiApiToken = useSignal<boolean | null>(null)
