@@ -86,6 +86,12 @@ export default (props: Props) => {
       }
     }
   })
+  onMount(() => {
+    const url = new URL(location.href)
+    if (url.searchParams.has('play')) {
+      setNoteBookState('isEditMode', false)
+    }
+  })
   return <div class="bg-background h-[100dvh] touch-manipulation">
     <Show when={getLoadError()}>
       <Dialog onClose={() => setLoadError(void 0)} type="alert" title="Load Error">{ getLoadError() }</Dialog>

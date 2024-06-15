@@ -294,7 +294,7 @@ ${prompt}`], 'gemini-pro')
       </Show>
 
       <Show when={!noteBookState.isEditMode}>
-        <Player html={getEditor()?.getHTML() ?? props.noteData.canToJsonData.html} />
+        <Player html={getEditor()?.getHTML() || props.noteData.canToJsonData.html} />
       </Show>
 
       <div
@@ -302,7 +302,7 @@ ${prompt}`], 'gemini-pro')
           hidden: !getIsActive() || !noteBookState.isEditMode
         }}
       >
-        <div class="textnote-tiptap-container rounded my-2 border boader-outlined nanohanote-textnote-styler">
+        <div class="textnote-tiptap-container rounded my-2 border boader-outlined nanohanote-textnote-styler break-words">
           <div
             id="editor"
             ref={editorRef}
