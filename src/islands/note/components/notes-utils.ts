@@ -2,8 +2,6 @@ import { createSignal, type Accessor, type Setter } from "solid-js"
 import type { JSX } from 'solid-js/jsx-runtime'
 import type { Note0 } from "../utils/file-format/manifest-schema"
 import type { SetStoreFunction } from 'solid-js/store'
-import type { TextNoteData } from "./notes/TextNote/types"
-import type { ImageNoteData } from "./notes/ImageNote/types"
 
 export interface NoteData <
   CanToJsonData extends any = any,
@@ -20,12 +18,10 @@ export interface NoteData <
   /**
    * ノートのType
    */
-  type: string
+  type: Note0['type']
+
   id: string
 }
-
-export type MargedNote = TextNoteData | ImageNoteData
-
 export interface NoteComponentProps <
   CanToJsonData extends any = any,
   BlobStore extends string = string
