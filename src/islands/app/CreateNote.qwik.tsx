@@ -1,6 +1,6 @@
 /** @jsxImportSource @builder.io/qwik */
 import { component$, useSignal, useStore, $, type QRL, type NoSerialize, noSerialize } from '@builder.io/qwik'
-import { NotesDB } from '../note/notes-schema'
+import { NotesDB } from '../shared/storage'
 import { load, saveNoteDatas } from '../note/utils/file-format'
 import iconPlus from '@tabler/icons/outline/plus.svg?raw'
 import iconX from '@tabler/icons/outline/x.svg?raw'

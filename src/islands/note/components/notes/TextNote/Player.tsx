@@ -11,8 +11,6 @@ export const Player = (props: { html: string }) => {
 
   let sheetElements: HTMLSpanElement[]
   createEffect(() => {
-    const htmlText = html()
-
     if (!ref) return
 
     sheetElements = Array.from(ref.getElementsByClassName('nanoha-sheet')) as HTMLSpanElement[]
@@ -24,11 +22,6 @@ export const Player = (props: { html: string }) => {
         if (!element.dataset[datsetKey]) {
           element.dataset[datsetKey] = defaultValue
         }
-      }
-    }
-    const rerenderSheet = (element: HTMLSpanElement) => {
-      const dataset = element.dataset as {
-        isHidden: 'false' | 'true'
       }
     }
     for (const sheetElement of sheetElements) {

@@ -110,7 +110,7 @@ export const Menu = () => {
               </div>
             </div>
             <div>
-              <div class="hidden lg:block">
+              <div class="hidden lg:block py-5">
                 <CloseBtn />
               </div>
             </div>

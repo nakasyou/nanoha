@@ -128,7 +128,13 @@ export const TextNote = ((props: Props) => {
   })
 
   const insertWithGenerate = async (prompt: string) => {
-    const stream = generateWithLLM(`あなたは学習用テキスト生成AIです。
+    const editor = getEditor()
+    if (!editor) {
+      return
+    }
+    //editor.chain().insertContent(``).focus().run()
+
+    const stream = generateWithLLM([`あなたは学習用テキスト生成AIです。
 Write about the last matter, observing the following caveats.
 - Answer in line with the language of the question.
 - Output in Markdown. そのなかでも重要な部分（覚えるべき単語や語彙）は、
@@ -138,7 +144,7 @@ Write about the last matter, observing the following caveats.
 のように太字を使いなさい。重要部分は、1回答に最低でも2個入れなさい。
 
 User request (write an answer using request language):
-${prompt}`, 'gemini-pro')
+${prompt}`], 'gemini-pro')
     if (!stream) {
       if (confirm('AI 機能が設定されていません。\n設定を開きますか？')) {
         location.href = '/app/settings#ai'
@@ -154,13 +160,14 @@ ${prompt}`, 'gemini-pro')
     }
     const paragraphId = Math.random().toString()
     editor.commands.setNode('llmpreview', { id: paragraphId })
-    console.log(editor, paragraphId)
+
     const pre = editor.$node('llmpreview', { id: paragraphId })!
     pre.content = '生成中...'
     let rawText = ''
     for await (const text of stream) {
       rawText += text
-      pre.content = rawText//markdownParser.render(rawText)
+      editor.commands.insertContent(text)
+      //pre.content = rawText//markdownParser.render(rawText)
     }
     editor.commands.deleteNode(pre.node.type)
     //pre.content = ''
