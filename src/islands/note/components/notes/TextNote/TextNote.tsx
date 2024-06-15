@@ -31,6 +31,7 @@ import { getVisualViewport } from '../../../window-apis'
 import { generateWithLLM } from '../../../../shared/ai'
 import { getGoogleGenerativeAI } from '../../../../shared/gemini'
 import markdownIt from 'markdown-it'
+import dedent from 'dedent'
 
 const markdownParser = markdownIt()
 
@@ -52,8 +53,8 @@ export const TextNote = ((props: Props) => {
   const [isShowCloseDialog, setIsShowCloseDialog] = createSignal(false)
   const [getIsShowLlmPromptDialog, setIsShowLlmPromptDialog] = createSignal(false)
   const [getPrompt, setPrompt] = createSignal('')
-  const [getIsShownFromImageDialog, setIsShownFromImageDialog] = createSignal(false)
   const [getImageBlobToGenerate, setImageBlobToGenarate] = createSignal<Blob>()
+  const [getGenerateMode, setGenerateMode] = createSignal<'text' | 'image'>('text')
 
   const controllerItems = [
     {
@@ -141,17 +142,40 @@ export const TextNote = ((props: Props) => {
       }
       return
     }
+    const image = getGenerateMode() === 'image' && getImageBlobToGenerate()
     const model = ai.getGenerativeModel({
       model: 'gemini-1.5-flash'
     })
-    const stream = await model.startChat({
+    const stream = image ? await model.startChat({
+      systemInstruction: {
+        role: 'model',
+        parts: [{
+          text: dedent`画像を抽出し、文章をそのまま書き出しなさい。画像中にないことは書かないように。その文章のうち、赤シートとして隠せる単語はMarkdownの太字機能で表現しなさい。`
+        }]
+      }
+    }).sendMessageStream([
+      {
+        text: prompt
+      },
+      {
+        inlineData: {
+          mimeType: image.type,
+          data: await new Promise<string>((resolve) => {
+            const reader = new FileReader()
+            reader.onloadend = () => resolve((reader.result as string).split(',')[1]!)
+            reader.readAsDataURL(image)
+          })
+        }
+      }
+    ]) : await model.startChat({
       systemInstruction: {
         role: 'model',
         parts: [{
           text: `ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。`
         }]
-    }
+      }
     }).sendMessageStream(prompt)
+
     insertFromStream((async function*() {
       for await (const chunk of stream.stream) {
         yield chunk.text()
@@ -188,6 +212,8 @@ export const TextNote = ((props: Props) => {
     if (!editor) {
       return
     }
+    setPrompt('')
+    setImageBlobToGenarate(void 0)
     setIsShowLlmPromptDialog(true)
     llmTextArea.focus()
 
@@ -235,9 +261,55 @@ export const TextNote = ((props: Props) => {
             insertWithGenerate(getPrompt())
           }
         }} type='confirm' title='Generate with AI' okLabel='生成'>{close => (<div>
+          <div class="grid grid-cols-2 place-items-center">
+            <button class="border-b w-full" onClick={() => setGenerateMode('text')}>テキストから生成</button>
+            <button class="border-b w-full" onClick={() => setGenerateMode('image')}>写真をスキャンして生成</button>
+            <div class="border-t border-primary w-full transition-transform duration-200 ease-in -translate-y-px" classList={{
+              'translate-x-full': getGenerateMode() === 'image'
+            }}></div>
+          </div>
+          <Show when={getGenerateMode() === 'image'}>{(() => {
+            let imageInput!: HTMLInputElement
+            const [getCapture, setCapture] = createSignal<string | undefined>(void 0)
+            return <div>
+              <div class="text-xl text-center">画像を選択:</div>
+              <div class="p-2">
+                <Show when={getImageBlobToGenerate()}>
+                  <div class="grid place-items-center">
+                    <img class="max-h-[30dvh] max-w-full" src={URL.createObjectURL(getImageBlobToGenerate())} alt={getImageBlobToGenerate().name} />
+                  </div>
+                  <div class="text-center">{getImageBlobToGenerate().name}</div>
+                </Show>
+              </div>
+              <div class="flex items-center justify-center gap-3">
+                <div>
+                  <button onClick={() => {
+                    setCapture('camera')
+                    imageInput.click()
+                  }} class="filled-tonal-button">カメラを開く</button>
+                </div>
+                <div>
+                  または
+                  <button onClick={() => {
+                    setCapture(void 0)
+                    imageInput.click()
+                  }} class="text-button">写真を選択</button>
+                </div>
+              </div>
+              <input type="file" hidden accept="image/*" capture={getCapture()} ref={imageInput} onChange={e => {
+                const file = e.target?.files?.[0]
+                if (file) {
+                  setImageBlobToGenarate(() => file)
+                }
+              }} />
+              <hr class="my-2" />
+            </div>
+          })()}</Show>
           <label>
-            <div>AIに入力するプロンプトを入力:</div>
-            <textarea ref={llmTextArea} placeholder='水の電気分解について、小学生でもわかるように説明して...' oninput={(evt) => {
+            <div class="text-center text-lg"><Show when={getGenerateMode() === 'text'} fallback='どのようにスキャンするかの指示を入力:'>AIへのプロンプトを入力:</Show></div>
+            <textarea ref={llmTextArea} placeholder={
+              getGenerateMode() === 'text' ? '水の電気分解について、小学生でもわかるように説明して...' : '赤い文字で書かれているところを重要語句として隠して...'
+            } oninput={(evt) => {
               setPrompt(evt.currentTarget.value)
             }} onKeyDown={(evt) => {
               if (evt.key === 'Enter' && evt.shiftKey) {
@@ -247,55 +319,6 @@ export const TextNote = ((props: Props) => {
             }} class='border rounded-lg w-full p-1 border-outlined bg-surface'></textarea>
           </label>
         </div>)}</Dialog>
-      </Show>
-
-      <Show when={getIsShownFromImageDialog()}>
-        <Dialog onClose={async (result) => {
-          setIsShownFromImageDialog(false)
-          if (result) {
-            const file = getImageBlobToGenerate()!
-            const stream = generateWithLLM([
-              `画像の文章をそのまま、Markdownとして書き出しなさい。書き出す上で、重要な単語は、太字で表現しなさい。`,
-              file
-            ], 'gemini-pro-vision')
-                if (!stream) {
-                  if (confirm('AI 機能が設定されていません。\n設定を開きますか？')) {
-                    location.href = '/app/settings#ai'
-                  }
-                  return
-                }
-            await insertFromStream(stream)
-          }
-        }} type='confirm' title='画像から生成 with AI' okLabel='生成'>{close => {
-          let imageInput!: HTMLInputElement
-          const [getImageUrl, setImageUrl] = createSignal<string>()
-          return <>
-            <Show when={getImageUrl()}>
-              <img src={getImageUrl()} alt="Preview Image" class="w-full h-64 object-contain" />
-            </Show>
-            <div class='flex justify-center flex-wrap gap-2 p-2'>
-              <button onClick={() => {
-                imageInput.capture = 'camera'
-                imageInput.click()
-              }} class='filled-tonal-button'>カメラを開く</button>
-              <span>
-                または
-                <button onClick={() => {
-                  imageInput.capture = ''
-                  imageInput.click()
-                }} class='text-button'>ファイルを開く</button>
-              </span>
-            </div>
-            <input onInput={() => {
-              const file = imageInput.files?.[0]
-              if (!file) {
-                return
-              }
-              setImageBlobToGenarate(() => file)
-              setImageUrl(URL.createObjectURL(file))
-            }} type="file" accept="image/*" capture="camera" hidden ref={imageInput} /> 
-          </>
-        }}</Dialog>
       </Show>
 
       <Show when={!noteBookState.isEditMode}>
@@ -364,12 +387,6 @@ export const TextNote = ((props: Props) => {
               onClick={openGenerateDialog}
             >
               <div innerHTML={removeIconSize(IconSparkles)} class="w-8 h-8" />
-            </button>
-            <button
-              class="grid drop-shadow-none"
-              onClick={() => setIsShownFromImageDialog(true)}
-            >
-              <div innerHTML={removeIconSize(IconCamera)} class="w-8 h-8" />
             </button>
           </div>
           <div />

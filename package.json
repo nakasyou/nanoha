@@ -28,12 +28,13 @@
     "array-move": "^4.0.0",
     "astro": "4.10.2",
     "classnames": "^2.3.2",
+    "dedent": "^1.5.3",
     "dexie": "^4.0.1",
     "fast-glob": "^3.3.2",
     "fflate": "^0.8.0",
     "markdown-it": "^14.1.0",
     "mikanui": "^0.1.12",
-    "sharp": "0.33.4",
+    "sharp": "^0.33.4",
     "solid-js": "^1.7.12",
     "tailwindcss": "^3.0.24",
     "turndown": "^7.1.3",
@@ -50,5 +51,8 @@
     "queue-tick": "^1.0.1",
     "unplugin-parcel-macros": "^0.0.3",
     "yallist": "^5.0.0"
-  }
+  },
+  "trustedDependencies": [
+    "sharp"
+  ]
 }
