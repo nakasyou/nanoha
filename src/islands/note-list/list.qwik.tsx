@@ -7,7 +7,7 @@ import {
   useSignal,
   useVisibleTask$
 } from '@builder.io/qwik'
-import { type Notes, NotesDB } from '../shared/storage'
+import { type Notes, NotesDB } from '../note/notes-schema'
 import classnames from 'classnames'
 import { Button } from '../../components/Button.qwik'
 

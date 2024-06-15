@@ -10,23 +10,16 @@ import { Menu } from './components/Menu'
 import { noteBookState, notes, setNoteBookState, setNoteBookMetadata, noteBookMetadata } from './store'
 import type { Props } from '.'
 import { Dialog } from './components/utils/Dialog'
-import { NotesDB } from '../shared/storage'
+import { NotesDB } from './notes-schema'
 import { loadFromBlob } from './components/load-process'
 import { save as saveFromNotes } from './utils/file-format'
 
-import iconSvg from '../../assets/icon-new.svg?raw'
-
 export default (props: Props) => {
   let timeoutEnded = false
-
-  const [getMounted, setMounted] = createSignal(false)
-
-  setNoteBookState('loadType', props.noteLoadType)
   onCleanup(() => {
     timeoutEnded = true
   })
   onMount(async () => {
-    setMounted(true)
     notes.setNotes([
       createTextNote({
         blobs: {},
@@ -101,39 +94,31 @@ export default (props: Props) => {
         <Header />
       </div>
       <div class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow">
-        <Show when={getMounted()} fallback={<div class="grid place-items-center w-full h-full grid-rows-2">
-          <div class="text-3xl font-bold">Loading Nanoha...</div>
-          <div innerHTML={iconSvg} class='w-32 h-32 flex justify-center items-center'></div>
-        </div>}>
-          {
-            notes.notes().length === 0 ?
-              <div class="text-center my-2">
-                <div>
-                  <p class="text-xl">ここにはノートが一つもありません :(</p>
-                  <p>右下の<span class="text-2xl">+</span>を押して、ノートを追加しましょう!</p>
-                </div>
-              </div> : <Notes notes={notes.notes()} setNotes={notes.setNotes}/>
-          }
-        </Show>
+        {
+          notes.notes().length === 0 ?
+            <div class="text-center my-2">
+              <div>
+                <p class="text-xl">ここにはノートが一つもありません :(</p>
+                <p>右下の<span class="text-2xl">+</span>を押して、ノートを追加しましょう!</p>
+              </div>
+            </div> : <Notes notes={notes.notes()} setNotes={notes.setNotes}/>
+        }
       </div>
     </div>
-    <Show when={getMounted()}>
-      <Fab
-        onAddTextNote={() => {
-          notes.setNotes([
-            ...notes.notes(),
-            createTextNote()
-          ])
-        }}
-        onAddImageNote={() => {
-          notes.setNotes([
-            ...notes.notes(),
-            createImageNote()
-          ])
-        }}
-      />
-    </Show>
-    
+    <Fab
+      onAddTextNote={() => {
+        notes.setNotes([
+          ...notes.notes(),
+          createTextNote()
+        ])
+      }}
+      onAddImageNote={() => {
+        notes.setNotes([
+          ...notes.notes(),
+          createImageNote()
+        ])
+      }}
+    />
     <Menu />
   </div>
 }
