@@ -1,4 +1,4 @@
-import { array, object, string, type Output } from "valibot"
+import { array, object, string, type InferOutput } from "valibot"
 
 /**
  * Prompt to generate question
@@ -35,4 +35,4 @@ export const CONTENT_SCHEMA = object({
   damyAnswers: array(string()),
 })
 
-export type QuizContent = Output<typeof CONTENT_SCHEMA>
+export type QuizContent = InferOutput<typeof CONTENT_SCHEMA>

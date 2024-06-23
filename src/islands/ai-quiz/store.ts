@@ -34,6 +34,7 @@ export interface QuizState {
   current: {
     index: number
     quiz: Quiz
+    choices: string[]
   } | null
 
   goalQuestions: number
