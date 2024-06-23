@@ -64,7 +64,7 @@ export const Incorrect = component$<{
         </div>
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 place-items-center">
-        <AIExplanation />
+        <AIExplanation explanationMode={explanationMode} explanation={sourceNote.value} />
       </div>
     </div>
   </div>
