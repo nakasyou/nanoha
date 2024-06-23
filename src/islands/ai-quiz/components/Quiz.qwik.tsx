@@ -18,7 +18,9 @@ export const QuizScreen = component$(() => {
 
   useVisibleTask$(async () => {
     // Generate Quizzes
-
+    if (screenState.note === 'pending' || screenState.note === 'notfound' || screenState.note === 'invalid') {
+      return
+    }
     while (true) {
       if (quizState.quizzes.length >= quizState.goalQuestions) {
         break
@@ -27,9 +29,12 @@ export const QuizScreen = component$(() => {
         ...quizState.quizzes,
         {
           content: {
-            
+            question: '問題',
+            correctAnswer: '答え',
+            damyAnswers: ['答え1', '答え2', '答え3'],
+            explanation: '解説'
           },
-          source: screenState.note
+          source: screenState.note!.notes[0]!
         }
       ]
     }
