@@ -16,7 +16,6 @@ export interface Props extends NoteComponentProps {
 
 export const ImageNote = ((props: Props) => {
   const [getIsActive, setIsActive] = createSignal(false)
-  const [isShowCloseDialog, setIsShowCloseDialog] = createSignal(false)
 
   props.on('focus', (evt) => {
     setIsActive(evt.isActive)
@@ -29,21 +28,6 @@ export const ImageNote = ((props: Props) => {
   return (
     <div>
       {/* $ダイアログとか */}
-      <Show when={isShowCloseDialog()}>
-        <Dialog
-          onClose={(result) => {
-            if (result) {
-              // 消していいいらしい
-              props.removeNote()
-            }
-            setIsShowCloseDialog(false)
-          }}
-          type="confirm"
-          title="削除しますか?"
-        >
-          ノートを削除すると、元に戻せなくなる可能性があります。
-        </Dialog>
-      </Show>
       <Show when={isShowEditor()}>
         <ScanedImageEditor
           onEnd={(data) => {
@@ -63,7 +47,6 @@ export const ImageNote = ((props: Props) => {
 
       {/* 本体 */}
       <div
-        class="p-2 rounded border my-2 bg-surface"
         onClick={() => {
           if (noteBookState.isEditMode) {
             props.focus()
@@ -141,18 +124,6 @@ export const ImageNote = ((props: Props) => {
           </Show>
         </Show>
       </div>
-
-      <Show when={noteBookState.isEditMode && getIsActive()}>
-        <div class="flex justify-center gap-5">
-          <Controller
-            noteIndex={props.index}
-            notesLength={props.notes.length}
-            onRemove={() => setIsShowCloseDialog(true)}
-            onUpNote={() => props.up()}
-            onDownNote={() => props.down()}
-          />
-        </div>
-      </Show>
     </div>
   )
 }) satisfies NoteComponent

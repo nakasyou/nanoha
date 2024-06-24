@@ -14,7 +14,7 @@ export class NotesDB extends Dexie {
     super('notes') // データベース名をsuperのコンストラクタに渡す
 
     this.version(1).stores({
-      notes: '++id, name, nnote, updated'
+      notes: '++id, name, nnote, updated',
     })
 
     this.notes = this.table('notes')
@@ -27,10 +27,12 @@ export class NotesDB extends Dexie {
  * @param loadType - The load type specifying the source of the note.
  * @return A promise that resolves to the retrieved note, or null if no note is found.
  */
-export const loadNoteFromType = async (loadType: NoteLoadType): Promise<Notes | null> => {
+export const loadNoteFromType = async (
+  loadType: NoteLoadType,
+): Promise<Notes | null> => {
   if (loadType.from === 'local') {
     const db = new NotesDB()
-    return await db.notes.get(loadType.id) ?? null
+    return (await db.notes.get(loadType.id)) ?? null
   }
   return null
 }

@@ -2,7 +2,7 @@
 import { Hono } from 'hono'
 import { App } from 'astro/app'
 
-export function createExports (manifest: import('astro').SSRManifest) {
+export function createExports(manifest: import('astro').SSRManifest) {
   const app = new App(manifest)
 
   const honoApp = new Hono()
@@ -12,6 +12,6 @@ export function createExports (manifest: import('astro').SSRManifest) {
     return res
   })
   return {
-    fetch: honoApp.fetch
+    fetch: honoApp.fetch,
   }
 }

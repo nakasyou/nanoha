@@ -1,6 +1,22 @@
-import { number, object, parse, string, type Output, type BaseSchema, any, type Input, safeParse, optional } from "valibot"
+import {
+  number,
+  object,
+  parse,
+  string,
+  type Output,
+  type BaseSchema,
+  any,
+  type Input,
+  safeParse,
+  optional,
+} from 'valibot'
 
-export const redirectUri = new URL('/google-oauth/callback', import.meta.env.DEV ? (import.meta.env.DEV_SITE ?? 'http://localhost:4321') : import.meta.env.SITE).href
+export const redirectUri = new URL(
+  '/google-oauth/callback',
+  import.meta.env.DEV
+    ? import.meta.env.DEV_SITE ?? 'http://localhost:4321'
+    : import.meta.env.SITE,
+).href
 
 export const credentialsSchema = object({
   access_token: string(),
@@ -41,11 +57,11 @@ export const fetchAccessToken = async (callbackCode: string) => {
   const req = new Request(targetUrl, {
     body: data,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-    method: 'POST'
+    method: 'POST',
   })
-  const json = await fetch(req).then(res => res.json())
+  const json = await fetch(req).then((res) => res.json())
 
   return parse(credentialsSchema, json)
 }
@@ -60,51 +76,59 @@ export const refreshAccessToken = async (refreshToken: string) => {
   })
   const res = await fetch('https://www.googleapis.com/oauth2/v4/token', {
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: data,
-    method: 'POST'
+    method: 'POST',
   })
   return parse(credentialsSchema, await res.json())
 }
-type FetchResult <Schema extends BaseSchema> = {
+type FetchResult<Schema extends BaseSchema> = {
   response: Response
-} & ({
-  success: true
-  data: Output<Schema>
-} | {
-  success: false
-})
-const makeFetchAPIFunc = <Schema extends BaseSchema>(scope: string, schema: Schema) => async (accessToken: string): Promise<FetchResult<Schema>> => {
-  const token = `Bearer ${accessToken}`
-  const req = new Request(scope, {
-    headers: {
-      "x-goog-api-client": "gdcl/7.0.1 gl-node/20.11.0",
-      "Accept-Encoding": "gzip",
-      "User-Agent": "google-api-nodejs-client/7.0.1 (gzip)",
-      "Authorization": token
+} & (
+  | {
+      success: true
+      data: Output<Schema>
     }
-  })
-  const res = await fetch(req)
-  const result = await res.json()
-  const parsed = safeParse(schema, result)
-  if (parsed.success) {
+  | {
+      success: false
+    }
+)
+const makeFetchAPIFunc =
+  <Schema extends BaseSchema>(scope: string, schema: Schema) =>
+  async (accessToken: string): Promise<FetchResult<Schema>> => {
+    const token = `Bearer ${accessToken}`
+    const req = new Request(scope, {
+      headers: {
+        'x-goog-api-client': 'gdcl/7.0.1 gl-node/20.11.0',
+        'Accept-Encoding': 'gzip',
+        'User-Agent': 'google-api-nodejs-client/7.0.1 (gzip)',
+        Authorization: token,
+      },
+    })
+    const res = await fetch(req)
+    const result = await res.json()
+    const parsed = safeParse(schema, result)
+    if (parsed.success) {
+      return {
+        success: true,
+        data: result,
+        response: res,
+      }
+    }
     return {
-      success: true,
-      data: result,
-      response: res
+      success: false,
+      response: res,
     }
   }
-  return {
-    success: false,
-    response: res
-  }
-}
-export const fetchUserInfo = makeFetchAPIFunc('https://www.googleapis.com/oauth2/v2/userinfo', object({
-  id: string(),
-  name: string(),
-  given_name: string(),
-  family_name: string(),
-  picture: string(),
-  locale: string()
-}))
+export const fetchUserInfo = makeFetchAPIFunc(
+  'https://www.googleapis.com/oauth2/v2/userinfo',
+  object({
+    id: string(),
+    name: string(),
+    given_name: string(),
+    family_name: string(),
+    picture: string(),
+    locale: string(),
+  }),
+)

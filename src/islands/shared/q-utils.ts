@@ -1,4 +1,4 @@
-import { useOnDocument, type EventHandler, type QRL,  } from '@builder.io/qwik'
+import { useOnDocument, type EventHandler, type QRL } from '@builder.io/qwik'
 
 /**
  * Call cb when document is loaded even if you use Astro View Transitions API

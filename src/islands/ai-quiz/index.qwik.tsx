@@ -40,5 +40,5 @@ export default component$<{
           : <InitialScreen />
       }
     </div>
-  </div>
+  )
 })

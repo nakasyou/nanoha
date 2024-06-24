@@ -1,7 +1,7 @@
-import type { TextNoteCanToJsonData, TextNoteData } from "./types"
+import type { TextNoteCanToJsonData, TextNoteData } from './types'
 import type { Note, NoteData } from '../../notes-utils'
-import { TextNote } from "./TextNote"
-import { createStore } from "solid-js/store"
+import { TextNote } from './TextNote'
+import { createStore } from 'solid-js/store'
 
 export const createTextNote = (initNoteData?: TextNoteData) => {
   /*const [noteData, setNoteData] = createStore<TextNoteData>({
@@ -10,14 +10,16 @@ export const createTextNote = (initNoteData?: TextNoteData) => {
       html: defaultText || 'NanohaNote!!!'
     }
   })*/
-  const [noteData, setNoteData] = createStore<TextNoteData>(initNoteData ?? {
-    blobs: {},
-    canToJsonData: {
-      html: 'NanohaNote!!!'
+  const [noteData, setNoteData] = createStore<TextNoteData>(
+    initNoteData ?? {
+      blobs: {},
+      canToJsonData: {
+        html: 'NanohaNote!!!',
+      },
+      type: 'text',
+      id: crypto.randomUUID(),
     },
-    type: 'text',
-    id: crypto.randomUUID(),
-  })
+  )
   const addNote: Note<TextNoteCanToJsonData> = {
     Component: TextNote,
     noteData,

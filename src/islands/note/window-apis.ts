@@ -1,9 +1,9 @@
-import { createEffect, createSignal } from "solid-js"
+import { createEffect, createSignal } from 'solid-js'
 
 const [getVisualViewport, setVisualViewport] = createSignal<{
   data: VisualViewport | null
 }>({
-  data: null
+  data: null,
 })
 
 if (globalThis.document) {
@@ -15,7 +15,4 @@ if (globalThis.document) {
   handleVisualViewportUpdate()
 }
 
-export {
-  getVisualViewport
-}
-
+export { getVisualViewport }
