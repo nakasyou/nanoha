@@ -15,14 +15,14 @@ export interface Props {
 
   sheets?: Sheets
 
-  rescan (): void
+  rescan(): void
 }
 
 export default (props: Props) => {
   const [editMode, setEditMode] = createSignal<'move' | 'paint' | 'clear'>(
-    'move'
+    'move',
   )
-  
+
   const [imageUrl, setImageUrl] = createSignal<string>()
   const [imageSize, setImageSize] = createSignal<{
     w: number
@@ -32,7 +32,8 @@ export default (props: Props) => {
     h: 0,
   })
   const [sheets, setSheets] = createSignal<Sheets>(props.sheets ?? [])
-  const [tmpSheet, setTmpSheet] = createSignal<{
+  const [tmpSheet, setTmpSheet] = createSignal<
+    | {
         sheet: Sheets[number]
         pointerId: number
       }
@@ -65,7 +66,7 @@ export default (props: Props) => {
 
   let editorContainer!: HTMLDivElement
   const [editorContainerRect, setEditorContainerRect] = createSignal<DOMRect>(
-    new DOMRect()
+    new DOMRect(),
   )
   onMount(() => {
     const observer = new ResizeObserver(() => {
@@ -116,8 +117,8 @@ export default (props: Props) => {
             x: positionX ?? 0,
             y: positionY ?? 0,
           },
-          weight: 30 / editorPosition().size
-        }
+          weight: 30 / editorPosition().size,
+        },
       })
     }
   }
@@ -125,27 +126,29 @@ export default (props: Props) => {
     baseDistance: null | number
     lastDistance: number | null
     baseScale: number
-    preview (): void
-    end (): void
+    preview(): void
+    end(): void
   } = {
     baseDistance: null,
     lastDistance: null,
     baseScale: 1,
-    preview () {
-      setEditorPosition(prev => ({
+    preview() {
+      setEditorPosition((prev) => ({
         ...prev,
-        size: this.baseScale * (this.lastDistance ?? 1) / (this.baseDistance ?? 1)
+        size:
+          (this.baseScale * (this.lastDistance ?? 1)) /
+          (this.baseDistance ?? 1),
       }))
     },
-    end () {
+    end() {
       this.baseScale *= (this.lastDistance ?? 1) / (this.baseDistance ?? 1)
       this.lastDistance = null
       this.baseDistance = null
-      setEditorPosition(prev => ({
+      setEditorPosition((prev) => ({
         ...prev,
-        size: this.baseScale
+        size: this.baseScale,
       }))
-    }
+    },
   }
   const pointerMove = (evt: PointerEvent) => {
     evt.preventDefault()
@@ -171,14 +174,19 @@ export default (props: Props) => {
           })
           scaleDatas.end()
         }
-      } else if (Object.values(pointersData).filter((e) => e?.isDowned).length >= 2) {
+      } else if (
+        Object.values(pointersData).filter((e) => e?.isDowned).length >= 2
+      ) {
         // タッチしているポインターが2つ以上
-        const downedPointers = Object.values(pointersData).filter((e) => e?.isDowned)
+        const downedPointers = Object.values(pointersData).filter(
+          (e) => e?.isDowned,
+        )
         const p0 = downedPointers[0]!
         const p1 = downedPointers[1]!
 
         const pinchDistance = Math.sqrt(
-          (p0.last.screenX - p1.last.screenX) ** 2 + (p0.last.screenY - p1.last.screenY) ** 2
+          (p0.last.screenX - p1.last.screenX) ** 2 +
+            (p0.last.screenY - p1.last.screenY) ** 2,
         ) // ピタゴラスに感謝
 
         if (!scaleDatas.baseDistance) {
@@ -232,7 +240,7 @@ export default (props: Props) => {
     const lastEditorPosition = editorPosition()
     scaleDatas.baseScale *= evt.deltaY > 0 ? 0.9 : 1.1
     scaleDatas.end()
-        /*setEditorPosition({
+    /*setEditorPosition({
       ...lastEditorPosition,
       size: lastEditorPosition.size * (evt.deltaY > 0 ? 0.9 : 1.1),
     })*/
@@ -266,12 +274,16 @@ export default (props: Props) => {
   return (
     <div>
       <Show when={getRescanConfirm()}>
-        <Dialog type='confirm' onClose={(ok) => {
-          if (ok) {
-            props.rescan()
-          }
-          setRescanConfirm(false)
-        }} title="Confirm">
+        <Dialog
+          type="confirm"
+          onClose={(ok) => {
+            if (ok) {
+              props.rescan()
+            }
+            setRescanConfirm(false)
+          }}
+          title="Confirm"
+        >
           本当に再スキャンしますか？このデータは失われます。
         </Dialog>
       </Show>
@@ -368,7 +380,9 @@ export default (props: Props) => {
           </button>
         </div>
         <div>
-          <button class="text-button" onClick={() => setRescanConfirm(true)}>ReScan</button>
+          <button class="text-button" onClick={() => setRescanConfirm(true)}>
+            ReScan
+          </button>
         </div>
       </div>
     </div>

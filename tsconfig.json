@@ -4,9 +4,7 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "allowImportingTsExtensions": true,
-    "types": [
-      "bun-types"
-    ],
+    "types": ["bun-types"],
     "noUncheckedIndexedAccess": true
   },
   "exclude": ["dist"]

@@ -1,4 +1,14 @@
-import { object, literal, array, string, uuid, type Input, union, record, unknown } from 'valibot'
+import {
+  object,
+  literal,
+  array,
+  string,
+  uuid,
+  type Input,
+  union,
+  record,
+  unknown,
+} from 'valibot'
 
 /**
  * Manifest Version 0
@@ -6,9 +16,11 @@ import { object, literal, array, string, uuid, type Input, union, record, unknow
 export const manifest0 = object({
   version: literal(0),
 
-  noteIds: array(object({
-    id: string([uuid()])
-  }))
+  noteIds: array(
+    object({
+      id: string([uuid()]),
+    }),
+  ),
 })
 export type Manifest0 = Input<typeof manifest0>
 
@@ -18,13 +30,10 @@ export type Manifest0 = Input<typeof manifest0>
 export const note0 = object({
   version: literal(0),
 
-  type: union([
-    literal('text'),
-    literal('image')
-  ]),
+  type: union([literal('text'), literal('image')]),
 
   blobMimetypes: record(string(), string()),
 
-  noteData: unknown()
+  noteData: unknown(),
 })
 export type Note0 = Input<typeof note0>

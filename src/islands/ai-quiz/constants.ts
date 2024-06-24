@@ -1,4 +1,4 @@
-import { array, number, object, string, type Output } from "valibot"
+import { array, number, object, string, type Output } from 'valibot'
 
 /**
  * Prompt to generate question
@@ -29,6 +29,6 @@ export const QUESTION_SCHEMA = object({
   question: string(),
   answers: array(string()),
   correctIndex: number(),
-  explanation: string()
+  explanation: string(),
 })
 export type Question = Output<typeof QUESTION_SCHEMA>

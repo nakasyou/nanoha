@@ -13,9 +13,7 @@ export interface Props {
 }
 
 const userAgent = (Astro.request.headers.get('User-Agent') ?? '').toLowerCase()
-const isPhone = userAgent.includes('android') || (
-  userAgent.includes('macintosh')
-)
+const isPhone = userAgent.includes('android') || userAgent.includes('macintosh')
 
 const nomalizedUrl = new URL(Astro.url.href)
 nomalizedUrl.hostname = 'nanoha.pages.dev'

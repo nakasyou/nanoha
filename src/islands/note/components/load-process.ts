@@ -10,7 +10,7 @@ export const loadFromBlob = async (targetFile: Blob) => {
   if (!loadResult.success) {
     return loadResult.error
   }
-  const newNotes: Note[] = loadResult.notes.map(note => {
+  const newNotes: Note[] = loadResult.notes.map((note) => {
     let newNote: Note
     switch (note.type) {
       case 'image':

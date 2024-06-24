@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@astrojs/solid-js": "^4.1.0",
+    "@biomejs/biome": "^1.8.2",
     "@types/markdown-it": "^14.0.0",
     "bun-types": "^1.0.7",
     "esbuild": "^0.21.1",
@@ -52,7 +53,5 @@
     "unplugin-parcel-macros": "^0.0.3",
     "yallist": "^5.0.0"
   },
-  "trustedDependencies": [
-    "sharp"
-  ]
+  "trustedDependencies": ["sharp"]
 }

@@ -1,6 +1,5 @@
-
-import { For, createEffect, createSignal } from "solid-js"
-import { noteBookState } from "../../../../store"
+import { For, createEffect, createSignal } from 'solid-js'
+import { noteBookState } from '../../../../store'
 
 export interface Position {
   x: number
@@ -28,42 +27,66 @@ export interface Props {
   class?: string
 }
 export default (props: Props) => {
-  const [getSheets, setSheets] = createSignal(props.sheets.map(sheet => {
-    return {
-      sheet,
-      isHide: false
-    }
-  }))
-  createEffect(() => {
-    const sheetDefaultState = noteBookState.sheetDefaultState
-    setSheets(props.sheets.map(sheet => {
+  const [getSheets, setSheets] = createSignal(
+    props.sheets.map((sheet) => {
       return {
         sheet,
-        isHide: !sheetDefaultState
+        isHide: false,
       }
-    }))
+    }),
+  )
+  createEffect(() => {
+    const sheetDefaultState = noteBookState.sheetDefaultState
+    setSheets(
+      props.sheets.map((sheet) => {
+        return {
+          sheet,
+          isHide: !sheetDefaultState,
+        }
+      }),
+    )
   })
 
-  return <svg class={props.class} viewBox={`0 0 ${props.width} ${props.height}`}>
-    <For each={getSheets()}>{(sheet, index) => {
-      const commands: (string | number)[] = ['M' + sheet.sheet.startPosition.x + ',' + sheet.sheet.startPosition.y]
-      for (const position of sheet.sheet.positions) {
-        commands.push('L' + position.x + ',' + position.y)
-      }
-      return <path
-        d={commands.join(' ')} stroke="#fff" stroke-width={sheet.sheet.weight}
-        fill="none"
-        onClick={() => {
-          props.onClickSheet(index())
-          if (props.isPlayMode) {
-            const newSheetStates = getSheets()
-            newSheetStates[index()]!.isHide = !newSheetStates[index()]!.isHide
-            setSheets([...newSheetStates])
+  return (
+    <svg class={props.class} viewBox={`0 0 ${props.width} ${props.height}`}>
+      <For each={getSheets()}>
+        {(sheet, index) => {
+          const commands: (string | number)[] = [
+            'M' +
+              sheet.sheet.startPosition.x +
+              ',' +
+              sheet.sheet.startPosition.y,
+          ]
+          for (const position of sheet.sheet.positions) {
+            commands.push('L' + position.x + ',' + position.y)
           }
+          return (
+            <path
+              d={commands.join(' ')}
+              stroke="#fff"
+              stroke-width={sheet.sheet.weight}
+              fill="none"
+              onClick={() => {
+                props.onClickSheet(index())
+                if (props.isPlayMode) {
+                  const newSheetStates = getSheets()
+                  newSheetStates[index()]!.isHide =
+                    !newSheetStates[index()]!.isHide
+                  setSheets([...newSheetStates])
+                }
+              }}
+              class="stroke-primary-container"
+              stroke-opacity={
+                props.isPlayMode
+                  ? getSheets()[index()]!.isHide
+                    ? '1.0'
+                    : '0.5'
+                  : '0.5'
+              }
+            />
+          )
         }}
-        class="stroke-primary-container"
-        stroke-opacity={props.isPlayMode ? (getSheets()[index()]!.isHide ? "1.0" : "0.5") : "0.5"}
-      />
-    }}</For>
-  </svg>
+      </For>
+    </svg>
+  )
 }

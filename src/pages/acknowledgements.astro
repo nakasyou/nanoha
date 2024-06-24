@@ -3,11 +3,20 @@ import PageLayout from '../layouts/Page.astro'
 import fg from 'fast-glob'
 import fs from 'node:fs/promises'
 
-const packages = await Promise.all((await fg(['./node_modules/*/package.json', './node_modules/@*/*/package.json'])).map(async (entry) => {
-  return JSON.parse(await fs.readFile(entry, {
-    encoding: 'utf8'
-  }))
-}))
+const packages = await Promise.all(
+  (
+    await fg([
+      './node_modules/*/package.json',
+      './node_modules/@*/*/package.json',
+    ])
+  ).map(async (entry) => {
+    return JSON.parse(
+      await fs.readFile(entry, {
+        encoding: 'utf8',
+      }),
+    )
+  }),
+)
 
 export const prerender = true
 ---

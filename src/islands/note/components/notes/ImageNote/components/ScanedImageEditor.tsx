@@ -43,9 +43,9 @@ export const ScanedImageEditor = (props: Props) => {
           result && nowScanedImageBlob
             ? {
                 sheets: props.noteData.canToJsonData.sheets,
-                image: nowScanedImageBlob
+                image: nowScanedImageBlob,
               }
-            : null
+            : null,
         )
       }}
       class="ml-5"

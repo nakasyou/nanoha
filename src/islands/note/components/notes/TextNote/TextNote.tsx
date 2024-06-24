@@ -9,7 +9,7 @@ import {
   createEffect,
   createSignal,
   onMount,
-  onCleanup
+  onCleanup,
 } from 'solid-js'
 import { removeIconSize } from '../../../utils/icon/removeIconSize'
 
@@ -17,11 +17,9 @@ import IconNote from '@tabler/icons/outline/note.svg?raw'
 import IconBold from '@tabler/icons/outline/bold.svg?raw'
 import IconUnderline from '@tabler/icons/outline/underline.svg?raw'
 import IconSparkles from '@tabler/icons/outline/sparkles.svg?raw'
-import IconCamera from '@tabler/icons/outline/camera.svg?raw'
 
-import { Editor, } from '@tiptap/core'
+import { Editor } from '@tiptap/core'
 import { Dialog } from '../../utils/Dialog'
-import { Controller } from '../../note-components/Controller'
 import { noteBookState } from '../../../store'
 import { Player } from './Player'
 
@@ -50,28 +48,30 @@ export const TextNote = ((props: Props) => {
   const [getIsActiveBold, setIsActiveBold] = createSignal(false)
   const [getIsActiveUndlerline, setIsActiveUndlerline] = createSignal(false)
   const [getIsActive, setIsActive] = createSignal(false)
-  const [isShowCloseDialog, setIsShowCloseDialog] = createSignal(false)
-  const [getIsShowLlmPromptDialog, setIsShowLlmPromptDialog] = createSignal(false)
+  const [getIsShowLlmPromptDialog, setIsShowLlmPromptDialog] =
+    createSignal(false)
   const [getPrompt, setPrompt] = createSignal('')
   const [getImageBlobToGenerate, setImageBlobToGenarate] = createSignal<Blob>()
-  const [getGenerateMode, setGenerateMode] = createSignal<'text' | 'image'>('text')
+  const [getGenerateMode, setGenerateMode] = createSignal<'text' | 'image'>(
+    'text',
+  )
 
   const controllerItems = [
     {
       icon: IconNote,
       toggle: 'toggleSheet',
-      isActive: getIsActiveSheet
+      isActive: getIsActiveSheet,
     },
     {
       icon: IconBold,
       toggle: 'toggleBold',
-      isActive: getIsActiveBold
+      isActive: getIsActiveBold,
     },
     {
       icon: IconUnderline,
       toggle: 'toggleUnderline',
-      isActive: getIsActiveUndlerline
-    }
+      isActive: getIsActiveUndlerline,
+    },
   ] satisfies {
     icon: string
     toggle: keyof Editor['commands'] & `toggle${string}`
@@ -87,12 +87,12 @@ export const TextNote = ((props: Props) => {
       extensions: [
         StarterKit,
         ExtensionSheet({
-          sheetClassName: ''
+          sheetClassName: '',
         }),
         ExtensionPreviewLLM,
-        Underline
+        Underline,
       ],
-      content: props.noteData.canToJsonData.html
+      content: props.noteData.canToJsonData.html,
     })
     setEditor(editor)
 
@@ -144,45 +144,60 @@ export const TextNote = ((props: Props) => {
     }
     const image = getGenerateMode() === 'image' && getImageBlobToGenerate()
     const model = ai.getGenerativeModel({
-      model: 'gemini-1.5-flash'
+      model: 'gemini-1.5-flash',
     })
-    const stream = image ? await model.startChat({
-      systemInstruction: {
-        role: 'model',
-        parts: [{
-          text: dedent`画像を抽出し、文章をそのまま書き出しなさい。画像中にないことは書かないように。その文章のうち、赤シートとして隠せる単語はMarkdownの太字機能で表現しなさい。`
-        }]
-      }
-    }).sendMessageStream([
-      {
-        text: prompt
-      },
-      {
-        inlineData: {
-          mimeType: image.type,
-          data: await new Promise<string>((resolve) => {
-            const reader = new FileReader()
-            reader.onloadend = () => resolve((reader.result as string).split(',')[1]!)
-            reader.readAsDataURL(image)
+    const stream = image
+      ? await model
+          .startChat({
+            systemInstruction: {
+              role: 'model',
+              parts: [
+                {
+                  text: dedent`画像を抽出し、文章をそのまま書き出しなさい。画像中にないことは書かないように。その文章のうち、赤シートとして隠せる単語はMarkdownの太字機能で表現しなさい。`,
+                },
+              ],
+            },
           })
-        }
-      }
-    ]) : await model.startChat({
-      systemInstruction: {
-        role: 'model',
-        parts: [{
-          text: `ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。`
-        }]
-      }
-    }).sendMessageStream(prompt)
+          .sendMessageStream([
+            {
+              text: prompt,
+            },
+            {
+              inlineData: {
+                mimeType: image.type,
+                data: await new Promise<string>((resolve) => {
+                  const reader = new FileReader()
+                  reader.onloadend = () =>
+                    resolve((reader.result as string).split(',')[1]!)
+                  reader.readAsDataURL(image)
+                }),
+              },
+            },
+          ])
+      : await model
+          .startChat({
+            systemInstruction: {
+              role: 'model',
+              parts: [
+                {
+                  text: `ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。`,
+                },
+              ],
+            },
+          })
+          .sendMessageStream(prompt)
 
-    insertFromStream((async function*() {
-      for await (const chunk of stream.stream) {
-        yield chunk.text()
-      }
-    })())
+    insertFromStream(
+      (async function* () {
+        for await (const chunk of stream.stream) {
+          yield chunk.text()
+        }
+      })(),
+    )
   }
-  const insertFromStream = async (stream: AsyncGenerator<string, void, unknown>) => {
+  const insertFromStream = async (
+    stream: AsyncGenerator<string, void, unknown>,
+  ) => {
     const editor = getEditor()
     if (!editor) {
       return
@@ -201,9 +216,17 @@ export const TextNote = ((props: Props) => {
     editor.commands.deleteNode(pre.node.type)
     //pre.content = ''
     editor.commands.insertContent(
-      markdownParser.render(
-        rawText.replace(/\*\*[\s\S]*?\*\*/g, str => `((${str.slice(2, -2)}))`)
-      ).replace(/\(\([\s\S]*?\)\)/g, str => `<span data-nanohasheet="true">${str.slice(2, -2)}</span>`)
+      markdownParser
+        .render(
+          rawText.replace(
+            /\*\*[\s\S]*?\*\*/g,
+            (str) => `((${str.slice(2, -2)}))`,
+          ),
+        )
+        .replace(
+          /\(\([\s\S]*?\)\)/g,
+          (str) => `<span data-nanohasheet="true">${str.slice(2, -2)}</span>`,
+        ),
     )
     saveContent()
   }
@@ -238,99 +261,154 @@ export const TextNote = ((props: Props) => {
     document.removeEventListener('keydown', handleAltG)
   })
   return (
-    <div class="my-2">
-      <Show when={isShowCloseDialog()}>
+    <div>
+      <Show when={getIsShowLlmPromptDialog()}>
         <Dialog
           onClose={(result) => {
+            setIsShowLlmPromptDialog(false)
             if (result) {
-              // 消していいいらしい
-              props.removeNote()
+              insertWithGenerate(getPrompt())
             }
-            setIsShowCloseDialog(false)
           }}
           type="confirm"
-          title="削除しますか?"
+          title="Generate with AI"
+          okLabel="生成"
         >
-          ノートを削除すると、元に戻せなくなる可能性があります。
-        </Dialog>
-      </Show>
-      <Show when={getIsShowLlmPromptDialog()}>
-        <Dialog onClose={(result) => {
-          setIsShowLlmPromptDialog(false)
-          if (result) {
-            insertWithGenerate(getPrompt())
-          }
-        }} type='confirm' title='Generate with AI' okLabel='生成'>{close => (<div>
-          <div class="grid grid-cols-2 place-items-center">
-            <button class="border-b w-full" onClick={() => setGenerateMode('text')}>テキストから生成</button>
-            <button class="border-b w-full" onClick={() => setGenerateMode('image')}>写真をスキャンして生成</button>
-            <div class="border-t border-primary w-full transition-transform duration-200 ease-in -translate-y-px" classList={{
-              'translate-x-full': getGenerateMode() === 'image'
-            }}></div>
-          </div>
-          <Show when={getGenerateMode() === 'image'}>{(() => {
-            let imageInput!: HTMLInputElement
-            const [getCapture, setCapture] = createSignal<string | undefined>(void 0)
-            return <div>
-              <div class="text-xl text-center">画像を選択:</div>
-              <div class="p-2">
-                <Show when={getImageBlobToGenerate()}>
-                  <div class="grid place-items-center">
-                    <img class="max-h-[30dvh] max-w-full" src={URL.createObjectURL(getImageBlobToGenerate())} alt={getImageBlobToGenerate().name} />
-                  </div>
-                  <div class="text-center">{getImageBlobToGenerate().name}</div>
-                </Show>
+          {(close) => (
+            <div>
+              <div class="grid grid-cols-2 place-items-center">
+                <button
+                  class="border-b w-full"
+                  onClick={() => setGenerateMode('text')}
+                >
+                  テキストから生成
+                </button>
+                <button
+                  class="border-b w-full"
+                  onClick={() => setGenerateMode('image')}
+                >
+                  写真をスキャンして生成
+                </button>
+                <div
+                  class="border-t border-primary w-full transition-transform duration-200 ease-in -translate-y-px"
+                  classList={{
+                    'translate-x-full': getGenerateMode() === 'image',
+                  }}
+                ></div>
               </div>
-              <div class="flex items-center justify-center gap-3">
-                <div>
-                  <button onClick={() => {
-                    setCapture('camera')
-                    imageInput.click()
-                  }} class="filled-tonal-button">カメラを開く</button>
+              <Show when={getGenerateMode() === 'image'}>
+                {(() => {
+                  let imageInput!: HTMLInputElement
+                  const [getCapture, setCapture] = createSignal<
+                    string | undefined
+                  >(void 0)
+                  return (
+                    <div>
+                      <div class="text-xl text-center">画像を選択:</div>
+                      <div class="p-2">
+                        <Show when={getImageBlobToGenerate()}>
+                          <div class="grid place-items-center">
+                            <img
+                              class="max-h-[30dvh] max-w-full"
+                              src={URL.createObjectURL(
+                                getImageBlobToGenerate()!,
+                              )}
+                              alt={getImageBlobToGenerate()!.name}
+                            />
+                          </div>
+                          <div class="text-center">
+                            {getImageBlobToGenerate()!.name}
+                          </div>
+                        </Show>
+                      </div>
+                      <div class="flex items-center justify-center gap-3">
+                        <div>
+                          <button
+                            onClick={() => {
+                              setCapture('camera')
+                              imageInput.click()
+                            }}
+                            class="filled-tonal-button"
+                          >
+                            カメラを開く
+                          </button>
+                        </div>
+                        <div>
+                          または
+                          <button
+                            onClick={() => {
+                              setCapture(void 0)
+                              imageInput.click()
+                            }}
+                            class="text-button"
+                          >
+                            写真を選択
+                          </button>
+                        </div>
+                      </div>
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*"
+                        capture={getCapture()}
+                        ref={imageInput}
+                        onChange={(e) => {
+                          const file = e.target?.files?.[0]
+                          if (file) {
+                            setImageBlobToGenarate(() => file)
+                          }
+                        }}
+                      />
+                      <hr class="my-2" />
+                    </div>
+                  )
+                })()}
+              </Show>
+              <label>
+                <div class="text-center text-lg">
+                  <Show
+                    when={getGenerateMode() === 'text'}
+                    fallback="どのようにスキャンするかの指示を入力:"
+                  >
+                    AIへのプロンプトを入力:
+                  </Show>
                 </div>
-                <div>
-                  または
-                  <button onClick={() => {
-                    setCapture(void 0)
-                    imageInput.click()
-                  }} class="text-button">写真を選択</button>
-                </div>
-              </div>
-              <input type="file" hidden accept="image/*" capture={getCapture()} ref={imageInput} onChange={e => {
-                const file = e.target?.files?.[0]
-                if (file) {
-                  setImageBlobToGenarate(() => file)
-                }
-              }} />
-              <hr class="my-2" />
+                <textarea
+                  ref={llmTextArea}
+                  placeholder={
+                    getGenerateMode() === 'text'
+                      ? '水の電気分解について、小学生でもわかるように説明して...'
+                      : '赤い文字で書かれているところを重要語句として隠して...'
+                  }
+                  oninput={(evt) => {
+                    setPrompt(evt.currentTarget.value)
+                  }}
+                  onKeyDown={(evt) => {
+                    if (evt.key === 'Enter' && evt.shiftKey) {
+                      evt.preventDefault()
+                      close(true)
+                    }
+                  }}
+                  class="border rounded-lg w-full p-1 border-outlined bg-surface"
+                ></textarea>
+              </label>
             </div>
-          })()}</Show>
-          <label>
-            <div class="text-center text-lg"><Show when={getGenerateMode() === 'text'} fallback='どのようにスキャンするかの指示を入力:'>AIへのプロンプトを入力:</Show></div>
-            <textarea ref={llmTextArea} placeholder={
-              getGenerateMode() === 'text' ? '水の電気分解について、小学生でもわかるように説明して...' : '赤い文字で書かれているところを重要語句として隠して...'
-            } oninput={(evt) => {
-              setPrompt(evt.currentTarget.value)
-            }} onKeyDown={(evt) => {
-              if (evt.key === 'Enter' && evt.shiftKey) {
-                evt.preventDefault()
-                close(true)
-              }
-            }} class='border rounded-lg w-full p-1 border-outlined bg-surface'></textarea>
-          </label>
-        </div>)}</Dialog>
+          )}
+        </Dialog>
       </Show>
 
       <Show when={!noteBookState.isEditMode}>
-        <Player html={getEditor()?.getHTML() || props.noteData.canToJsonData.html} />
+        <Player
+          html={getEditor()?.getHTML() || props.noteData.canToJsonData.html}
+        />
       </Show>
 
       <div
         classList={{
-          hidden: !getIsActive() || !noteBookState.isEditMode
+          hidden: !getIsActive() || !noteBookState.isEditMode,
         }}
       >
-        <div class="textnote-tiptap-container rounded my-2 border boader-outlined nanohanote-textnote-styler break-words">
+        <div class="textnote-tiptap-container nanohanote-textnote-styler break-words">
           <div
             id="editor"
             ref={editorRef}
@@ -341,12 +419,11 @@ export const TextNote = ((props: Props) => {
       </div>
       <div
         classList={{
-          hidden: getIsActive() || !noteBookState.isEditMode
+          hidden: getIsActive() || !noteBookState.isEditMode,
         }}
       >
         <div
           innerHTML={props.noteData.canToJsonData.html}
-          class="rounded p-2 border boader-outlined"
           onClick={() => {
             props.focus()
           }}
@@ -361,7 +438,7 @@ export const TextNote = ((props: Props) => {
               (getVisualViewport()?.data?.height ?? 0) +
               (getVisualViewport()?.data?.pageTop ?? 0) -
               32 +
-              'px'
+              'px',
           }}
         >
           <div />
@@ -375,29 +452,19 @@ export const TextNote = ((props: Props) => {
                   }}
                   classList={{
                     'bg-secondary-container text-secondary rounded':
-                      data.isActive()
+                      data.isActive(),
                   }}
                 >
                   <div innerHTML={removeIconSize(data.icon)} class="w-8 h-8" />
                 </button>
               )}
             </For>
-            <button
-              class="grid drop-shadow-none"
-              onClick={openGenerateDialog}
-            >
+            <button class="grid drop-shadow-none" onClick={openGenerateDialog}>
               <div innerHTML={removeIconSize(IconSparkles)} class="w-8 h-8" />
             </button>
           </div>
           <div />
         </div>
-        <Controller
-          noteIndex={props.index}
-          notesLength={props.notes.length}
-          onRemove={() => setIsShowCloseDialog(true)}
-          onUpNote={() => props.up()}
-          onDownNote={() => props.down()}
-        />
       </Show>
     </div>
   )

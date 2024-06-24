@@ -1,13 +1,13 @@
-import { createSignal, type Accessor, type Setter } from "solid-js"
+import { createSignal, type Accessor, type Setter } from 'solid-js'
 import type { JSX } from 'solid-js/jsx-runtime'
-import type { Note0 } from "../utils/file-format/manifest-schema"
+import type { Note0 } from '../utils/file-format/manifest-schema'
 import type { SetStoreFunction } from 'solid-js/store'
-import type { TextNoteData } from "./notes/TextNote/types"
-import type { ImageNoteData } from "./notes/ImageNote/types"
+import type { TextNoteData } from './notes/TextNote/types'
+import type { ImageNoteData } from './notes/ImageNote/types'
 
-export interface NoteData <
+export interface NoteData<
   CanToJsonData extends any = any,
-  BlobStore extends string = string
+  BlobStore extends string = string,
 > {
   /**
    * ノートのファイルストア
@@ -26,26 +26,27 @@ export interface NoteData <
 
 export type MargedNote = TextNoteData | ImageNoteData
 
-export interface NoteComponentProps <
+export interface NoteComponentProps<
   CanToJsonData extends any = any,
-  BlobStore extends string = string
+  BlobStore extends string = string,
 > {
   noteData: NoteData<CanToJsonData, BlobStore>
   setNoteData: SetStoreFunction<NoteData<CanToJsonData, BlobStore>>
 
-  focus (): void
-  on <EventType extends keyof NoteEvents>(type: EventType, listenter: (evt: NoteEventArgs[EventType]) => void): void
-  removeNote (): void
+  focus(): void
+  on<EventType extends keyof NoteEvents>(
+    type: EventType,
+    listenter: (evt: NoteEventArgs[EventType]) => void,
+  ): void
 
-  updated (): void
-  
-  up (): void
-  down (): void
+  updated(): void
 
   index: number
   notes: Note[]
 }
-export type NoteComponent<CanToJsonData extends any = any> = (props: NoteComponentProps<CanToJsonData>) => JSX.Element
+export type NoteComponent<CanToJsonData extends any = any> = (
+  props: NoteComponentProps<CanToJsonData>,
+) => JSX.Element
 
 export interface NoteEvents {
   focus?: ((evt: NoteEventArgs['focus']) => void)[]
@@ -55,7 +56,7 @@ export interface NoteEventArgs {
     isActive: boolean
   }
 }
-export interface Note <CanToJsonData = any> {
+export interface Note<CanToJsonData = any> {
   Component: NoteComponent<CanToJsonData>
 
   noteData: NoteData
@@ -70,6 +71,6 @@ export const createNotes = (): {
   const [notes, setNotes] = createSignal<Note[]>([])
   return {
     notes,
-    setNotes
+    setNotes,
   }
 }

@@ -1,6 +1,20 @@
 /** @jsxImportSource @builder.io/qwik */
 
-import { $, type NoSerialize, component$, useSignal, noSerialize, createContextId, useStore, useContextProvider, useContext, useVisibleTask$, type JSXOutput, useComputed$, useStylesScoped$ } from '@builder.io/qwik'
+import {
+  $,
+  type NoSerialize,
+  component$,
+  useSignal,
+  noSerialize,
+  createContextId,
+  useStore,
+  useContextProvider,
+  useContext,
+  useVisibleTask$,
+  type JSXOutput,
+  useComputed$,
+  useStylesScoped$,
+} from '@builder.io/qwik'
 import type { NoteLoadType } from '../note/note-load-types'
 import { handleLoaded } from '../shared/q-utils'
 import { loadNoteFromType } from '../shared/storage'
@@ -8,7 +22,11 @@ import { getGeminiApiToken } from '../shared/store'
 import { load } from '../note/utils/file-format'
 import type { MargedNote, NoteData } from '../note/components/notes-utils'
 import { generateWithLLM } from '../shared/ai'
-import { PROMPT_TO_GENERATE_QUESTION, QUESTION_SCHEMA, type Question } from './constants'
+import {
+  PROMPT_TO_GENERATE_QUESTION,
+  QUESTION_SCHEMA,
+  type Question,
+} from './constants'
 import type { TextNoteCanToJsonData } from '../note/components/notes/TextNote/types'
 import TurndownService from 'turndown'
 import { parse } from 'valibot'
@@ -19,14 +37,18 @@ import { removeIconSize } from '../note/utils/icon/removeIconSize'
 import iconChevronRight from '@tabler/icons/outline/chevron-right.svg?raw'
 
 const turnDown = new TurndownService({
-  headingStyle: 'atx'
+  headingStyle: 'atx',
 })
 
 interface Store {
-  note: NoSerialize<{
-    name: string
-    notes: NoteData<any, string>[]
-  }> | 'pending' | 'notfound' | 'invalid'
+  note:
+    | NoSerialize<{
+        name: string
+        notes: NoteData<any, string>[]
+      }>
+    | 'pending'
+    | 'notfound'
+    | 'invalid'
   aiChecked: boolean | null
   isStarted: boolean
   isFinished: boolean
@@ -67,27 +89,41 @@ const InitialScreen = component$(() => {
       return
     }
     if (store.aiChecked === false) {
-      loadError.value = <div>AI 機能を使用するための設定が完了していません。<a class="underline hover:no-underline" href="/app/settings#ai">設定</a>から変更してください</div>
+      loadError.value = (
+        <div>
+          AI 機能を使用するための設定が完了していません。
+          <a class="underline hover:no-underline" href="/app/settings#ai">
+            設定
+          </a>
+          から変更してください
+        </div>
+      )
       return
     }
     loadingState.value = null
   })
-  return <div class="w-full h-full grid place-items-center">
-    <div class="text-center">
-      <div class="text-4xl font-bold">Quiz with AI</div>
-      <hr class="my-2" />
-      <div class="text-lg">AI によるスムーズな学習</div>
-      <div>
-        <button onClick$={() => store.isStarted = true} class="filled-button m-3 disabled:opacity-40" disabled={loadingState.value !== null}>Start</button>
-        {
-          loadingState.value && <div class="text-on-surface-variant">{ loadingState.value }</div>
-        }
-        {
-          loadError.value && <div class="text-error">{ loadError.value }</div>
-        }
+  return (
+    <div class="w-full h-full grid place-items-center">
+      <div class="text-center">
+        <div class="text-4xl font-bold">Quiz with AI</div>
+        <hr class="my-2" />
+        <div class="text-lg">AI によるスムーズな学習</div>
+        <div>
+          <button
+            onClick$={() => (store.isStarted = true)}
+            class="filled-button m-3 disabled:opacity-40"
+            disabled={loadingState.value !== null}
+          >
+            Start
+          </button>
+          {loadingState.value && (
+            <div class="text-on-surface-variant">{loadingState.value}</div>
+          )}
+          {loadError.value && <div class="text-error">{loadError.value}</div>}
+        </div>
       </div>
     </div>
-  </div>
+  )
 })
 
 interface Quiz {
@@ -95,7 +131,9 @@ interface Quiz {
   sourceNoteIndex: number
 }
 
-const createQuestionsGenerator = (notes: MargedNote[]): ((cb: (q: Quiz) => void) => Promise<void>) => {
+const createQuestionsGenerator = (
+  notes: MargedNote[],
+): ((cb: (q: Quiz) => void) => Promise<void>) => {
   const chunks: string[] = []
 
   for (const note of notes) {
@@ -122,9 +160,10 @@ const createQuestionsGenerator = (notes: MargedNote[]): ((cb: (q: Quiz) => void)
     const randomChunkIndex = Math.floor(Math.random() * chunks.length)
     const randomChunk = chunks[randomChunkIndex]!
 
-    const generator = generateWithLLM([
-      `${PROMPT_TO_GENERATE_QUESTION}\n${randomChunk}`
-    ], 'gemini-pro')
+    const generator = generateWithLLM(
+      [`${PROMPT_TO_GENERATE_QUESTION}\n${randomChunk}`],
+      'gemini-pro',
+    )
     if (!generator) {
       alert('生成時にエラーが発生しました')
       return
@@ -153,12 +192,17 @@ const createQuestionsGenerator = (notes: MargedNote[]): ((cb: (q: Quiz) => void)
 
 const NextButton = component$<{
   onClick$: () => void
-}>((props) => (<div>
-  <button class="flex items-center" onClick$={props.onClick$}>
-    <div class="font-bold text-lg">Next</div>
-    <div dangerouslySetInnerHTML={removeIconSize(iconChevronRight)} class="w-16 h-16" />
-  </button>
-</div>))
+}>((props) => (
+  <div>
+    <button class="flex items-center" onClick$={props.onClick$}>
+      <div class="font-bold text-lg">Next</div>
+      <div
+        dangerouslySetInnerHTML={removeIconSize(iconChevronRight)}
+        class="w-16 h-16"
+      />
+    </button>
+  </div>
+))
 
 const IncorrectScreen = component$<{
   quiz: Quiz
@@ -178,61 +222,98 @@ const IncorrectScreen = component$<{
     return note?.canToJsonData.html
   })
 
-  return <div class="flex flex-col h-full">
-    <div class="flex justify-end">
-      <NextButton onClick$={() => {
-        props.onNext$()
-      }}/>
-    </div>
-    <div class="py-3 h-full flex flex-col justify-around grow">
-      <div>
-        <div class="flex justify-around items-center">
-          <div class="text-3xl text-center my-2">😒不正解..</div>
-        </div>
-        <div class="grid place-items-center grid-cols-1 lg:grid-cols-2">
-          <div class="text-xl text-center">{props.quiz.question.question}</div>
+  return (
+    <div class="flex flex-col h-full">
+      <div class="flex justify-end">
+        <NextButton
+          onClick$={() => {
+            props.onNext$()
+          }}
+        />
+      </div>
+      <div class="py-3 h-full flex flex-col justify-around grow">
+        <div>
+          <div class="flex justify-around items-center">
+            <div class="text-3xl text-center my-2">😒不正解..</div>
+          </div>
+          <div class="grid place-items-center grid-cols-1 lg:grid-cols-2">
+            <div class="text-xl text-center">
+              {props.quiz.question.question}
+            </div>
 
-          <div class="flex lg:block flex-wrap gap-2 my-2 text-center justify-center">
-            <div class="text-center">✖あなたの回答: <span class="text-error">{props.yourAnswer}</span></div>
-            <div class="text-center">✅正解: <span class="text-green-400">{props.quiz.question.answers[props.quiz.question.correctIndex]}</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 place-items-center">
-        <div class="grid justify-center">
-          {/* 解説 */}
-          <div class="flex gap-2">
-            <div class="font-bold block lg:hidden">{ explanationMode.value === 'ai' ? '✨NanohaAIによる解説' : '📒使用されたノート' }</div>
-            <div class="font-bold hidden lg:block">✨NanohaAIによる解説</div>
-            <button onClick$={() => {
-              explanationMode.value = explanationMode.value === 'ai' ? 'source' : 'ai'
-            }} class="underline hover:no-underline block lg:hidden">{ explanationMode.value === 'ai' ? 'ソースを表示' : '解説を表示' }</button>
-          </div>
-          <div class="text-on-surface-variant max-h-[30dvh] overflow-auto">
-            <div class="block lg:hidden">
-              {
-                explanationMode.value === 'ai' && props.quiz.question.explanation
-              }
-              {
-                explanationMode.value === 'source' && <div dangerouslySetInnerHTML={sourceNote.value}></div>
-              }
-            </div>
-            <div class="hidden lg:block">
-              { props.quiz.question.explanation }
+            <div class="flex lg:block flex-wrap gap-2 my-2 text-center justify-center">
+              <div class="text-center">
+                ✖あなたの回答:{' '}
+                <span class="text-error">{props.yourAnswer}</span>
+              </div>
+              <div class="text-center">
+                ✅正解:{' '}
+                <span class="text-green-400">
+                  {
+                    props.quiz.question.answers[
+                      props.quiz.question.correctIndex
+                    ]
+                  }
+                </span>
+              </div>
             </div>
           </div>
-          <div class="flex items-center">
-            <input placeholder='Ask NanohaAI (WIP)' class="rounded-full p-2 border m-1" />
-            <button dangerouslySetInnerHTML={removeIconSize(iconSend)} class="w-8 h-8" title='send message'></button>
-          </div>
         </div>
-        <div class="hidden lg:block">
-          <div class="font-bold">📒使用されたノート</div>
-          <div class="text-on-surface-variant max-h-[30dvh] overflow-auto" dangerouslySetInnerHTML={sourceNote.value}></div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 place-items-center">
+          <div class="grid justify-center">
+            {/* 解説 */}
+            <div class="flex gap-2">
+              <div class="font-bold block lg:hidden">
+                {explanationMode.value === 'ai'
+                  ? '✨NanohaAIによる解説'
+                  : '📒使用されたノート'}
+              </div>
+              <div class="font-bold hidden lg:block">✨NanohaAIによる解説</div>
+              <button
+                onClick$={() => {
+                  explanationMode.value =
+                    explanationMode.value === 'ai' ? 'source' : 'ai'
+                }}
+                class="underline hover:no-underline block lg:hidden"
+              >
+                {explanationMode.value === 'ai' ? 'ソースを表示' : '解説を表示'}
+              </button>
+            </div>
+            <div class="text-on-surface-variant max-h-[30dvh] overflow-auto">
+              <div class="block lg:hidden">
+                {explanationMode.value === 'ai' &&
+                  props.quiz.question.explanation}
+                {explanationMode.value === 'source' && (
+                  <div dangerouslySetInnerHTML={sourceNote.value}></div>
+                )}
+              </div>
+              <div class="hidden lg:block">
+                {props.quiz.question.explanation}
+              </div>
+            </div>
+            <div class="flex items-center">
+              <input
+                placeholder="Ask NanohaAI (WIP)"
+                class="rounded-full p-2 border m-1"
+              />
+              <button
+                dangerouslySetInnerHTML={removeIconSize(iconSend)}
+                class="w-8 h-8"
+                title="send message"
+              ></button>
+            </div>
+          </div>
+          <div class="hidden lg:block">
+            <div class="font-bold">📒使用されたノート</div>
+            <div
+              class="text-on-surface-variant max-h-[30dvh] overflow-auto"
+              dangerouslySetInnerHTML={sourceNote.value}
+            ></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  )
 })
 export const AIQuiz = component$(() => {
   const store = useContext(STORE_CTX)
@@ -296,10 +377,7 @@ export const AIQuiz = component$(() => {
     }
     store.result = {
       ...store.result,
-      correctQuizzes: [
-        ...store.result.correctQuizzes,
-        quiz
-      ]
+      correctQuizzes: [...store.result.correctQuizzes, quiz],
     }
 
     isShownCorrectDialog.value = true
@@ -318,10 +396,7 @@ export const AIQuiz = component$(() => {
     screenType.value = 'incorrect'
     store.result = {
       ...store.result,
-      incorrectQuizzes: [
-        ...store.result.incorrectQuizzes,
-        quiz
-      ]
+      incorrectQuizzes: [...store.result.incorrectQuizzes, quiz],
     }
   })
 
@@ -341,49 +416,69 @@ export const AIQuiz = component$(() => {
       }
     }
   `)
-  return <div class="h-full">
-    {isShownCorrectDialog.value && (<div class="fixed w-full h-[100dvh] grid place-items-center left-0 top-0 z-50">
-      <div class="text-green-400 text-5xl font-bold correctDialog">
-        😊正解!!
-      </div>
-    </div>)}
-    {
-      screenType.value === 'question' ? (currentQuiz.value ? <div class="p-4 flex flex-col h-full">
-        <div>
-          <div>問<span>{currentQuizIndex.value}</span>/<span>{store.targetQuizzesCount}</span></div>
-          <div class="text-2xl text-center">{currentQuiz.value.question.question}</div>
-          <hr class="my-2" />
-          <div class="text-base text-on-surface-variant text-right">✨AI Generated</div>
-        </div>
-        <div class="grow grid items-center">
-          <div class='flex flex-col gap-2 justify-around grow'>
-            {
-              currentQuiz.value.question.answers.map((answer, idx) => (
-                <button
-                  key={idx}
-                  class="block filled-button text-xl"
-                  onClick$={() => {
-                    if (currentQuiz.value?.question?.correctIndex === idx) {
-                      handleCorrect()
-                    } else {
-                      yourAnswer.value = answer
-                      handleIncorrect()
-                    }
-                  }}
-                >{ answer }</button>))
-            }
+  return (
+    <div class="h-full">
+      {isShownCorrectDialog.value && (
+        <div class="fixed w-full h-[100dvh] grid place-items-center left-0 top-0 z-50">
+          <div class="text-green-400 text-5xl font-bold correctDialog">
+            😊正解!!
           </div>
         </div>
-      </div> : <div class="h-full grid place-items-center">
-        <div class="font-bold text-3xl">
-          読み込み中...
-        </div>
-      </div>) : <IncorrectScreen quiz={currentQuiz.value!} yourAnswer={yourAnswer.value} onNext$={() => {
-        screenType.value = 'question'
-        handleNext()
-      }} />
-    }
-  </div>
+      )}
+      {screenType.value === 'question' ? (
+        currentQuiz.value ? (
+          <div class="p-4 flex flex-col h-full">
+            <div>
+              <div>
+                問<span>{currentQuizIndex.value}</span>/
+                <span>{store.targetQuizzesCount}</span>
+              </div>
+              <div class="text-2xl text-center">
+                {currentQuiz.value.question.question}
+              </div>
+              <hr class="my-2" />
+              <div class="text-base text-on-surface-variant text-right">
+                ✨AI Generated
+              </div>
+            </div>
+            <div class="grow grid items-center">
+              <div class="flex flex-col gap-2 justify-around grow">
+                {currentQuiz.value.question.answers.map((answer, idx) => (
+                  <button
+                    key={idx}
+                    class="block filled-button text-xl"
+                    onClick$={() => {
+                      if (currentQuiz.value?.question?.correctIndex === idx) {
+                        handleCorrect()
+                      } else {
+                        yourAnswer.value = answer
+                        handleIncorrect()
+                      }
+                    }}
+                  >
+                    {answer}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div class="h-full grid place-items-center">
+            <div class="font-bold text-3xl">読み込み中...</div>
+          </div>
+        )
+      ) : (
+        <IncorrectScreen
+          quiz={currentQuiz.value!}
+          yourAnswer={yourAnswer.value}
+          onNext$={() => {
+            screenType.value = 'question'
+            handleNext()
+          }}
+        />
+      )}
+    </div>
+  )
 })
 
 const FinishedScreen = component$(() => {
@@ -391,7 +486,9 @@ const FinishedScreen = component$(() => {
 
   const result = useComputed$(() => {
     return {
-      all: store.result.correctQuizzes.length + store.result.incorrectQuizzes.length,
+      all:
+        store.result.correctQuizzes.length +
+        store.result.incorrectQuizzes.length,
       correct: store.result.correctQuizzes.length,
       incorrect: store.result.incorrectQuizzes.length,
 
@@ -402,7 +499,9 @@ const FinishedScreen = component$(() => {
     store.isFinished = false
 
     store.quizzes = [
-      ...store.result.incorrectQuizzes.sort(() => Math.random() > 0.5 ? 1 : -1),
+      ...store.result.incorrectQuizzes.sort(() =>
+        Math.random() > 0.5 ? 1 : -1,
+      ),
     ]
     store.targetQuizzesCount = store.quizzes.length
   })
@@ -416,89 +515,107 @@ const FinishedScreen = component$(() => {
     store.quizzes = []
     store.targetQuizzesCount = 5
   })
-  return <div class="h-full p-2 grid place-items-center">
-    <div class="flex flex-col gap-2">
-      <div class="text-3xl text-center font-bold">Finished!</div>
-      {
-        result.value.isAllCorrect && <div class="text-center text-xl">
-          全問正解!
-        </div>
-      }
-      <div class="flex justify-center items-center gap-2">
-        <div class="grid grid-cols-3 text-lg gap-1 place-items-center">
-          <div>✅正解</div>
-          <div class="font-bold font-mono">{result.value.correct}</div>
-          <div class="row-span-2">
-            <div class="text-center text-3xl">
-              / <span class="font-bold font-mon">{result.value.all}</span>
+  return (
+    <div class="h-full p-2 grid place-items-center">
+      <div class="flex flex-col gap-2">
+        <div class="text-3xl text-center font-bold">Finished!</div>
+        {result.value.isAllCorrect && (
+          <div class="text-center text-xl">全問正解!</div>
+        )}
+        <div class="flex justify-center items-center gap-2">
+          <div class="grid grid-cols-3 text-lg gap-1 place-items-center">
+            <div>✅正解</div>
+            <div class="font-bold font-mono">{result.value.correct}</div>
+            <div class="row-span-2">
+              <div class="text-center text-3xl">
+                / <span class="font-bold font-mon">{result.value.all}</span>
+              </div>
             </div>
+            <div>✖不正解</div>
+            <div class="font-bold font-mono">{result.value.incorrect}</div>
           </div>
-          <div>✖不正解</div>
-          <div class="font-bold font-mono">{result.value.incorrect}</div>
         </div>
-      </div>
-      <div class="flex flex-col gap-2 justify-center">
-        {
-          !result.value.isAllCorrect && <button class="block filled-button text-xl" onClick$={handleRetry}>再チャレンジ</button>
-        }
-        <button class="block filled-button text-xl" onClick$={handleNewQuestions}>新しい問題</button>
+        <div class="flex flex-col gap-2 justify-center">
+          {!result.value.isAllCorrect && (
+            <button class="block filled-button text-xl" onClick$={handleRetry}>
+              再チャレンジ
+            </button>
+          )}
+          <button
+            class="block filled-button text-xl"
+            onClick$={handleNewQuestions}
+          >
+            新しい問題
+          </button>
+        </div>
       </div>
     </div>
-  </div>
+  )
 })
 const Header = component$(() => {
-  return <div>
-    This is Header
-  </div>
+  return <div>This is Header</div>
 })
 
 export default component$<{
   noteLoadType: NoteLoadType
 }>((props) => {
-  const store = useStore<Store>({
-    note: 'pending',
-    aiChecked: null,
-    isStarted: false,
-    isFinished: false,
-    result: {
-      correctQuizzes: [],
-      incorrectQuizzes: []
+  const store = useStore<Store>(
+    {
+      note: 'pending',
+      aiChecked: null,
+      isStarted: false,
+      isFinished: false,
+      result: {
+        correctQuizzes: [],
+        incorrectQuizzes: [],
+      },
+      quizzes: [],
+      targetQuizzesCount: 2,
     },
-    quizzes: [],
-    targetQuizzesCount: 2
-  }, {
-    deep: false
-  })
+    {
+      deep: false,
+    },
+  )
   useContextProvider(STORE_CTX, store)
 
-  handleLoaded($(async () => {
-    const gotNote = await loadNoteFromType(props.noteLoadType)
-    //store.note = gotNote ? noSerialize(gotNote) : 'notfound'
-    if (!gotNote) {
-      store.note = 'notfound'
-      return
-    }
-
-    const loaded = await load(new Blob([gotNote.nnote]))
-    if (!loaded.success) {
-      store.note = 'invalid'
-      return
-    }
-    store.note = noSerialize({
-      name: gotNote.name,
-      notes: loaded.notes
-    })
-
-    store.aiChecked = !!getGeminiApiToken()
-  }))
-  return <div class="flex flex-col h-[100dvh] lg:flex-row w-full">
-    <div class="lg:h-[100dvh] lg:border-r border-b lg:border-b-0 border-r-0">
-      <Header />
-    </div>
-    <div class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow">
-      {
-        store.isStarted ? (store.isFinished ? <FinishedScreen /> : <AIQuiz />) : <InitialScreen />
+  handleLoaded(
+    $(async () => {
+      const gotNote = await loadNoteFromType(props.noteLoadType)
+      //store.note = gotNote ? noSerialize(gotNote) : 'notfound'
+      if (!gotNote) {
+        store.note = 'notfound'
+        return
       }
+
+      const loaded = await load(new Blob([gotNote.nnote]))
+      if (!loaded.success) {
+        store.note = 'invalid'
+        return
+      }
+      store.note = noSerialize({
+        name: gotNote.name,
+        notes: loaded.notes,
+      })
+
+      store.aiChecked = !!getGeminiApiToken()
+    }),
+  )
+  return (
+    <div class="flex flex-col h-[100dvh] lg:flex-row w-full">
+      <div class="lg:h-[100dvh] lg:border-r border-b lg:border-b-0 border-r-0">
+        <Header />
+      </div>
+      <div class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow">
+        {store.isStarted ? (
+          store.isFinished ? (
+            <FinishedScreen />
+          ) : (
+            <AIQuiz />
+          )
+        ) : (
+          <InitialScreen />
+        )}
+      </div>
     </div>
-  </div>
+  )
 })

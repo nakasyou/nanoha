@@ -1,5 +1,5 @@
-import { createEffect, createMemo, createSignal, onMount } from "solid-js"
-import { noteBookState } from "../../../store"
+import { createEffect, createMemo, createSignal, onMount } from 'solid-js'
+import { noteBookState } from '../../../store'
 
 export const Player = (props: { html: string }) => {
   const html = createMemo((): string => {
@@ -13,11 +13,13 @@ export const Player = (props: { html: string }) => {
   createEffect(() => {
     if (!ref) return
 
-    sheetElements = Array.from(ref.getElementsByClassName('nanoha-sheet')) as HTMLSpanElement[]
+    sheetElements = Array.from(
+      ref.getElementsByClassName('nanoha-sheet'),
+    ) as HTMLSpanElement[]
 
     const resetDataset = (element: HTMLSpanElement) => {
       for (const [datsetKey, defaultValue] of Object.entries({
-        isHidden: 'false'
+        isHidden: 'false',
       })) {
         if (!element.dataset[datsetKey]) {
           element.dataset[datsetKey] = defaultValue
@@ -30,21 +32,21 @@ export const Player = (props: { html: string }) => {
       const dataset = sheetElement.dataset as {
         isHidden: 'false' | 'true'
       }
-      
+
       sheetElement.onclick = () => {
-        dataset.isHidden = dataset.isHidden === 'true' ? 'false': 'true'
+        dataset.isHidden = dataset.isHidden === 'true' ? 'false' : 'true'
       }
     }
   })
   createEffect(() => {
     const sheetDefaultState = noteBookState.sheetDefaultState
     for (const sheetElement of sheetElements) {
-      sheetElement.dataset.isHidden = sheetDefaultState ? 'false': 'true'
+      sheetElement.dataset.isHidden = sheetDefaultState ? 'false' : 'true'
     }
   })
   return (
     <div
-      class="p-2 rounded my-2 border border-outlined nanohanote-textnote-styler break-words"
+      class="nanohanote-textnote-styler break-words"
       innerHTML={html()}
       ref={ref}
     />

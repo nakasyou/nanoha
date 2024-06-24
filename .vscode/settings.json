@@ -1,13 +1,13 @@
 {
-    "deno.enable": false,
-    "[astro]": {
-        "editor.tabSize": 2
-    },
-    "[svelte]": {
-        "editor.tabSize": 2
-    },
-    "[typescript]": {
-        "editor.defaultFormatter": "vscode.typescript-language-features"
-    },
-    "IDX.aI.enableInlineCompletion": true
+  "deno.enable": false,
+  "[astro]": {
+    "editor.tabSize": 2
+  },
+  "[svelte]": {
+    "editor.tabSize": 2
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "IDX.aI.enableInlineCompletion": true
 }
