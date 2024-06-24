@@ -43,7 +43,6 @@ export const AIExplanation = component$<{
       { text: prompt.value, role: 'user' },
       { text: '', role: 'ai', generating: true }
     ]
-    prompt.value = ''
 
     const ai = getGoogleGenerativeAI()
     if (!ai) {
@@ -54,19 +53,28 @@ export const AIExplanation = component$<{
       const chat = ai.getGenerativeModel({
         model: 'gemini-1.5-flash',
         systemInstruction: {
-          role: 'model',
-          parts: [{
-            text: dedent`
-            ユーザーは、「${quizState.current?.quiz.content.question}」という質問に対して「${props.incorrectAnswer}」という誤りをしてしまいました。
-            ユーザーはそれに関する質問をしてくるので、回答しなさい。
-            なお、問題に関する情報は以下の通りです。この情報をユーザーへの回答に活用しなさい:
-            ${quizState.current?.quiz.source.canToJsonData.html}`
-          }]
+          role: 'system',
+          parts: [{ text: quizState.current?.quiz.source.canToJsonData.html}]
         }
-      }).startChat()
+      }).startChat({
+        history: [
+          {
+            role: 'user',
+            parts: [{ text: `「${quizState.current?.quiz.content.question}」という問題の答えは？` }]
+          },
+          {
+            role: 'model',
+            parts: [{ text: dedent`「${quizState.current?.quiz.content.correctAnswer}」です。
+            ${quizState.current?.quiz.content.explanation}
+            他に質問があれば答えられます。
+            ` }]
+          }
+        ]
+      })
       chatSession.value = noSerialize(chat)
     }
     const chat = chatSession.value!
+    console.log(prompt.value)
     const stream = await chat.sendMessageStream(prompt.value)
 
     for await (const chunk of stream.stream) {
@@ -83,13 +91,14 @@ export const AIExplanation = component$<{
       last.generating = false
     }
     history.value = newHistory
+    prompt.value = ''
   })
   return <div class="h-full">
     <div class="flex gap-2 sticky top-0 bg-background">
       <div class="font-bold">✨NanohaAIによる解説</div>
       <button onClick$={() => {
         props.explanationMode.value = 'source'
-      }} class="underline hover:no-underline block lg:hidden">ソースを表示</button>
+      }} class="underline hover:no-underline block lg:hidden" type="button">ソースを表示</button>
     </div>
     <div>
       {
@@ -111,6 +120,7 @@ export const AIExplanation = component$<{
         title='send message'
         onClick$={sendMessage}
         disabled={history.value.at(-1)?.generating || !prompt.value}
+        type="button"
       ></button>
     </div>
   </div>
@@ -125,7 +135,8 @@ export const SourceNote = component$<{
       <div class="font-bold">📒使用されたノート</div>
       <button onClick$={() => {
         props.explanationMode.value = 'ai'
-      }} class="underline hover:no-underline block lg:hidden">解説を表示</button>
+      }} class="underline hover:no-underline block lg:hidden"
+      type="button">解説を表示</button>
     </div>
     <div dangerouslySetInnerHTML={props.source} />
   </div>
