@@ -7,13 +7,13 @@ import { useContext, type Signal } from '@builder.io/qwik'
 import { QUIZ_STATE_CTX } from '../store'
 import { getGoogleGenerativeAI } from '../../shared/gemini'
 import dedent from 'dedent'
-import { ChatSession } from '@google/generative-ai'
+import type { ChatSession } from '@google/generative-ai'
 import { Loading } from './Utils.qwik'
 
 const NextButton = component$<{
   onClick$: () => void
 }>((props) => (<div>
-  <button class="flex items-center" onClick$={props.onClick$}>
+  <button class="flex items-center" onClick$={props.onClick$} type="button">
     <div class="font-bold text-lg hidden md:block">Next</div>
     <div dangerouslySetInnerHTML={removeIconSize(iconChevronRight)} class="w-16 h-16" />
   </button>
@@ -58,8 +58,8 @@ export const AIExplanation = component$<{
           parts: [{
             text: dedent`
             ユーザーは、「${quizState.current?.quiz.content.question}」という質問に対して「${props.incorrectAnswer}」という誤りをしてしまいました。
-            ユーザーはそれに困っているので、助けてあげてください。
-            なお、回答に関する情報は以下の通りです。
+            ユーザーはそれに関する質問をしてくるので、回答しなさい。
+            なお、問題に関する情報は以下の通りです。この情報をユーザーへの回答に活用しなさい:
             ${quizState.current?.quiz.source.canToJsonData.html}`
           }]
         }
