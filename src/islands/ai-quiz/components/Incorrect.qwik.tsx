@@ -34,7 +34,7 @@ export const AIExplanation = component$<{
     role: 'user' | 'ai',
     generating?: boolean
   }[]>([
-    { text: props.explanation.repeat(1000), role: 'ai' }
+    { text: props.explanation, role: 'ai' }
   ])
 
   const sendMessage = $(async () => {
