@@ -3,6 +3,7 @@ import { $, component$, useContext, useContextProvider, useSignal, useStore, use
 import { QUIZ_STATE_CTX, SCREEN_STATE_CTX, type QuizState } from '../store'
 import { shuffle } from '../../../utils/arr'
 import { Incorrect } from './Incorrect.qwik'
+import { FinishedScreen } from './Finished.qwik'
 
 export const QuizScreen = component$(() => {
   const quizState = useStore<QuizState>({
@@ -11,7 +12,9 @@ export const QuizScreen = component$(() => {
 
     quizzes: [],
     current: null,
-    goalQuestions: 5
+    goalQuestions: 5,
+
+    isFinished: false
   }, {
     deep: false
   })
@@ -86,11 +89,17 @@ export const QuizScreen = component$(() => {
    * 次の問題
    */
   const next = $(() => {
+    if (quizState.goalQuestions <= quizState.quizzes.length) {
+      quizState.isFinished = true
+      return
+    }
+    isShownIncorrectScreen.value = false
     setQuiz((quizState.current?.index ?? 0) + 1)
   })
 
   const handleCorrect = $(() => {
     isShownCorrectDialog.value = true
+    quizState.correctQuizzes = [...quizState.correctQuizzes, quizState.current!.quiz]
     setTimeout(() => {
       next()
     }, 500)
@@ -99,6 +108,7 @@ export const QuizScreen = component$(() => {
     }, 800)
   })
   const handleInorrect = $((incorrectAnswer: string) => {
+    quizState.incorrectQuizzes = [...quizState.incorrectQuizzes, quizState.current!.quiz]
     isShownIncorrectScreen.value = {
       incorrectAnswer
     }
@@ -114,7 +124,7 @@ export const QuizScreen = component$(() => {
       </div>)
     }
     {
-      quizState.current ? <>
+      quizState.isFinished ? <FinishedScreen /> : quizState.current ? <>
         {
           isShownIncorrectScreen.value ?
             <Incorrect
