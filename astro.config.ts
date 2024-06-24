@@ -30,7 +30,6 @@ export default defineConfig({
   },
   vite: {
     plugins: [
-      // @ts-expect-error
       macros.vite(),
       imagetools({
         exclude: [/\?opt$/],

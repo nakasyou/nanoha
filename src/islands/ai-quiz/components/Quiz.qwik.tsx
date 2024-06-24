@@ -40,7 +40,8 @@ export const QuizScreen = component$(() => {
       ])
     }
   })
-  useVisibleTask$(async () => {
+  useVisibleTask$(async ({ track }) => {
+    track(() => quizState.isFinished)
     // Generate Quizzes
     if (screenState.note === 'pending' || screenState.note === 'notfound' || screenState.note === 'invalid') {
       return
@@ -61,9 +62,14 @@ export const QuizScreen = component$(() => {
           source: screenState.note!.notes[0]!
         }
       ]
-      if (!quizState.current && quizState.quizzes[0]) {
-        setQuiz(0)
-      }
+    }
+  })
+  useVisibleTask$(({ track }) => {
+    track(() => quizState.current)
+    track(() => quizState.quizzes)
+    console.log(quizState.current, quizState.quizzes)
+    if (!quizState.current && quizState.quizzes[0]) {
+      setQuiz(0)
     }
   })
 
@@ -89,7 +95,7 @@ export const QuizScreen = component$(() => {
    * 次の問題
    */
   const next = $(() => {
-    if (quizState.goalQuestions <= quizState.quizzes.length) {
+    if (quizState.goalQuestions === (quizState.current?.index ?? 0) + 1) {
       quizState.isFinished = true
       return
     }
@@ -141,6 +147,7 @@ export const QuizScreen = component$(() => {
                   {
                     quizState.current.choices.map((answer, idx) => (
                       <button
+                        type="button"
                         key={idx}
                         class="block filled-button text-xl"
                         onClick$={() => {

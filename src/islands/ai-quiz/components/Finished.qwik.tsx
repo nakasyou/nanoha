@@ -1,7 +1,7 @@
 /** @jsxImportSource @builder.io/qwik */
 
-import { component$, useComputed$, useContext } from '@builder.io/qwik'
-import { QUIZ_STATE_CTX } from '../store'
+import { component$, useComputed$, useContext, useContextProvider, useStore } from '@builder.io/qwik'
+import { QUIZ_STATE_CTX, type QuizState } from '../store'
 
 export const FinishedScreen = component$(() => {
   const quizState = useContext(QUIZ_STATE_CTX)
@@ -35,6 +35,26 @@ export const FinishedScreen = component$(() => {
         <div>✖不正解</div>
         <div class="font-bold font-mono">{result.value.incorrect}</div>
       </div>
+    </div>
+    <div class="flex flex-col gap-2">
+      <button onClick$={() => {
+        quizState.quizzes = quizState.incorrectQuizzes
+        quizState.goalQuestions = quizState.incorrectQuizzes.length
+
+        quizState.correctQuizzes = []
+        quizState.incorrectQuizzes = []
+
+        quizState.current = null
+        quizState.isFinished = false
+      }} class="filled-button disabled:opacity-30" disabled={result.value.isAllCorrect} type="button">間違えた問題をやり直す</button>
+      <button onClick$={() => {
+        quizState.quizzes = []
+        quizState.goalQuestions = 5
+        quizState.correctQuizzes = []
+        quizState.incorrectQuizzes = []
+        quizState.current = null
+        quizState.isFinished = false
+      }} class="filled-button" type="button">もう一度行う</button>
     </div>
   </div>
 })
