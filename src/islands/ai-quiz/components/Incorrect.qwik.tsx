@@ -19,16 +19,43 @@ export const AIExplanation = component$<{
   explanationMode: Signal<'ai' | 'source'>
   explanation: string
 }>((props) => {
-  return <div>
+  const prompt = useSignal('')
+  return <div class="h-full flex flex-col justify-between">
     <div class="flex justify-between">
       <div class="font-bold">✨NanohaAIによる解説</div>
       <button onClick$={() => {
-        props.explanationMode.value = props.explanationMode.value === 'ai' ? 'source' : 'ai'
-      }} class="underline hover:no-underline block lg:hidden">{ props.explanationMode.value === 'ai' ? 'ソースを表示' : '解説を表示' }</button>
+        props.explanationMode.value = 'source'
+      }} class="underline hover:no-underline block lg:hidden">ソースを表示</button>
     </div>
-    <div>
+    <div class="max-h-[30dvh] overflow-y-auto">
       { props.explanation }
     </div>
+    <div class="flex items-center justify-start">
+      <input bind:value={prompt} placeholder='Ask NanohaAI (WIP)' class='rounded-full p-2 border m-1' />
+      <button
+        dangerouslySetInnerHTML={removeIconSize(iconSend)}
+        class="w-8 h-8"
+        title='send message'
+        onClick$={async () => {
+          
+        }}
+      ></button>
+    </div>
+  </div>
+})
+
+export const SourceNote = component$<{
+  explanationMode: Signal<'ai' | 'source'>
+  source: string
+}>((props) => {
+  return <div>
+    <div class="flex justify-between">
+      <div class="font-bold">📒使用されたノート</div>
+      <button onClick$={() => {
+        props.explanationMode.value = 'source'
+      }} class="underline hover:no-underline block lg:hidden">解説を表示</button>
+    </div>
+    <div dangerouslySetInnerHTML={props.source} class="max-h-[30dvh] overflow-y-auto" />
   </div>
 })
 
@@ -63,8 +90,9 @@ export const Incorrect = component$<{
           </div>
         </div>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 place-items-center">
-        <AIExplanation explanationMode={explanationMode} explanation={sourceNote.value} />
+      <div class="grid grid-cols-1 lg:grid-cols-2">
+        <AIExplanation explanationMode={explanationMode} explanation={quizState.current?.quiz.content.explanation ?? ''} />
+        <SourceNote explanationMode={explanationMode} source={sourceNote.value ?? ''} />
       </div>
     </div>
   </div>
