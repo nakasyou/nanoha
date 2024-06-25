@@ -54,23 +54,14 @@ export const AIExplanation = component$<{
         model: 'gemini-1.5-flash',
         systemInstruction: {
           role: 'system',
-          parts: [{ text: quizState.current?.quiz.source.canToJsonData.html}]
+          parts: [{
+            text: dedent`ユーザーは、「${quizState.current?.quiz.content.question}」という質問に対して「${props.incorrectAnswer}」という誤りをしてしまいました。
+            ユーザーはそれに関する質問をしてくるので、回答しなさい。
+            なお、問題に関する情報は以下の通りです。この情報をユーザーへの回答に活用しなさい:
+            ${quizState.current?.quiz.source.canToJsonData.html}`
+          }]
         }
-      }).startChat({
-        history: [
-          {
-            role: 'user',
-            parts: [{ text: `「${quizState.current?.quiz.content.question}」という問題の答えは？` }]
-          },
-          {
-            role: 'model',
-            parts: [{ text: dedent`「${quizState.current?.quiz.content.correctAnswer}」です。
-            ${quizState.current?.quiz.content.explanation}
-            他に質問があれば答えられます。
-            ` }]
-          }
-        ]
-      })
+      }).startChat({})
       chatSession.value = noSerialize(chat)
     }
     const chat = chatSession.value!
