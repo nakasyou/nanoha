@@ -1,9 +1,13 @@
 /** @jsxImportSource @builder.io/qwik */
 import { $, component$, useContext, useContextProvider, useSignal, useStore, useStylesScoped$, useVisibleTask$ } from '@builder.io/qwik'
-import { QUIZ_STATE_CTX, SCREEN_STATE_CTX, type QuizState } from '../store'
+import { QUIZ_STATE_CTX, SCREEN_STATE_CTX, type Quiz, type QuizState } from '../store'
 import { shuffle } from '../../../utils/arr'
 import { Incorrect } from './Incorrect.qwik'
 import { FinishedScreen } from './Finished.qwik'
+import { getGoogleGenerativeAI } from '../../shared/gemini'
+import { CONTENT_SCHEMA, PROMPT_TO_GENERATE_SELECT_QUIZ, type QuizContent } from '../constants'
+import { safeParse } from 'valibot'
+import { Loading } from './Utils.qwik'
 
 export const QuizScreen = component$(() => {
   const quizState = useStore<QuizState>({
@@ -14,7 +18,9 @@ export const QuizScreen = component$(() => {
     current: null,
     goalQuestions: 5,
 
-    isFinished: false
+    isFinished: false,
+
+    generatedQuizzes: 0
   }, {
     deep: false
   })
@@ -26,50 +32,75 @@ export const QuizScreen = component$(() => {
     incorrectAnswer: string
   }>(false)
 
-  const setQuiz = $((index: number) => {
-    const quiz = quizState.quizzes[index]
-    if (!quiz) {
+  const setQuiz = $(() => {
+    const nextQuizIndex = Math.floor(Math.random() * quizState.quizzes.length)
+    const nextQuiz = quizState.quizzes[nextQuizIndex]
+    if (!nextQuiz) {
       return
     }
     quizState.current = {
-      index: index,
-      quiz,
+      quiz: nextQuiz,
       choices: shuffle([
-        ...quiz.content.damyAnswers,
-        quiz.content.correctAnswer
-      ])
+        ...nextQuiz.content.damyAnswers,
+        nextQuiz.content.correctAnswer
+      ]),
+      index: (quizState.current?.index ?? -1) + 1
     }
+    const nextQuizzes = [...quizState.quizzes].splice(nextQuizIndex, 1)
+    quizState.quizzes = nextQuizzes
   })
   useVisibleTask$(async ({ track }) => {
     track(() => quizState.isFinished)
+    isShownIncorrectScreen.value = false
     // Generate Quizzes
     if (screenState.note === 'pending' || screenState.note === 'notfound' || screenState.note === 'invalid') {
       return
     }
+    const gemini = getGoogleGenerativeAI()
+    if (!gemini) {
+      return alert('AIエラー')
+    }
+    const model = await gemini.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      generationConfig: {
+        responseMimeType: 'application/json'
+      },
+      systemInstruction: {
+        role: 'system',
+        parts: [{ text: PROMPT_TO_GENERATE_SELECT_QUIZ }]
+      }
+    })
+
+    const sourceNotes = screenState.note!.notes.filter(note => note.type === 'text')
+
     while (true) {
-      if (quizState.quizzes.length >= quizState.goalQuestions) {
+      if (quizState.generatedQuizzes >= quizState.goalQuestions) {
         break
       }
+      const randomNote = sourceNotes[Math.floor(Math.random() * sourceNotes.length)]!
+
+      const res = await model.startChat().sendMessage(randomNote?.canToJsonData.html || '')
+      
+      const contents: unknown[] = JSON.parse(res.response.text())
+
+      const quizzes = contents.filter((content): content is QuizContent => safeParse(CONTENT_SCHEMA, content).success).map(content => ({
+        content: content,
+        source: randomNote
+      } satisfies Quiz))
+
+      quizState.generatedQuizzes += quizzes.length
       quizState.quizzes = [
         ...quizState.quizzes,
-        {
-          content: {
-            question: '問題',
-            correctAnswer: '答え',
-            damyAnswers: ['答え1', '答え2', '答え3'],
-            explanation: '解説'
-          },
-          source: screenState.note!.notes[0]!
-        }
+        ...quizzes
       ]
     }
   })
+
   useVisibleTask$(({ track }) => {
     track(() => quizState.current)
     track(() => quizState.quizzes)
-    console.log(quizState.current, quizState.quizzes)
     if (!quizState.current && quizState.quizzes[0]) {
-      setQuiz(0)
+      setQuiz()
     }
   })
 
@@ -100,7 +131,7 @@ export const QuizScreen = component$(() => {
       return
     }
     isShownIncorrectScreen.value = false
-    setQuiz((quizState.current?.index ?? 0) + 1)
+    setQuiz()
   })
 
   const handleCorrect = $(() => {
@@ -164,7 +195,7 @@ export const QuizScreen = component$(() => {
             </div>
         }
       </> : <div class="text-center text-3xl">
-        生成中..
+        生成中<Loading />
       </div>
     }
   </>

@@ -40,6 +40,7 @@ export const FinishedScreen = component$(() => {
       <button onClick$={() => {
         quizState.quizzes = quizState.incorrectQuizzes
         quizState.goalQuestions = quizState.incorrectQuizzes.length
+        quizState.generatedQuizzes = quizState.incorrectQuizzes.length
 
         quizState.correctQuizzes = []
         quizState.incorrectQuizzes = []
@@ -54,6 +55,7 @@ export const FinishedScreen = component$(() => {
         quizState.incorrectQuizzes = []
         quizState.current = null
         quizState.isFinished = false
+        quizState.generatedQuizzes = 0
       }} class="filled-button" type="button">もう一度行う</button>
     </div>
   </div>

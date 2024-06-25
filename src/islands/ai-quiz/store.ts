@@ -29,6 +29,8 @@ export interface QuizState {
   correctQuizzes: Quiz[]
   incorrectQuizzes: Quiz[]
 
+  generatedQuizzes: number
+
   quizzes: Quiz[]
 
   current: {
