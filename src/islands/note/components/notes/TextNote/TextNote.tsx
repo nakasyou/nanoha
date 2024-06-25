@@ -144,7 +144,7 @@ export const TextNote = ((props: Props) => {
     }
     const image = getGenerateMode() === 'image' && getImageBlobToGenerate()
     const model = ai.getGenerativeModel({
-      model: image ? 'gemini-pro-vision' : 'gemini-1.5-flash',
+      model: image ? 'gemini-1.5rp' : 'gemini-1.5-flash',
     })
     const stream = image
       ? await model
@@ -153,7 +153,7 @@ export const TextNote = ((props: Props) => {
               role: 'model',
               parts: [
                 {
-                  text: dedent`画像を抽出し、文章を省略せずにそのまま書き出しなさい。画像中にないことは書かないように。その文章のうち、赤シートとして隠せる単語はMarkdownの太字機能で表現しなさい。`,
+                  text: dedent`画像を抽出し、そっくりそのまま書き出しなさい。その文章のうち、赤シートとして隠せる単語はMarkdownの太字機能で表現しなさい。省略せずに画像の文字全てを書き出すこと。`,
                 },
               ],
             },
