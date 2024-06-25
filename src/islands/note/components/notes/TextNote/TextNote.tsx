@@ -144,7 +144,7 @@ export const TextNote = ((props: Props) => {
     }
     const image = getGenerateMode() === 'image' && getImageBlobToGenerate()
     const model = ai.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: image ? 'gemini-1.5-pro' : 'gemini-1.5-flash',
     })
     const stream = image
       ? await model
