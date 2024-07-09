@@ -14,7 +14,7 @@
       },
       "correctAnswer": {
         "type": "string",
-        "description": "正解"
+        "description": "正解。用語などを出題してもよい。しなくてもよい"
       },
       "damyAnswers": {
         "type": "array",

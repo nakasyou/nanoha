@@ -102,6 +102,7 @@ export const QuizScreen = component$(() => {
     if (!quizState.current && quizState.quizzes[0]) {
       setQuiz()
     }
+    console.log(quizState.current?.index)
   })
 
 
@@ -168,7 +169,7 @@ export const QuizScreen = component$(() => {
               onEnd$={() => next()}
               incorrectAnswer={isShownIncorrectScreen.value.incorrectAnswer}
             /> :
-            <div>
+            <div class="h-full flex flex-col">
               <div>問<span>{quizState.current.index + 1}</span>/<span>{quizState.goalQuestions}</span></div>
               <div class="text-2xl text-center">{quizState.current.quiz.content.question}</div>
               <hr class="my-2" />

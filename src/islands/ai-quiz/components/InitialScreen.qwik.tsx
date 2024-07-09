@@ -61,7 +61,6 @@ export const InitialScreen = component$(() => {
       }
       return
     }
-
   })
 
   return <div class="w-full h-full grid place-items-center">
