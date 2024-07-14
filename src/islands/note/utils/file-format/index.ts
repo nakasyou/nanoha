@@ -15,12 +15,12 @@ export const saveNoteDatas = async (noteDatas: NoteData[]): Promise<Blob> => {
 
   const manifest: Manifest0 = (() => {
     const noteIds: Manifest0['noteIds'] = noteDatas.map((noteData) => ({
-      id: noteData.id
+      id: noteData.id,
     }))
 
     return {
       version: 0,
-      noteIds
+      noteIds,
     }
   })()
 
@@ -39,7 +39,7 @@ export const saveNoteDatas = async (noteDatas: NoteData[]): Promise<Blob> => {
         continue
       }
       fileTree[`${baseNoteDir}/blobs/${name}`] = new Uint8Array(
-        await blob.arrayBuffer()
+        await blob.arrayBuffer(),
       )
       blobMimetypes[name] = blob.type
     }
@@ -50,22 +50,22 @@ export const saveNoteDatas = async (noteDatas: NoteData[]): Promise<Blob> => {
         type: thisNoteData.type,
         blobMimetypes,
 
-        noteData: thisNoteData.canToJsonData
+        noteData: thisNoteData.canToJsonData,
       }
     })()
     fileTree[`${baseNoteDir}/note.json`] = textEncoder.encode(
-      JSON.stringify(noteJson)
+      JSON.stringify(noteJson),
     )
   }
   const nnoteBuff = zipSync(fileTree)
   const nnoteFile = new Blob([nnoteBuff], {
-    type: 'application/x.nanohanote.nnote'
+    type: 'application/x.nanohanote.nnote',
   })
 
   return nnoteFile
 }
 export const save = async (notes: Note[]): Promise<Blob> => {
-  return saveNoteDatas(notes.map(note => note.noteData))
+  return saveNoteDatas(notes.map((note) => note.noteData))
 }
 
 type LoadErrorType =
@@ -97,14 +97,14 @@ export const load = async (data: Blob): Promise<LoadResult> => {
   } catch (e) {
     return {
       success: false,
-      error: { type: 'FILE_ISNT_ZIP' }
+      error: { type: 'FILE_ISNT_ZIP' },
     }
   }
   const notesJson = unzipped['notes.json']
   if (!notesJson) {
     return {
       success: false,
-      error: { type: 'NOTES_JSON_IS_NOT_FOUND' }
+      error: { type: 'NOTES_JSON_IS_NOT_FOUND' },
     }
   }
 
@@ -112,14 +112,14 @@ export const load = async (data: Blob): Promise<LoadResult> => {
   try {
     notesJsonData = parse(
       manifest0,
-      JSON.parse(new TextDecoder().decode(notesJson))
+      JSON.parse(new TextDecoder().decode(notesJson)),
     )
   } catch (e) {
     return {
       success: false,
       error: {
-        type: 'INVALID_NOTES_JSON'
-      }
+        type: 'INVALID_NOTES_JSON',
+      },
     }
   }
 
@@ -135,9 +135,9 @@ export const load = async (data: Blob): Promise<LoadResult> => {
         error: {
           type: 'NOTE_DEFINE_FILE_IS_NOT_FOUND',
           debug: {
-            onErrorNoteId: id
-          }
-        }
+            onErrorNoteId: id,
+          },
+        },
       }
     }
 
@@ -145,7 +145,7 @@ export const load = async (data: Blob): Promise<LoadResult> => {
     try {
       noteDefineJsonData = parse(
         note0,
-        JSON.parse(new TextDecoder().decode(noteDefineJsonBuff))
+        JSON.parse(new TextDecoder().decode(noteDefineJsonBuff)),
       )
     } catch (error) {
       return {
@@ -153,36 +153,38 @@ export const load = async (data: Blob): Promise<LoadResult> => {
         error: {
           type: 'NOTE_DEFINE_FILE_IS_INVALID',
           debug: {
-            onErrorNoteId: id
-          }
-        }
+            onErrorNoteId: id,
+          },
+        },
       }
     }
     const blobs: Record<string, Blob> = {}
-    for (const [name, mime] of Object.entries(noteDefineJsonData.blobMimetypes)) {
+    for (const [name, mime] of Object.entries(
+      noteDefineJsonData.blobMimetypes,
+    )) {
       const blobPath = `${noteFolder}/blobs/${name}`
       const blob = unzipped[blobPath]
       if (!blob) {
         return {
           success: false,
           error: {
-            type: 'NOTE_BLOB_FILE_IS_NOT_FOUND'
-          }
+            type: 'NOTE_BLOB_FILE_IS_NOT_FOUND',
+          },
         }
       }
       blobs[name] = new Blob([blob], {
-        type: mime
+        type: mime,
       })
     }
     newNoteDatas.push({
       canToJsonData: noteDefineJsonData.noteData,
       blobs,
       type: noteDefineJsonData.type,
-      id: id
+      id: id,
     })
   }
   return {
     success: true,
-    notes: newNoteDatas
+    notes: newNoteDatas,
   }
 }

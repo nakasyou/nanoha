@@ -16,11 +16,11 @@
     }}
 .nanohanote-textnote-styler {
     & ul {
-        @apply list-disc list-inside;
+        @apply list-disc list-outside pl-3;
     }}
 .nanohanote-textnote-styler {
     & ol {
-        @apply list-decimal list-inside;
+        @apply list-decimal list-outside pl-3;
     }}
 .nanohanote-textnote-styler {
     & li {
@@ -29,4 +29,7 @@
 }
 .textnote-tiptap-container .tiptap {
     @apply p-2
+}
+.nanohanote-textnote-styler li > p:first-child {
+    @apply inline;
 }

@@ -5,7 +5,7 @@ import {
   type QRL,
   useOnDocument,
   useSignal,
-  useVisibleTask$
+  useVisibleTask$,
 } from '@builder.io/qwik'
 import { type Notes, NotesDB } from '../note/notes-schema'
 import classnames from 'classnames'
@@ -29,7 +29,7 @@ const NoteListItem = component$<{
             second: 'numeric',
             day: 'numeric',
             month: 'numeric',
-            year: 'numeric'
+            year: 'numeric',
           }).format(props.note.updated)}
         </div>
       </div>
@@ -62,14 +62,13 @@ export const NoteList = component$((props) => {
   const update = $(async () => {
     notes.value = null
     const notesDB = new NotesDB()
-    notes.value = (await notesDB.notes.toArray())
-      .sort((a, b) => {
-        if (sortMode.value === 'updated') {
-          return a.updated.getTime() - b.updated.getTime()
-        } else {
-          return a.name < b.name ? -1 : 1
-        }
-      })
+    notes.value = (await notesDB.notes.toArray()).sort((a, b) => {
+      if (sortMode.value === 'updated') {
+        return a.updated.getTime() - b.updated.getTime()
+      } else {
+        return a.name < b.name ? -1 : 1
+      }
+    })
   })
 
   const loaded = $(() => {
@@ -92,7 +91,7 @@ export const NoteList = component$((props) => {
           {
             {
               updated: '最終更新日',
-              name: '名前'
+              name: '名前',
             }[sortMode.value]
           }
         </Button>
@@ -117,9 +116,9 @@ export const NoteList = component$((props) => {
         class={classnames([
           'fixed top-0 left-0 w-full h-[100dvh] z-20 transition-colors flex items-end',
           {
-            hidden: !isShownSortModeDialog.value
+            hidden: !isShownSortModeDialog.value,
           },
-          isStartedSortModeDialog.value ? 'bg-[#000a]' : 'bg-transparent'
+          isStartedSortModeDialog.value ? 'bg-[#000a]' : 'bg-transparent',
         ])}
         onClick$={() => {
           isStartedSortModeDialog.value = false
@@ -133,7 +132,7 @@ export const NoteList = component$((props) => {
             'transition-transform duration-150 w-full lg:w-1/2 lg:h-full rounded-t-3xl lg:rounded-tr-none lg:rounded-l-3xl bg-background p-4 flex flex-col',
             isStartedSortModeDialog.value
               ? 'translate-y-0 lg:translate-x-full' // Open
-              : 'translate-y-full lg:translate-y-0 lg:translate-x-[200%]' // Close
+              : 'translate-y-full lg:translate-y-0 lg:translate-x-[200%]', // Close
           ])}
           onClick$={(evt) => {
             evt.stopPropagation()
@@ -151,7 +150,7 @@ export const NoteList = component$((props) => {
                   'p-2 rounded-t-3xl',
                   sortMode.value === 'updated'
                     ? 'bg-secondary text-on-secondary'
-                    : 'bg-surface text-on-surface border border-outlined'
+                    : 'bg-surface text-on-surface border border-outlined',
                 )}
               >
                 最終更新
@@ -165,7 +164,7 @@ export const NoteList = component$((props) => {
                   'p-2 rounded-b-3xl',
                   sortMode.value === 'name'
                     ? 'bg-secondary text-on-secondary'
-                    : 'bg-surface text-on-surface border border-outlined'
+                    : 'bg-surface text-on-surface border border-outlined',
                 )}
               >
                 名前

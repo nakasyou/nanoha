@@ -1,4 +1,3 @@
-
 /** @jsx preserve */
 //import { onMount } from 'solid-js'
 import App from './App'
@@ -15,5 +14,5 @@ export default (props: Props) => {
       }
     })
   })*/
-  return <App {...props}/>
+  return <App {...props} />
 }

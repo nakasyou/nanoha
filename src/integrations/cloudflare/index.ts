@@ -23,14 +23,14 @@ export default (): AstroIntegration => {
                 if (id.startsWith('@qwik-client-manifest')) {
                   const manifestPath = (await fg('./**/q-manifest.json'))[0]!
                   const manifestJson = await fs.readFile(manifestPath, {
-                    encoding: 'utf-8'
+                    encoding: 'utf-8',
                   })
                   return `export const manifest = (${manifestJson})`
                 }
               },
-              enforce: 'pre'
+              enforce: 'pre',
             },
-            ...(config.vite.plugins ?? [])
+            ...(config.vite.plugins ?? []),
           ]
         }
       },
@@ -42,15 +42,15 @@ export default (): AstroIntegration => {
           supportedAstroFeatures: {
             staticOutput: 'stable',
             serverOutput: 'stable',
-            assets: {}
+            assets: {},
           },
-          exports: ['fetch']
+          exports: ['fetch'],
         })
       },
       'astro:build:done': async () => {
         await fs.writeFile(
           'dist/_worker.js',
-          'import { fetch } from "./server/entry.mjs"\nglobalThis.process={env:{}};\nexport default { fetch }'
+          'import { fetch } from "./server/entry.mjs"\nglobalThis.process={env:{}};\nexport default { fetch }',
         )
         const clientFiles = await fg('./dist/client/**/*')
 
@@ -61,35 +61,45 @@ export default (): AstroIntegration => {
               version: 1,
               exclude: [
                 ...new Set([
-                  ...clientFiles.map((path) =>
-                    path.replace('./dist/client', '')
-                  ),
-                  ...clientFiles.map((path) =>
-                    path
-                      .replace('./dist/client', '')
-                      .replace(/index\.html$/, '')
-                  )
-                ])
+                  ...clientFiles
+                    .map((path) => path.replace('./dist/client', ''))
+                    .filter(
+                      (p) =>
+                        !p.startsWith('/_astro') && !p.startsWith('/build'),
+                    ),
+                  ...clientFiles
+                    .map((path) =>
+                      path
+                        .replace('./dist/client', '')
+                        .replace(/index\.html$/, ''),
+                    )
+                    .filter(
+                      (p) =>
+                        !p.startsWith('/_astro') && !p.startsWith('/build'),
+                    ),
+                ]),
+                '/_astro/*',
+                '/build/*',
               ],
-              include: ['/*']
+              include: ['/*'],
             },
             null,
-            2
-          )
+            2,
+          ),
         )
 
         for (const file of clientFiles) {
           const content = await fs.readFile(file)
-          const targetPath = path.join('dist', file.replace('./dist/client/', ''))
-          await fs.mkdir(path.dirname(targetPath), {
-            recursive: true
-          })
-          await fs.writeFile(
-            targetPath,
-            content
+          const targetPath = path.join(
+            'dist',
+            file.replace('./dist/client/', ''),
           )
+          await fs.mkdir(path.dirname(targetPath), {
+            recursive: true,
+          })
+          await fs.writeFile(targetPath, content)
         }
-      }
-    }
+      },
+    },
   }
 }
