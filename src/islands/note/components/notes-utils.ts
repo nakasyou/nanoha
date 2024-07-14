@@ -20,7 +20,8 @@ export interface NoteData<
   /**
    * ノートのType
    */
-  type: string
+  type: Note0['type']
+
   id: string
 }
 

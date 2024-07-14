@@ -204,14 +204,13 @@ export const TextNote = ((props: Props) => {
     }
     const paragraphId = Math.random().toString()
     editor.commands.setNode('llmpreview', { id: paragraphId })
-
+    console.log(editor, paragraphId)
     const pre = editor.$node('llmpreview', { id: paragraphId })!
     pre.content = '生成中...'
     let rawText = ''
     for await (const text of stream) {
       rawText += text
-      editor.commands.insertContent(text)
-      //pre.content = rawText//markdownParser.render(rawText)
+      pre.content = rawText//markdownParser.render(rawText)
     }
     editor.commands.deleteNode(pre.node.type)
     //pre.content = ''

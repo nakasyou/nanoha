@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, type Content } from '@google/generative-ai'
+import { GoogleGenerativeAI, type Part, type Content } from '@google/generative-ai'
 import { getGeminiApiToken } from './store'
 
 type Generated = null | AsyncGenerator<string, void, unknown>
@@ -60,6 +60,7 @@ export const generateWithLLM: GenerateWithLLM = (
         systemInstruction: systemPrompt,
       })
       for await (const res of stream.stream) {
+        res.candidates
         const text = res.text()
         yield text
       }

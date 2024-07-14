@@ -1,4 +1,4 @@
-import { zipSync, unzipSync } from 'fflate'
+import { zipSync, zip, unzipSync, type Unzipped } from 'fflate'
 import type { Note, NoteData } from '../../components/notes-utils'
 import { manifest0, note0, type Manifest0, type Note0 } from './manifest-schema'
 import { parse, type Output } from 'valibot'
