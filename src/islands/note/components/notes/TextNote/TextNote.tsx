@@ -425,6 +425,7 @@ export const TextNote = ((props: Props) => {
           onClick={() => {
             props.focus()
           }}
+          class="min-h-5"
         />
       </div>
 
