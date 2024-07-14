@@ -12,12 +12,12 @@ import {
   onCleanup,
 } from 'solid-js'
 import { removeIconSize } from '../../../utils/icon/removeIconSize'
-
 import IconNote from '@tabler/icons/outline/note.svg?raw'
 import IconBold from '@tabler/icons/outline/bold.svg?raw'
 import IconUnderline from '@tabler/icons/outline/underline.svg?raw'
 import IconSparkles from '@tabler/icons/outline/sparkles.svg?raw'
 
+import DOMPurify from 'dompurify'
 import { Editor } from '@tiptap/core'
 import { Dialog } from '../../utils/Dialog'
 import { noteBookState } from '../../../store'
@@ -26,7 +26,6 @@ import { Player } from './Player'
 import './TextNoteStyle.css'
 import type { SetStoreFunction } from 'solid-js/store'
 import { getVisualViewport } from '../../../window-apis'
-import { generateWithLLM } from '../../../../shared/ai'
 import { getGoogleGenerativeAI } from '../../../../shared/gemini'
 import markdownIt from 'markdown-it'
 import dedent from 'dedent'
@@ -422,7 +421,7 @@ export const TextNote = ((props: Props) => {
         }}
       >
         <div
-          innerHTML={props.noteData.canToJsonData.html}
+          innerHTML={DOMPurify.sanitize(props.noteData.canToJsonData.html)}
           onClick={() => {
             props.focus()
           }}

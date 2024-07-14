@@ -29,6 +29,7 @@
     "classnames": "^2.3.2",
     "dedent": "^1.5.3",
     "dexie": "^4.0.1",
+    "dompurify": "^3.1.6",
     "fast-glob": "^3.3.2",
     "fflate": "^0.8.0",
     "markdown-it": "^14.1.0",
@@ -43,6 +44,7 @@
   "devDependencies": {
     "@astrojs/solid-js": "^4.1.0",
     "@biomejs/biome": "^1.8.2",
+    "@types/dompurify": "^3.0.5",
     "@types/markdown-it": "^14.0.0",
     "bun-types": "^1.0.7",
     "esbuild": "^0.23.0",
