@@ -7,5 +7,7 @@
     "types": ["bun-types"],
     "noUncheckedIndexedAccess": true
   },
-  "exclude": ["dist"]
+  "exclude": [
+    "dist"
+  ]
 }

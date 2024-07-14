@@ -1,34 +1,23 @@
-import { array, number, object, string, type Output } from 'valibot'
+import { array, object, string, type InferOutput } from "valibot"
+import selectQuestion from './schemas/select-question.json'
 
 /**
  * Prompt to generate question
  */
-export const PROMPT_TO_GENERATE_QUESTION = `
+export const PROMPT_TO_GENERATE_SELECT_QUIZ = `
 あなたは学習用の問題を生成するAIです。
 ユーザーからのソースに従って、問題を生成してください。
+問題は多様性に富んだものを作り出し、絶対に同じ問題を2回出力しないでください。
 
-クイズは、以下のTypeScriptのinterfaceに当てはまるJSONで出力してください。
-\`\`\`ts
-interface Question {
-  /** 問題文 */
-  question: string
-  /** 回答の選択肢 */
-  answers: string[]
-  /** 正解のインデックス */
-  correctIndex: number
-  /** 解説 */
-  explanation: string
-}
-\`\`\`
-1つのJSONは絶対に改行したりフォーマットしたりせずにMinifyされた状態にし、JSONL形式で出力しなさい。
-
-ソーステキスト:
+以下のJSONスキーマに従いなさい。
+${JSON.stringify(selectQuestion)}
 `.trim()
 
-export const QUESTION_SCHEMA = object({
+export const CONTENT_SCHEMA = object({
   question: string(),
-  answers: array(string()),
-  correctIndex: number(),
   explanation: string(),
+  correctAnswer: string(),
+  damyAnswers: array(string()),
 })
-export type Question = Output<typeof QUESTION_SCHEMA>
+
+export type QuizContent = InferOutput<typeof CONTENT_SCHEMA>
