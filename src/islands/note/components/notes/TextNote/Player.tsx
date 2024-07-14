@@ -1,9 +1,11 @@
 import { createEffect, createMemo, createSignal, onMount } from 'solid-js'
 import { noteBookState } from '../../../store'
+import DOMPurify from 'dompurify'
 
 export const Player = (props: { html: string }) => {
   const html = createMemo((): string => {
     let newHtml = props.html
+    newHtml = DOMPurify.sanitize(newHtml)
     //newHtml = newHtml.replace(/class=\"nanoha-sheet/, 'class="nanoha-sheet nanoha-sheet-playing')
     return newHtml
   })
