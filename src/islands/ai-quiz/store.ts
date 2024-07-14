@@ -42,6 +42,8 @@ export interface QuizState {
   goalQuestions: number
 
   isFinished: boolean
+
+  finishedQuizIndexes: Set<number>
 }
 
 export const SCREEN_STATE_CTX = createContextId<ScreenState>('screenState')

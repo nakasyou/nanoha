@@ -20,7 +20,9 @@ export const QuizScreen = component$(() => {
 
     isFinished: false,
 
-    generatedQuizzes: 0
+    generatedQuizzes: 0,
+
+    finishedQuizIndexes: new Set()
   }, {
     deep: false
   })
@@ -33,7 +35,13 @@ export const QuizScreen = component$(() => {
   }>(false)
 
   const setQuiz = $(() => {
-    const nextQuizIndex = Math.floor(Math.random() * quizState.quizzes.length)
+    const arailableQuizIndexes = quizState.quizzes.map((_quiz, index) => {
+      if (quizState.finishedQuizIndexes.has(index)) {
+        return null
+      }
+      return index
+    }).filter((e) => e !== null)
+    const nextQuizIndex = arailableQuizIndexes[Math.floor(Math.random() * arailableQuizIndexes.length)]!
     const nextQuiz = quizState.quizzes[nextQuizIndex]
     if (!nextQuiz) {
       return
@@ -46,7 +54,8 @@ export const QuizScreen = component$(() => {
       ]),
       index: (quizState.current?.index ?? -1) + 1
     }
-    const nextQuizzes = [...quizState.quizzes].splice(nextQuizIndex, 1)
+    const nextQuizzes = [...quizState.quizzes]
+    nextQuizzes.splice(nextQuizIndex, 1)
     quizState.quizzes = nextQuizzes
   })
   useVisibleTask$(async ({ track }) => {
@@ -102,7 +111,6 @@ export const QuizScreen = component$(() => {
     if (!quizState.current && quizState.quizzes[0]) {
       setQuiz()
     }
-    console.log(quizState.current?.index)
   })
 
 
