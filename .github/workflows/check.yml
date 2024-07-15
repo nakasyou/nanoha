@@ -1,0 +1,35 @@
+name: Check Code
+on:
+  workflow_dispatch: 
+  #push:
+  #pull_request:
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  types:
+    name: Check with TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+      - name: Install deps
+        run: bun i
+      - name: Check
+        run: bun check:types
+  biome:
+    name: Check with Biome
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+      - name: Install deps
+        run: bun i
+      - name: Lint
+        run: bun biome lint
+      - name: Format
+        run: bun biome format
