@@ -33,6 +33,20 @@ export default (props: {
     notes.notes
     handleUpdate()
   })
+  createEffect(() => {
+    const focused = getFocusedIndex()
+    let i = 0
+    for (const eachNote of props.notes) {
+      const isActive = focused === i
+      for (const focusEventListener of eachNote.events.focus ||
+        []) {
+        focusEventListener({
+          isActive,
+        })
+      }
+      i++
+    }
+  })
 
   const getNoteRect: Record<string, () => DOMRect> = {}
 
@@ -44,6 +58,7 @@ export default (props: {
   >(null)
   const [getDragTarget, setDragTarget] = createSignal<number | null>(null)
   const [getIsDragUp, setIsDragUp] = createSignal(false)
+
   return (
     <div class="flex flex-col gap-2 my-2">
       <Show when={getIndexToRemove() !== null}>
@@ -82,18 +97,7 @@ export default (props: {
                 noteData={note().noteData}
                 setNoteData={note().setNoteData}
                 focus={() => {
-                  for (const eachNote of props.notes) {
-                    const isActive = eachNote.noteData.id === note().noteData.id
-                    for (const focusEventListener of eachNote.events.focus ||
-                      []) {
-                      focusEventListener({
-                        isActive,
-                      })
-                    }
-                    if (isActive) {
-                      setFocusedIndex(index)
-                    }
-                  }
+                  setFocusedIndex(index())
                 }}
                 updated={handleUpdate}
                 on={(type, listener) => {
@@ -216,6 +220,7 @@ export default (props: {
                         props.setNotes(
                           moveArray(props.notes, index(), getDragTarget() ?? 0),
                         )
+                        setFocusedIndex(getDragTarget() ?? 0)
                         downedPointerId = null
                         setDraggedNoteIndex(null)
                         setDraggedNoteYPosition(null)
