@@ -88,7 +88,7 @@ export default (props: Props) => {
       (pointerYByEditor - editorPosition().y) / editorPosition().size
     return [Math.floor(positionX), Math.floor(positionY)]
   }
-  let pointersData: Record<
+  const pointersData: Record<
     string,
     | {
         isDowned: boolean
@@ -298,8 +298,8 @@ export default (props: Props) => {
           <div
             class="relative"
             style={{
-              width: imageSize().w + 'px',
-              height: imageSize().h + 'px',
+              width: `${imageSize().w}px`,
+              height: `${imageSize().h}px`,
             }}
             ref={forGetTouchRef}
           >
@@ -315,7 +315,7 @@ export default (props: Props) => {
                 <img
                   class="pointer-events-none select-none"
                   src={imageUrl()}
-                  alt="image"
+                  alt="Scaned"
                 />
               </div>
               <div class="absolute top-0 left-0 w-full h-full">
@@ -342,10 +342,10 @@ export default (props: Props) => {
                 hidden: editMode() === 'clear',
               }}
               style={{
-                width: editorContainerRect().width + 'px',
-                height: editorContainerRect().height + 'px',
+                width: `${editorContainerRect().width}px`,
+                height: `${editorContainerRect().height}px`,
               }}
-            ></div>
+            />
           </div>
         </div>
       </div>
@@ -357,6 +357,7 @@ export default (props: Props) => {
               setEditMode('move')
             }}
             disabled={editMode() === 'move'}
+            type='button'
           >
             <div innerHTML={removeIconSize(IconArrowsMove)} class="w-8 h-8" />
           </button>
@@ -366,6 +367,7 @@ export default (props: Props) => {
               setEditMode('paint')
             }}
             disabled={editMode() === 'paint'}
+            type='button'
           >
             <div innerHTML={IconHighlight} class="w-8 h-8" />
           </button>
@@ -375,12 +377,13 @@ export default (props: Props) => {
               setEditMode('clear')
             }}
             disabled={editMode() === 'clear'}
+            type='button'
           >
             <div innerHTML={IconEraser} class="w-8 h-8" />
           </button>
         </div>
         <div>
-          <button class="text-button" onClick={() => setRescanConfirm(true)}>
+          <button class="text-button" onClick={() => setRescanConfirm(true)} type='button'>
             ReScan
           </button>
         </div>

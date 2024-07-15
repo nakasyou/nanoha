@@ -34,10 +34,10 @@ export const GeminiApiToken = component$(() => {
             />
           </div>
           <div class="grid grid-cols-2">
-            <button onClick$={handleCancel} class="text-button">
+            <button onClick$={handleCancel} class="text-button" type="button">
               Cancel
             </button>
-            <button onClick$={handleSave} class="filled-button">
+            <button onClick$={handleSave} class="filled-button" type="button">
               Save
             </button>
           </div>
@@ -54,6 +54,7 @@ export const GeminiApiToken = component$(() => {
             onClick$={() => {
               isEditMode.value = true
             }}
+            type='button'
           >
             編集
           </button>

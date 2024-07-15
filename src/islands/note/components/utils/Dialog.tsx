@@ -26,7 +26,7 @@ type CloseResult<T extends DialogStyle, U> = {
  * @param props
  * @returns
  */
-export const Dialog = <T extends DialogStyle, U extends any = any>(
+export const Dialog = <T extends DialogStyle, U = unknown>(
   props: {
     children:
       | import('solid-js').JSX.Element
@@ -45,6 +45,7 @@ export const Dialog = <T extends DialogStyle, U extends any = any>(
     ? {
         dialog: ReturnType<typeof createDialog<U>>
       }
+    // biome-ignore lint/complexity/noBannedTypes: Type
     : {}),
 ) => {
   const [isOpen, setIsOpen] = createSignal(false)
@@ -59,6 +60,7 @@ export const Dialog = <T extends DialogStyle, U extends any = any>(
   }, 0)
   if (props.type === 'custom') {
     // @ts-ignore
+    // biome-ignore lint/suspicious/noExplicitAny: Type
     props.dialog.closeHandler = (data: any) => {
       close(data)
     }
@@ -116,11 +118,12 @@ export const Dialog = <T extends DialogStyle, U extends any = any>(
                     true,
                   )
                 }
+                type='button'
               >
                 {props.okLabel ?? (props.type === 'alert' ? 'OK' : 'はい')}
               </button>
               <Show when={props.type !== 'alert'}>
-                <button class="outlined-button" onClick={() => close(false)}>
+                <button class="outlined-button" onClick={() => close(false)} type='button'>
                   キャンセル
                 </button>
               </Show>

@@ -27,7 +27,7 @@ export const saveNoteDatas = async (noteDatas: NoteData[]): Promise<Blob> => {
   fileTree['notes.json'] = json2uint8Array(manifest)
 
   for (const [index, noteId] of Object.entries(manifest.noteIds)) {
-    const thisNoteData = noteDatas[parseInt(index)]
+    const thisNoteData = noteDatas[Number.parseInt(index)]
     if (!thisNoteData) {
       continue
     }

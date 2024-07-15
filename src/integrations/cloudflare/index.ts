@@ -1,7 +1,7 @@
-import { type AstroConfig, type AstroIntegration } from 'astro'
-import * as fs from 'fs/promises'
+import type { AstroConfig, AstroIntegration } from 'astro'
+import * as fs from 'node:fs/promises'
 import fg from 'fast-glob'
-import path from 'path'
+import path from 'node:path'
 
 export default (): AstroIntegration => {
   let buildConfig: AstroConfig['build']

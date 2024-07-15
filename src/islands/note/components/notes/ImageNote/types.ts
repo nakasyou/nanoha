@@ -7,6 +7,8 @@ export interface ImageNoteCanToJsonData {
 
 export interface ImageNoteData extends NoteData {
   type: 'image'
-  blobs: Record<string, Blob>
+  blobs: {
+    scanedImage?: Blob
+  }
   canToJsonData: ImageNoteCanToJsonData
 }

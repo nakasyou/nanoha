@@ -47,7 +47,7 @@ export default (props: {
         <img
           class="pointer-events-none select-none w-full h-full"
           src={props.imageUrl}
-          alt="image"
+          alt="scaned"
           ref={imgRef}
         />
         <div class="absolute top-0 left-0 w-full h-full">

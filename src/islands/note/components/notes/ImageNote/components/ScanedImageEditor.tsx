@@ -53,7 +53,7 @@ export const ScanedImageEditor = (props: Props) => {
       <input ref={scanInputRef} type="file" class="hidden" />
       <div>
         <Show when={!props.noteData.blobs.scanedImage}>
-          <button class="outlined-button" onClick={reScan}>
+          <button class="outlined-button" onClick={reScan} type='button'>
             スキャン!
           </button>
         </Show>
@@ -78,10 +78,11 @@ export const ScanedImageEditor = (props: Props) => {
               <button
                 class="outlined-button"
                 onClick={() => dialog.close(false)}
+                type='button'
               >
                 キャンセル
               </button>
-              <button class="filled-button" onClick={() => dialog.close(true)}>
+              <button class="filled-button" onClick={() => dialog.close(true)} type='button'>
                 完了
               </button>
             </div>

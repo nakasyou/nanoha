@@ -44,6 +44,7 @@ const NoteListItem = component$<{
             await new NotesDB().notes.delete(props.note.id!)
             props.update()
           }}
+          type="button"
         >
           削除
         </button>
@@ -65,9 +66,8 @@ export const NoteList = component$((props) => {
     notes.value = (await notesDB.notes.toArray()).sort((a, b) => {
       if (sortMode.value === 'updated') {
         return a.updated.getTime() - b.updated.getTime()
-      } else {
-        return a.name < b.name ? -1 : 1
       }
+        return a.name < b.name ? -1 : 1
     })
   })
 
@@ -102,8 +102,8 @@ export const NoteList = component$((props) => {
             <div>ノートがありません</div>
           ) : (
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {notes.value.map((note) => (
-                <NoteListItem note={note} update={update} />
+              {notes.value.map((note, i) => (
+                <NoteListItem note={note} update={update} key={i} />
               ))}
             </div>
           )

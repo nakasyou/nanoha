@@ -11,7 +11,7 @@ export interface NoteData {
   /**
    * ノートのファイルストア
    */
-  blobs: Record<string, Blob>
+  blobs: Record<string, Blob | undefined>
   /**
    * `JSON.parse`ができるデータ
    */

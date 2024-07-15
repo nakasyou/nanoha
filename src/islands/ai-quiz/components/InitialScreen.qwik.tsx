@@ -71,7 +71,7 @@ export const InitialScreen = component$(() => {
       <div>
         <button onClick$={() => {
           screenState.started = true
-        }} class="filled-button m-3 disabled:opacity-40" disabled={stateToLoad.value.type !== 'success'}>Start</button>
+        }} type="button" class="filled-button m-3 disabled:opacity-40" disabled={stateToLoad.value.type !== 'success'}>Start</button>
         {
           stateToLoad.value.type === 'loading' && <div class="text-on-surface-variant">{ stateToLoad.value.state }</div>
         }

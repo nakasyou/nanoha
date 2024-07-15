@@ -11,7 +11,7 @@ let noteLoadType: NoteLoadType = {
 if (/^local\-.+$/.test(noteId)) {
   noteLoadType = {
     from: 'local',
-    id: parseInt(noteId.split('-').slice(1).join('-')),
+    id: Number.parseInt(noteId.split('-').slice(1).join('-')),
   }
 }
 ---

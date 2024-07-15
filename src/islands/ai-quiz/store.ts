@@ -9,13 +9,13 @@ import type { NoteLoadType } from "../note/note-load-types"
 export interface Quiz {
   content: QuizContent
   
-  source: NoteData<any, string>
+  source: NoteData
 }
 
 export interface ScreenState {
   note: NoSerialize<{
     name: string
-    notes: NoteData<any, string>[]
+    notes: NoteData[]
   }> | 'pending' | 'notfound' | 'invalid'
 
   started: boolean

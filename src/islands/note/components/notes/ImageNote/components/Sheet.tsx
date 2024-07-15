@@ -49,16 +49,14 @@ export default (props: Props) => {
 
   return (
     <svg class={props.class} viewBox={`0 0 ${props.width} ${props.height}`}>
+      <title>Sheet</title>
       <For each={getSheets()}>
         {(sheet, index) => {
           const commands: (string | number)[] = [
-            'M' +
-              sheet.sheet.startPosition.x +
-              ',' +
-              sheet.sheet.startPosition.y,
+            `M${sheet.sheet.startPosition.x},${sheet.sheet.startPosition.y}`,
           ]
           for (const position of sheet.sheet.positions) {
-            commands.push('L' + position.x + ',' + position.y)
+            commands.push(`L${position.x},${position.y}`)
           }
           return (
             <path

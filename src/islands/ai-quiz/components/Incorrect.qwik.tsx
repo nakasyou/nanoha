@@ -93,7 +93,7 @@ export const AIExplanation = component$<{
     </div>
     <div>
       {
-        history.value.map(message => <div>
+        history.value.map(message => <div key={message.text}>
           <div class="font-bold">
             { message.role === 'user' ? 'あなた' : 'NanohaAI' }
             { message.generating && <> <Loading /></> }
@@ -112,7 +112,7 @@ export const AIExplanation = component$<{
         onClick$={sendMessage}
         disabled={history.value.at(-1)?.generating || !prompt.value}
         type="button"
-      ></button>
+      />
     </div>
   </div>
 })

@@ -83,7 +83,7 @@ export const ExtensionSheet = (opts: {
       return [
         'span',
         mergeAttributes(HTMLAttributes, {
-          class: 'nanoha-sheet ' + (opts.sheetClassName || ''),
+          class: `nanoha-sheet ${opts.sheetClassName || ''}`,
           'data-nanohasheet': 'true',
         }),
         0,

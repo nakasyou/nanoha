@@ -5,7 +5,6 @@ import IconPhotoScan from '@tabler/icons/outline/photo-scan.svg?raw'
 
 import { removeIconSize } from '../utils/icon/removeIconSize'
 import { noteBookState, setNoteBookState } from '../store'
-import Pencil from '@tabler/icons/outline/pencil.svg?raw'
 
 import IconEye from '@tabler/icons/outline/eye.svg?raw'
 import IconEyeOff from '@tabler/icons/outline/eye-off.svg?raw'
@@ -28,31 +27,34 @@ export default (props: Props) => {
             'scale-100': isOpen(),
           }}
         >
-          <div
+          <button
             title="テキストノート"
             class="small-fab flex justify-center items-center touch-manipulation"
-            onClick={() => props.onAddTextNote && props.onAddTextNote()}
+            onClick={() => props.onAddTextNote?.()}
+            type="button"
           >
             <div innerHTML={removeIconSize(IconNote)} class="w-5 h-5" />
-          </div>
-          <div
+          </button>
+          <button
             title="スキャンノート"
             class="small-fab flex justify-center items-center touch-manipulation"
-            onClick={() => props.onAddImageNote && props.onAddImageNote()}
+            onClick={() => props.onAddImageNote?.()}
+            type="button"
           >
             <div innerHTML={removeIconSize(IconPhotoScan)} class="w-5 h-5" />
-          </div>
+          </button>
         </div>
 
-        <div
+        <button
           class="fab flex justify-center items-center touch-manipulation"
           onClick={() => {
             setIsOpen(!isOpen())
           }}
           title="ノートを追加する"
+          type='button'
         >
           <div innerHTML={removeIconSize(IconPlus)} class="w-8 h-8" />
-        </div>
+        </button>
       </>
     )
   }
@@ -71,6 +73,7 @@ export default (props: Props) => {
               !noteBookState.sheetDefaultState,
             )
           }}
+          type='button'
           innerHTML={
             noteBookState.sheetDefaultState
               ? removeIconSize(IconEye)

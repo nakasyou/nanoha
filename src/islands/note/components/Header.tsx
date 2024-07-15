@@ -12,9 +12,7 @@ import { getGeminiApiToken } from '../../shared/store'
 import { Dialog } from './utils/Dialog'
 import type { NoteLoadType } from '../note-load-types'
 
-export interface Props {}
-
-const Header = (props: Props) => {
+const Header = () => {
   const [getIsAIQuizActive, setIsAIQuizActive] = createSignal<boolean>()
   const [getIsShownAIQuizDialog, setIsShownAIQuizDialog] =
     createSignal<boolean>(false)
@@ -61,6 +59,7 @@ const Header = (props: Props) => {
                     innerHTML={removeIconSize(IconPencil)}
                     title="編集モードに切り替える"
                     onClick={() => setNoteBookState('isEditMode', true)}
+                    type='button'
                   />
                 }
               >
@@ -69,6 +68,7 @@ const Header = (props: Props) => {
                   innerHTML={removeIconSize(IconPlayerPlay)}
                   title="学習を開始する"
                   onClick={() => setNoteBookState('isEditMode', false)}
+                  type='button'
                 />
               </Show>
             </div>
@@ -91,6 +91,7 @@ const Header = (props: Props) => {
                 title="AIを搭載したクイズを開く"
                 class="w-8 h-8"
                 innerHTML={iconAiQuiz}
+                type='button'
               />
             </div>
             <div>
@@ -101,6 +102,7 @@ const Header = (props: Props) => {
                 onClick={() => {
                   setNoteBookState('isMenuActive', !noteBookState.isMenuActive)
                 }}
+                type='button'
               />
             </div>
           </div>

@@ -57,7 +57,7 @@ export const CreateNote = component$(() => {
     const noteFileBuff = new Uint8Array(await noteFileBlob.arrayBuffer())
 
     const added = await db.notes.add({
-      name: newNoteData.name ?? `無題のノートブック`,
+      name: newNoteData.name ?? '無題のノートブック',
       updated: new Date(),
       nnote: noteFileBuff,
     })
@@ -71,6 +71,7 @@ export const CreateNote = component$(() => {
           onClick$={() => {
             isOpenedCreateNoteDialog.value = true
           }}
+          type='button'
         >
           <div class="fab block md:hidden">
             <div class="flex justify-center place-items-center items-center">
@@ -106,22 +107,24 @@ export const CreateNote = component$(() => {
               <div>
                 <div class="grid grid-cols-2 gap-1 border-b m-2">
                   <button
-                    onClick$={() => (createMode.value = 'new')}
+                    onClick$={() => {createMode.value = 'new'}}
                     class={
                       createMode.value === 'new'
                         ? 'border-secondary border-b'
                         : ''
                     }
+                    type='button'
                   >
                     新しく作る
                   </button>
                   <button
-                    onClick$={() => (createMode.value = 'file')}
+                    onClick$={() => {createMode.value = 'file'}}
                     class={
                       createMode.value === 'file'
                         ? 'border-secondary border-b'
                         : ''
                     }
+                    type='button'
                   >
                     ファイルから読み込む
                   </button>
@@ -135,7 +138,7 @@ export const CreateNote = component$(() => {
                       newNoteData.name = (evt.target as HTMLInputElement)?.value
                     }}
                     id="create-note-name"
-                    value={newNoteData.name ?? `無題のノートブック`}
+                    value={newNoteData.name ?? '無題のノートブック'}
                     class="p-2 rounded-lg border bg-background text-on-background"
                   />
                 </label>
@@ -183,6 +186,7 @@ export const CreateNote = component$(() => {
                       create()
                     }}
                     class="filled-tonal-button text-center"
+                    type='button'
                   >
                     作成
                   </button>

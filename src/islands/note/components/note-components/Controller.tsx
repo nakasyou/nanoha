@@ -16,6 +16,7 @@ export const Controller = (props: {
       <button
         class="grid hover:drop-shadow drop-shadow-none disabled:opacity-40 rounded-full p-1 border"
         onClick={props.onRemove}
+        type='button'
       >
         <div innerHTML={removeIconSize(IconX)} class="w-8 h-8" />
       </button>
@@ -23,6 +24,7 @@ export const Controller = (props: {
         class="grid hover:drop-shadow drop-shadow-none disabled:opacity-40 rounded-full p-1 border"
         onClick={props.onUpNote}
         disabled={props.noteIndex === 0}
+        type='button'
       >
         <div innerHTML={removeIconSize(IconArrowNarrowUp)} class="w-8 h-8" />
       </button>
@@ -30,6 +32,7 @@ export const Controller = (props: {
         class="grid hover:drop-shadow drop-shadow-none disabled:opacity-40 rounded-full p-1 border"
         onClick={props.onDownNote}
         disabled={props.noteIndex === props.notesLength - 1}
+        type='button'
       >
         <div innerHTML={removeIconSize(IconArrowNarrowDown)} class="w-8 h-8" />
       </button>

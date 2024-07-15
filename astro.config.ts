@@ -52,7 +52,7 @@ export default defineConfig({
                 result.sizes[${width}] = image${width};
               `
             }
-            code += `export default result`
+            code += 'export default result'
             return {
               code,
             }
