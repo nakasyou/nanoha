@@ -102,6 +102,8 @@ export default (props: Props) => {
       setNoteBookState('isEditMode', false)
     }
   })
+
+  let scrollParent!: HTMLDivElement
   return (
     <div class="bg-background h-[100dvh] touch-manipulation">
       <Show when={getLoadError()}>
@@ -117,7 +119,7 @@ export default (props: Props) => {
         <div class="lg:h-[100dvh] lg:border-r border-b lg:border-b-0 border-r-0">
           <Header />
         </div>
-        <div class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow">
+        <div class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow" ref={scrollParent}>
           <Show
             when={getMounted()}
             fallback={
@@ -126,7 +128,7 @@ export default (props: Props) => {
                 <div
                   innerHTML={iconSvg}
                   class="w-32 h-32 flex justify-center items-center"
-                ></div>
+                />
               </div>
             }
           >
@@ -141,7 +143,7 @@ export default (props: Props) => {
                 </div>
               </div>
             ) : (
-              <Notes notes={notes.notes()} setNotes={notes.setNotes} />
+              <Notes notes={notes.notes()} setNotes={notes.setNotes} scrollParent={scrollParent} />
             )}
           </Show>
         </div>

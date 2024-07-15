@@ -21,6 +21,7 @@ import { removeIconSize } from '../utils/icon/removeIconSize'
 export default (props: {
   notes: Note[]
   setNotes: Setter<Note[]>
+  scrollParent: HTMLDivElement
 }) => {
   const [getFocusedIndex, setFocusedIndex] = createSignal(0)
   const [getIndexToRemove, setIndexToRemove] = createSignal<null | number>(null)
@@ -151,6 +152,9 @@ export default (props: {
           const [getDraggable] = createSignal<JSX.Element | null>(
             <div class="h-24 bg-blue-300" />,
           )
+
+          let scrollIntervalId: number | null = null
+          let lastPointerEvent: PointerEvent | null = null
           return (
             <>
               <Show when={index() === getDragTarget() && getIsDragUp()}>
@@ -176,7 +180,23 @@ export default (props: {
                     <button
                       type="button"
                       onPointerDown={(e) => {
+                        if (downedPointerId) {
+                          return
+                        }
                         downedPointerId = e.pointerId
+                        scrollIntervalId = window.setInterval(() => {
+                          if (!lastPointerEvent) {
+                            return
+                          }
+                          const vy = lastPointerEvent.clientY < 50 ? -1 : window.innerHeight - lastPointerEvent.clientY < 50 ? 1 : 0
+                          if (vy === 0) {
+                            return
+                          }
+                          props.scrollParent.scrollBy({
+                            top: 100 * vy,
+                            //behavior: 'smooth'
+                          })
+                        }, 100)
                         setDragTarget(index())
                         setDraggedNoteYPosition(e.clientY)
                         setDraggedNoteIndex(index())
@@ -184,6 +204,7 @@ export default (props: {
                       }}
                       onPointerMove={(e) => {
                         if (downedPointerId === e.pointerId) {
+                          lastPointerEvent = e
                           const target = e.currentTarget as HTMLButtonElement
                           target.setPointerCapture(e.pointerId)
                           setDraggedNoteYPosition(e.clientY)
@@ -191,6 +212,7 @@ export default (props: {
                         }
                       }}
                       onPointerUp={() => {
+                        clearInterval(scrollIntervalId ?? void 0)
                         props.setNotes(
                           moveArray(props.notes, index(), getDragTarget() ?? 0),
                         )
