@@ -112,6 +112,7 @@ export default (props: {
           let noteElem!: HTMLDivElement
 
           let downedPointerId: number | null = null
+          const getRectCenterY = (rect: DOMRect) => rect.top + rect.height / 2
           const calcTarget = () => {
             const thisNoteRect = notePosition.getBoundingClientRect()
             const draggingRect = noteElem.getBoundingClientRect()
@@ -128,7 +129,7 @@ export default (props: {
             if (isUP) {
               for (let i = 0; i < index(); i++) {
                 const rect = noteRects[i]!
-                if (draggingRect.top < rect.bottom) {
+                if (getRectCenterY(draggingRect) < getRectCenterY(rect)) {
                   setDragTarget(i)
                   return
                 }
@@ -136,7 +137,7 @@ export default (props: {
             } else {
               for (let i = noteRects.length - 1; i > index(); i--) {
                 const rect = noteRects[i]!
-                if (draggingRect.bottom > rect.top) {
+                if (getRectCenterY(draggingRect) > getRectCenterY(rect)) {
                   return setDragTarget(i)
                 }
               }
