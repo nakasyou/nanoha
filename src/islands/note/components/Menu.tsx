@@ -61,7 +61,7 @@ export const Menu = () => {
       </Show>
 
       <div
-        class="fixed top-0 left-0 w-screen h-[100dvh] transition-transform"
+        class="fixed top-0 left-0 w-screen h-dvh transition-transform"
         classList={{
           'translate-x-0': noteBookState.isMenuActive,
           'translate-x-full lg:-translate-x-full': !noteBookState.isMenuActive,

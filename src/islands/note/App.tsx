@@ -107,7 +107,7 @@ export default (props: Props) => {
 
   let scrollParent!: HTMLDivElement
   return (
-    <div class="bg-background h-[100dvh] touch-manipulation">
+    <div class="bg-background h-dvh touch-manipulation">
       <Show when={getLoadError()}>
         <Dialog
           onClose={() => setLoadError(void 0)}
@@ -117,12 +117,12 @@ export default (props: Props) => {
           {getLoadError()}
         </Dialog>
       </Show>
-      <div class="flex flex-col h-[100dvh] lg:flex-row w-full">
-        <div class="lg:h-[100dvh] lg:border-r border-b lg:border-b-0 border-r-0">
+      <div class="flex flex-col h-dvh lg:flex-row w-full">
+        <div class="lg:h-dvh lg:border-r border-b lg:border-b-0 border-r-0">
           <Header />
         </div>
         <div
-          class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow"
+          class="px-2 w-full pb-5 h-dvh overflow-y-auto grow"
           ref={scrollParent}
         >
           <Show

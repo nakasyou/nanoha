@@ -114,7 +114,7 @@ export const NoteList = component$((props) => {
 
       <div
         class={classnames([
-          'fixed top-0 left-0 w-full h-[100dvh] z-20 transition-colors flex items-end',
+          'fixed top-0 left-0 w-full h-dvh z-20 transition-colors flex items-end',
           {
             hidden: !isShownSortModeDialog.value,
           },

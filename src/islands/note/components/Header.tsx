@@ -37,7 +37,7 @@ const Header = () => {
           </div>
         </Dialog>
       </Show>
-      <div class="w-full lg:w-10 lg:px-2 py-1 z-40 h-auto lg:h-[100dvh] lg:pb-5">
+      <div class="w-full lg:w-10 lg:px-2 py-1 z-40 h-auto lg:h-dvh lg:pb-5">
         <div class="flex justify-between items-center flex-row lg:flex-col h-full">
           <div>
             <a href="/app" title="ホームに戻る">

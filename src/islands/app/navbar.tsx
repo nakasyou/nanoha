@@ -15,7 +15,7 @@ export const Navbar = () => {
     setIconUrl('/api/google/get-avater')
   })*/
   return (
-    <div class="shrink h-[100dvh]">
+    <div class="shrink h-dvh">
       <div class="flex justify-between flex-col h-full py-2">
         <div>
           {

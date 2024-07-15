@@ -213,7 +213,7 @@ export const QuizScreen = component$(() => {
       {
         // 正解メッセージ
         isShownCorrectDialog.value && (
-          <div class="fixed w-full h-[100dvh] grid place-items-center left-0 top-0 z-50">
+          <div class="fixed w-full h-dvh grid place-items-center left-0 top-0 z-50">
             <div class="text-green-400 text-5xl font-bold correctDialog">
               😊正解!!
             </div>

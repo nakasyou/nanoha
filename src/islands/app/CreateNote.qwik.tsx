@@ -92,7 +92,7 @@ export const CreateNote = component$(() => {
       </div>
       <div>
         {isOpenedCreateNoteDialog.value && (
-          <div class="fixed top-0 left-0 w-full h-[100dvh] bg-[#000a] p-3 grid place-items-center">
+          <div class="fixed top-0 left-0 w-full h-dvh bg-[#000a] p-3 grid place-items-center">
             <div class="rounded-lg border bg-background p-2">
               <div class="flex justify-between">
                 <div class="text-2xl">新しいノートを作成</div>

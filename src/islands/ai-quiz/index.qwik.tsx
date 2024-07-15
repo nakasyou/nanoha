@@ -38,11 +38,11 @@ export default component$<{
   useContextProvider(SCREEN_STATE_CTX, screenState)
 
   return (
-    <div class="flex flex-col h-[100dvh] lg:flex-row w-full">
-      <div class="lg:h-[100dvh] lg:border-r border-b lg:border-b-0 border-r-0">
+    <div class="flex flex-col h-dvh lg:flex-row w-full">
+      <div class="lg:h-dvh lg:border-r border-b lg:border-b-0 border-r-0">
         <NavBar />
       </div>
-      <div class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow">
+      <div class="px-2 w-full pb-5 h-dvh overflow-y-auto grow">
         {screenState.started ? <QuizScreen /> : <InitialScreen />}
       </div>
     </div>

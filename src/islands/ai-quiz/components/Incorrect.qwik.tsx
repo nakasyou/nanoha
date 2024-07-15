@@ -199,7 +199,7 @@ export const Incorrect = component$<{
     />
   )
   return (
-    <div class="flex flex-col h-[100dvh]">
+    <div class="flex flex-col h-dvh">
       <div class="fixed top-0 right-0 z-20">
         <NextButton
           onClick$={() => {
