@@ -96,32 +96,32 @@ type FetchResult<Schema extends BaseSchema<any, any, any>> = {
     }
 )
 const makeFetchAPIFunc = // biome-ignore lint/suspicious/noExplicitAny: BaseSchema
-  <Schema extends BaseSchema<any, any, any>>(scope: string, schema: Schema) =>
-  async (accessToken: string): Promise<FetchResult<Schema>> => {
-    const token = `Bearer ${accessToken}`
-    const req = new Request(scope, {
-      headers: {
-        'x-goog-api-client': 'gdcl/7.0.1 gl-node/20.11.0',
-        'Accept-Encoding': 'gzip',
-        'User-Agent': 'google-api-nodejs-client/7.0.1 (gzip)',
-        Authorization: token,
-      },
-    })
-    const res = await fetch(req)
-    const result = await res.json()
-    const parsed = safeParse(schema, result)
-    if (parsed.success) {
+    <Schema extends BaseSchema<any, any, any>>(scope: string, schema: Schema) =>
+    async (accessToken: string): Promise<FetchResult<Schema>> => {
+      const token = `Bearer ${accessToken}`
+      const req = new Request(scope, {
+        headers: {
+          'x-goog-api-client': 'gdcl/7.0.1 gl-node/20.11.0',
+          'Accept-Encoding': 'gzip',
+          'User-Agent': 'google-api-nodejs-client/7.0.1 (gzip)',
+          Authorization: token,
+        },
+      })
+      const res = await fetch(req)
+      const result = await res.json()
+      const parsed = safeParse(schema, result)
+      if (parsed.success) {
+        return {
+          success: true,
+          data: result,
+          response: res,
+        }
+      }
       return {
-        success: true,
-        data: result,
+        success: false,
         response: res,
       }
     }
-    return {
-      success: false,
-      response: res,
-    }
-  }
 export const fetchUserInfo = makeFetchAPIFunc(
   'https://www.googleapis.com/oauth2/v2/userinfo',
   object({

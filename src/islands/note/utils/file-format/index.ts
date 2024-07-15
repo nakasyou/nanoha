@@ -1,5 +1,9 @@
 import { zipSync, zip, unzipSync, type Unzipped } from 'fflate'
-import type { MargedNoteData, Note, NoteData } from '../../components/notes-utils'
+import type {
+  MargedNoteData,
+  Note,
+  NoteData,
+} from '../../components/notes-utils'
 import { manifest0, note0, type Manifest0, type Note0 } from './manifest-schema'
 import { parse, type InferOutput } from 'valibot'
 interface FileTree {

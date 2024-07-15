@@ -7,8 +7,5 @@
     "types": ["bun-types"],
     "noUncheckedIndexedAccess": true
   },
-  "exclude": [
-    "dist",
-    "./node_modules/@qwikdev/astro/**/*",
-  ]
+  "exclude": ["dist", "./node_modules/@qwikdev/astro/**/*"]
 }

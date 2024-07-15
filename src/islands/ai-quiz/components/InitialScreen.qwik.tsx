@@ -58,7 +58,9 @@ export const InitialScreen = component$(() => {
     }
     screenState.note = noSerialize({
       name: gotNote.name,
-      notes: loaded.notes.filter((note): note is TextNoteData => note.type === 'text'),
+      notes: loaded.notes.filter(
+        (note): note is TextNoteData => note.type === 'text',
+      ),
     })
     stateToLoad.value = {
       type: 'success',
