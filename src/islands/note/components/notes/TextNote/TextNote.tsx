@@ -32,12 +32,7 @@ import dedent from 'dedent'
 
 const markdownParser = markdownIt()
 
-export interface Props extends NoteComponentProps {
-  noteData: TextNoteData
-  setNoteData: SetStoreFunction<TextNoteData>
-}
-
-export const TextNote = ((props: Props) => {
+export const TextNote = ((props) => {
   let editorRef!: HTMLDivElement
   let llmTextArea!: HTMLTextAreaElement
 
@@ -179,7 +174,7 @@ export const TextNote = ((props: Props) => {
               role: 'model',
               parts: [
                 {
-                  text: `ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。`,
+                  text: 'ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。',
                 },
               ],
             },
@@ -278,12 +273,14 @@ export const TextNote = ((props: Props) => {
                 <button
                   class="border-b w-full"
                   onClick={() => setGenerateMode('text')}
+                  type='button'
                 >
                   テキストから生成
                 </button>
                 <button
                   class="border-b w-full"
                   onClick={() => setGenerateMode('image')}
+                  type='button'
                 >
                   写真をスキャンして生成
                 </button>
@@ -292,7 +289,7 @@ export const TextNote = ((props: Props) => {
                   classList={{
                     'translate-x-full': getGenerateMode() === 'image',
                   }}
-                ></div>
+                />
               </div>
               <Show when={getGenerateMode() === 'image'}>
                 {(() => {
@@ -327,6 +324,7 @@ export const TextNote = ((props: Props) => {
                               imageInput.click()
                             }}
                             class="filled-tonal-button"
+                            type='button'
                           >
                             カメラを開く
                           </button>
@@ -339,6 +337,7 @@ export const TextNote = ((props: Props) => {
                               imageInput.click()
                             }}
                             class="text-button"
+                            type='button'
                           >
                             写真を選択
                           </button>
@@ -388,7 +387,7 @@ export const TextNote = ((props: Props) => {
                     }
                   }}
                   class="border rounded-lg w-full p-1 border-outlined bg-surface"
-                ></textarea>
+                />
               </label>
             </div>
           )}
@@ -420,12 +419,13 @@ export const TextNote = ((props: Props) => {
           hidden: getIsActive() || !noteBookState.isEditMode,
         }}
       >
-        <div
+        <button
           innerHTML={DOMPurify.sanitize(props.noteData.canToJsonData.html)}
           onClick={() => {
             props.focus()
           }}
           class="min-h-5"
+          type='button'
         />
       </div>
 
@@ -434,10 +434,9 @@ export const TextNote = ((props: Props) => {
           class="fixed left-0 w-full flex justify-center"
           style={{
             top:
-              (getVisualViewport()?.data?.height ?? 0) +
+              `${(getVisualViewport()?.data?.height ?? 0) +
               (getVisualViewport()?.data?.pageTop ?? 0) -
-              32 +
-              'px',
+              32}px`,
           }}
         >
           <div />
@@ -453,12 +452,13 @@ export const TextNote = ((props: Props) => {
                     'bg-secondary-container text-secondary rounded':
                       data.isActive(),
                   }}
+                  type='button'
                 >
                   <div innerHTML={removeIconSize(data.icon)} class="w-8 h-8" />
                 </button>
               )}
             </For>
-            <button class="grid drop-shadow-none" onClick={openGenerateDialog}>
+            <button type="button" class="grid drop-shadow-none" onClick={openGenerateDialog}>
               <div innerHTML={removeIconSize(IconSparkles)} class="w-8 h-8" />
             </button>
           </div>
@@ -467,4 +467,4 @@ export const TextNote = ((props: Props) => {
       </Show>
     </div>
   )
-}) satisfies NoteComponent
+}) satisfies NoteComponent<TextNoteData>

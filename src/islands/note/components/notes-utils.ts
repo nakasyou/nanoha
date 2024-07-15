@@ -5,34 +5,30 @@ import type { SetStoreFunction } from 'solid-js/store'
 import type { TextNoteData } from './notes/TextNote/types'
 import type { ImageNoteData } from './notes/ImageNote/types'
 
-export interface NoteData<
-  CanToJsonData extends any = any,
-  BlobStore extends string = string,
-> {
+export type MargedNoteData = TextNoteData | ImageNoteData
+
+export interface NoteData {
   /**
    * ノートのファイルストア
    */
-  blobs: Partial<Record<BlobStore, Blob | undefined>>
+  blobs: Record<string, Blob>
   /**
    * `JSON.parse`ができるデータ
    */
-  canToJsonData: CanToJsonData
+  canToJsonData: unknown
   /**
    * ノートのType
    */
   type: Note0['type']
-
+  /**
+   * ID
+   */
   id: string
 }
 
-export type MargedNote = TextNoteData | ImageNoteData
-
-export interface NoteComponentProps<
-  CanToJsonData extends any = any,
-  BlobStore extends string = string,
-> {
-  noteData: NoteData<CanToJsonData, BlobStore>
-  setNoteData: SetStoreFunction<NoteData<CanToJsonData, BlobStore>>
+export interface NoteComponentProps<T extends MargedNoteData = MargedNoteData> {
+  noteData: T
+  setNoteData: SetStoreFunction<T>
 
   focus(): void
   on<EventType extends keyof NoteEvents>(
@@ -45,8 +41,8 @@ export interface NoteComponentProps<
   index: number
   notes: Note[]
 }
-export type NoteComponent<CanToJsonData extends any = any> = (
-  props: NoteComponentProps<CanToJsonData>,
+export type NoteComponent<T extends MargedNoteData = MargedNoteData> = (
+  props: NoteComponentProps<T>
 ) => JSX.Element
 
 export interface NoteEvents {
@@ -57,14 +53,15 @@ export interface NoteEventArgs {
     isActive: boolean
   }
 }
-export interface Note<CanToJsonData = any> {
-  Component: NoteComponent<CanToJsonData>
+export interface Note {
+  Component: NoteComponent
 
   noteData: NoteData
-  setNoteData: SetStoreFunction<NoteData<CanToJsonData>>
+  setNoteData: SetStoreFunction<NoteData>
 
   events: NoteEvents
 }
+
 export const createNotes = (): {
   notes: Accessor<Note[]>
   setNotes: Setter<Note[]>

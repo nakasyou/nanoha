@@ -51,7 +51,8 @@ export default (props: Props) => {
         '指定したノートは存在しません。URLが正しいことを確認してください。',
       )
       return
-    } else if (props.noteLoadType.from === 'local') {
+    }
+    if (props.noteLoadType.from === 'local') {
       const db = new NotesDB()
       const noteResponse = await db.notes.get(props.noteLoadType.id)
       if (!noteResponse) {

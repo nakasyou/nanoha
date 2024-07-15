@@ -4,10 +4,11 @@ import {
   array,
   string,
   uuid,
-  type Input,
+  type InferInput,
   union,
   record,
   unknown,
+  pipe
 } from 'valibot'
 
 /**
@@ -18,11 +19,11 @@ export const manifest0 = object({
 
   noteIds: array(
     object({
-      id: string([uuid()]),
+      id: pipe(string(), uuid())
     }),
   ),
 })
-export type Manifest0 = Input<typeof manifest0>
+export type Manifest0 = InferInput<typeof manifest0>
 
 /**
  * Note Version 0
@@ -36,4 +37,4 @@ export const note0 = object({
 
   noteData: unknown(),
 })
-export type Note0 = Input<typeof note0>
+export type Note0 = InferInput<typeof note0>

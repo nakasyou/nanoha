@@ -1,5 +1,5 @@
 import type { NoteComponent, NoteComponentProps } from '../../notes-utils'
-import { type SetStoreFunction } from 'solid-js/store'
+import type { SetStoreFunction } from 'solid-js/store'
 import type { ImageNoteData } from './types'
 import { Show, createMemo, createSignal } from 'solid-js'
 
@@ -9,12 +9,7 @@ import { noteBookState, setNoteBookState } from '../../../store'
 import { ScanedImageEditor } from './components/ScanedImageEditor'
 import Player from './components/Player'
 
-export interface Props extends NoteComponentProps {
-  noteData: ImageNoteData
-  setNoteData: SetStoreFunction<ImageNoteData>
-}
-
-export const ImageNote = ((props: Props) => {
+export const ImageNote = ((props) => {
   const [getIsActive, setIsActive] = createSignal(false)
 
   props.on('focus', (evt) => {
@@ -85,7 +80,7 @@ export const ImageNote = ((props: Props) => {
               >
                 <img
                   src={imageUrl()!!!}
-                  alt="preview image"
+                  alt="preview"
                   class="w-full h-full"
                 />
               </Show>
@@ -103,6 +98,7 @@ export const ImageNote = ((props: Props) => {
                       onClick={() => {
                         setIsShowEditor(true)
                       }}
+                      type='button'
                     >
                       スキャン
                     </button>
@@ -126,4 +122,4 @@ export const ImageNote = ((props: Props) => {
       </div>
     </div>
   )
-}) satisfies NoteComponent
+}) satisfies NoteComponent<ImageNoteData>

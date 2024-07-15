@@ -5,4 +5,8 @@ export interface ImageNoteCanToJsonData {
   sheets: Sheets
 }
 
-export type ImageNoteData = NoteData<ImageNoteCanToJsonData, 'scanedImage'>
+export interface ImageNoteData extends NoteData {
+  type: 'image'
+  blobs: Record<string, Blob>
+  canToJsonData: ImageNoteCanToJsonData
+}
