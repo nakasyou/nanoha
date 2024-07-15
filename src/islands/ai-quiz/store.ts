@@ -1,7 +1,7 @@
 import { createContextId, type NoSerialize } from '@builder.io/qwik'
-import type { NoteData } from '../note/components/notes-utils'
 import type { QuizContent } from './constants'
 import type { NoteLoadType } from '../note/note-load-types'
+import type { TextNoteData } from '../note/components/notes/TextNote/types'
 
 /**
  * クイズ
@@ -9,14 +9,14 @@ import type { NoteLoadType } from '../note/note-load-types'
 export interface Quiz {
   content: QuizContent
 
-  source: NoteData
+  source: TextNoteData
 }
 
 export interface ScreenState {
   note:
     | NoSerialize<{
         name: string
-        notes: NoteData[]
+        notes: TextNoteData[]
       }>
     | 'pending'
     | 'notfound'

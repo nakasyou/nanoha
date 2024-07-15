@@ -21,6 +21,7 @@ import { loadFromBlob } from './components/load-process'
 import { save as saveFromNotes } from './utils/file-format'
 
 import iconSvg from '../../assets/icon-new.svg?raw'
+import type { MargedNoteData, Note } from './components/notes-utils'
 
 export default (props: Props) => {
   let timeoutEnded = false
@@ -41,7 +42,7 @@ export default (props: Props) => {
         },
         type: 'text',
         id: crypto.randomUUID(),
-      }),
+      }) as Note,
       ...notes.notes(),
     ])
 
@@ -159,10 +160,10 @@ export default (props: Props) => {
       <Show when={getMounted()}>
         <Fab
           onAddTextNote={() => {
-            notes.setNotes([...notes.notes(), createTextNote()])
+            notes.setNotes([...notes.notes(), createTextNote() as Note])
           }}
           onAddImageNote={() => {
-            notes.setNotes([...notes.notes(), createImageNote()])
+            notes.setNotes([...notes.notes(), createImageNote() as Note])
           }}
         />
       </Show>

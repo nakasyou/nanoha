@@ -20,7 +20,7 @@ export const createTextNote = (initNoteData?: TextNoteData) => {
       id: crypto.randomUUID(),
     },
   )
-  const addNote: Note<TextNoteCanToJsonData> = {
+  const addNote: Note<TextNoteData> = {
     Component: TextNote,
     noteData,
     setNoteData,

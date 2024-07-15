@@ -82,7 +82,6 @@ export const AIExplanation = component$<{
       chatSession.value = noSerialize(chat)
     }
     const chat = chatSession.value!
-    console.log(prompt.value)
     const stream = await chat.sendMessageStream(prompt.value)
 
     for await (const chunk of stream.stream) {
@@ -183,7 +182,7 @@ export const Incorrect = component$<{
 
   const sourceNote = useComputed$<string>(() => {
     const note = quizState.current?.quiz.source
-    return note?.canToJsonData.html
+    return note?.canToJsonData.html ?? ''
   })
 
   const aiNoteExplanation = (

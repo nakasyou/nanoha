@@ -3,10 +3,9 @@ import {
   object,
   parse,
   string,
-  type Output,
+  type InferOutput,
   type BaseSchema,
   any,
-  type Input,
   safeParse,
   optional,
 } from 'valibot'
@@ -27,7 +26,7 @@ export const credentialsSchema = object({
   id_token: string(),
 })
 
-export type Credentials = Output<typeof credentialsSchema>
+export type Credentials = InferOutput<typeof credentialsSchema>
 
 export const createAuthRedirectURL = (scopes: string[]) => {
   const params = new URLSearchParams()
@@ -83,19 +82,21 @@ export const refreshAccessToken = async (refreshToken: string) => {
   })
   return parse(credentialsSchema, await res.json())
 }
-type FetchResult<Schema extends BaseSchema> = {
+
+// biome-ignore lint/suspicious/noExplicitAny: BaseSchema
+type FetchResult<Schema extends BaseSchema<any, any, any>> = {
   response: Response
 } & (
   | {
       success: true
-      data: Output<Schema>
+      data: InferOutput<Schema>
     }
   | {
       success: false
     }
 )
-const makeFetchAPIFunc =
-  <Schema extends BaseSchema>(scope: string, schema: Schema) =>
+const makeFetchAPIFunc = // biome-ignore lint/suspicious/noExplicitAny: BaseSchema
+  <Schema extends BaseSchema<any, any, any>>(scope: string, schema: Schema) =>
   async (accessToken: string): Promise<FetchResult<Schema>> => {
     const token = `Bearer ${accessToken}`
     const req = new Request(scope, {

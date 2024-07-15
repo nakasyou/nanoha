@@ -14,10 +14,10 @@ export const loadFromBlob = async (targetFile: Blob) => {
     let newNote: Note
     switch (note.type) {
       case 'image':
-        newNote = createImageNote(note)
+        newNote = createImageNote(note) as Note
         break
       case 'text':
-        newNote = createTextNote(note)
+        newNote = createTextNote(note) as Note
         break
     }
     return newNote

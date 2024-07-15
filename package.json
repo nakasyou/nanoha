@@ -7,7 +7,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check:type": "tsc --noEmit"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^11.0.1",
@@ -45,9 +46,11 @@
     "@astrojs/solid-js": "^4.1.0",
     "@biomejs/biome": "^1.8.2",
     "@types/dompurify": "^3.0.5",
+    "@types/fs-extra": "^11.0.4",
     "@types/markdown-it": "^14.0.0",
     "bun-types": "^1.0.7",
     "esbuild": "^0.23.0",
+    "fs-extra": "^11.2.0",
     "hono": "^4.0.1",
     "queue-tick": "^1.0.1",
     "unplugin-parcel-macros": "^0.0.3",

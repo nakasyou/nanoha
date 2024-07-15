@@ -1,7 +1,7 @@
 import { zipSync, zip, unzipSync, type Unzipped } from 'fflate'
-import type { Note, NoteData } from '../../components/notes-utils'
+import type { MargedNoteData, Note, NoteData } from '../../components/notes-utils'
 import { manifest0, note0, type Manifest0, type Note0 } from './manifest-schema'
-import { parse, type Output } from 'valibot'
+import { parse, type InferOutput } from 'valibot'
 interface FileTree {
   [path: string]: Uint8Array
 }
@@ -82,7 +82,7 @@ export type LoadError = {
 type LoadResult =
   | {
       success: true
-      notes: NoteData[]
+      notes: MargedNoteData[]
     }
   | {
       success: false
@@ -108,7 +108,7 @@ export const load = async (data: Blob): Promise<LoadResult> => {
     }
   }
 
-  let notesJsonData: Output<typeof manifest0>
+  let notesJsonData: InferOutput<typeof manifest0>
   try {
     notesJsonData = parse(
       manifest0,
@@ -123,7 +123,7 @@ export const load = async (data: Blob): Promise<LoadResult> => {
     }
   }
 
-  const newNoteDatas: NoteData[] = []
+  const newNoteDatas: MargedNoteData[] = []
   for (const { id } of notesJsonData.noteIds) {
     const noteFolder = `notes/${id}`
     const noteDefineJsonPath = `${noteFolder}/note.json`
@@ -181,7 +181,7 @@ export const load = async (data: Blob): Promise<LoadResult> => {
       blobs,
       type: noteDefineJsonData.type,
       id: id,
-    })
+    } as MargedNoteData)
   }
   return {
     success: true,

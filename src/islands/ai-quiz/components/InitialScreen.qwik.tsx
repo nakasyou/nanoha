@@ -11,6 +11,7 @@ import { SCREEN_STATE_CTX } from '../store'
 import { loadNoteFromType } from '../../shared/storage'
 import { getGeminiApiToken } from '../../shared/store'
 import { load } from '../../note/utils/file-format'
+import type { TextNoteData } from '../../note/components/notes/TextNote/types'
 
 /**
  * 最初の画面
@@ -57,7 +58,7 @@ export const InitialScreen = component$(() => {
     }
     screenState.note = noSerialize({
       name: gotNote.name,
-      notes: loaded.notes,
+      notes: loaded.notes.filter((note): note is TextNoteData => note.type === 'text'),
     })
     stateToLoad.value = {
       type: 'success',

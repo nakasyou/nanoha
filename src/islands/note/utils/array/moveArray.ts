@@ -14,7 +14,7 @@ export const moveArray = <T>(
 
   const newArray = [...array]
 
-  const elementToMove = newArray.splice(fromIndex, 1)[0]
+  const elementToMove = newArray.splice(fromIndex, 1)[0]!
   newArray.splice(toIndex, 0, elementToMove)
 
   return newArray

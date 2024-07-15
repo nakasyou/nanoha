@@ -53,11 +53,11 @@ export interface NoteEventArgs {
     isActive: boolean
   }
 }
-export interface Note {
-  Component: NoteComponent
+export interface Note<T extends MargedNoteData = MargedNoteData> {
+  Component: NoteComponent<T>
 
-  noteData: NoteData
-  setNoteData: SetStoreFunction<NoteData>
+  noteData: T
+  setNoteData: SetStoreFunction<T>
 
   events: NoteEvents
 }
