@@ -38,8 +38,7 @@ export default (props: {
     let i = 0
     for (const eachNote of props.notes) {
       const isActive = focused === i
-      for (const focusEventListener of eachNote.events.focus ||
-        []) {
+      for (const focusEventListener of eachNote.events.focus || []) {
         focusEventListener({
           isActive,
         })
@@ -179,7 +178,11 @@ export default (props: {
                     : {}),
                 }}
               >
-                <Show when={noteBookState.isEditMode && getFocusedIndex() === index()}>
+                <Show
+                  when={
+                    noteBookState.isEditMode && getFocusedIndex() === index()
+                  }
+                >
                   <div class="flex gap-1">
                     <button
                       type="button"
@@ -192,7 +195,13 @@ export default (props: {
                           if (!lastPointerEvent) {
                             return
                           }
-                          const vy = lastPointerEvent.clientY < 50 ? -1 : window.innerHeight - lastPointerEvent.clientY < 50 ? 1 : 0
+                          const vy =
+                            lastPointerEvent.clientY < 50
+                              ? -1
+                              : window.innerHeight - lastPointerEvent.clientY <
+                                  50
+                                ? 1
+                                : 0
                           if (vy === 0) {
                             return
                           }
@@ -229,9 +238,14 @@ export default (props: {
                       class="touch-none w-8 h-8 text-gray-400"
                       innerHTML={removeIconSize(iconGripHorizontal)}
                     />
-                    <button type="button" onClick={() => {
-                      setIndexToRemove(index())
-                    }} class="touch-none w-8 h-8" innerHTML={removeIconSize(iconX)} />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIndexToRemove(index())
+                      }}
+                      class="touch-none w-8 h-8"
+                      innerHTML={removeIconSize(iconX)}
+                    />
                   </div>
                 </Show>
                 {noteElement}

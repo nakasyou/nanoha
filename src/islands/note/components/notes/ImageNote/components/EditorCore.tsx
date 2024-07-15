@@ -357,7 +357,7 @@ export default (props: Props) => {
               setEditMode('move')
             }}
             disabled={editMode() === 'move'}
-            type='button'
+            type="button"
           >
             <div innerHTML={removeIconSize(IconArrowsMove)} class="w-8 h-8" />
           </button>
@@ -367,7 +367,7 @@ export default (props: Props) => {
               setEditMode('paint')
             }}
             disabled={editMode() === 'paint'}
-            type='button'
+            type="button"
           >
             <div innerHTML={IconHighlight} class="w-8 h-8" />
           </button>
@@ -377,13 +377,17 @@ export default (props: Props) => {
               setEditMode('clear')
             }}
             disabled={editMode() === 'clear'}
-            type='button'
+            type="button"
           >
             <div innerHTML={IconEraser} class="w-8 h-8" />
           </button>
         </div>
         <div>
-          <button class="text-button" onClick={() => setRescanConfirm(true)} type='button'>
+          <button
+            class="text-button"
+            onClick={() => setRescanConfirm(true)}
+            type="button"
+          >
             ReScan
           </button>
         </div>

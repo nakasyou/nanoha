@@ -1,17 +1,17 @@
 ---
-import Base from "../../../layouts/Base.astro"
-import NanohaNoteApp from "../../../islands/note"
+import Base from '../../../layouts/Base.astro'
+import NanohaNoteApp from '../../../islands/note'
 import type { NoteLoadType } from '../../../islands/note/note-load-types'
 
 const noteId = Astro.params.noteid ?? ''
 
 let noteLoadType: NoteLoadType = {
-  from: 'unknown'
+  from: 'unknown',
 }
-if ((/^local\-.+$/).test(noteId)) {
+if (/^local\-.+$/.test(noteId)) {
   noteLoadType = {
     from: 'local',
-    id: Number.parseInt(noteId.split('-').slice(1).join('-'))
+    id: Number.parseInt(noteId.split('-').slice(1).join('-')),
   }
 }
 ---

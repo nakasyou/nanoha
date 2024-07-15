@@ -78,11 +78,7 @@ export const ImageNote = ((props) => {
                   props.noteData.canToJsonData.sheets
                 }
               >
-                <img
-                  src={imageUrl()!!!}
-                  alt="preview"
-                  class="w-full h-full"
-                />
+                <img src={imageUrl()!!!} alt="preview" class="w-full h-full" />
               </Show>
             }
           >
@@ -98,7 +94,7 @@ export const ImageNote = ((props) => {
                       onClick={() => {
                         setIsShowEditor(true)
                       }}
-                      type='button'
+                      type="button"
                     >
                       スキャン
                     </button>

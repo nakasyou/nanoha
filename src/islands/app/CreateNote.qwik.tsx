@@ -71,7 +71,7 @@ export const CreateNote = component$(() => {
           onClick$={() => {
             isOpenedCreateNoteDialog.value = true
           }}
-          type='button'
+          type="button"
         >
           <div class="fab block md:hidden">
             <div class="flex justify-center place-items-center items-center">
@@ -107,24 +107,28 @@ export const CreateNote = component$(() => {
               <div>
                 <div class="grid grid-cols-2 gap-1 border-b m-2">
                   <button
-                    onClick$={() => {createMode.value = 'new'}}
+                    onClick$={() => {
+                      createMode.value = 'new'
+                    }}
                     class={
                       createMode.value === 'new'
                         ? 'border-secondary border-b'
                         : ''
                     }
-                    type='button'
+                    type="button"
                   >
                     新しく作る
                   </button>
                   <button
-                    onClick$={() => {createMode.value = 'file'}}
+                    onClick$={() => {
+                      createMode.value = 'file'
+                    }}
                     class={
                       createMode.value === 'file'
                         ? 'border-secondary border-b'
                         : ''
                     }
-                    type='button'
+                    type="button"
                   >
                     ファイルから読み込む
                   </button>
@@ -186,7 +190,7 @@ export const CreateNote = component$(() => {
                       create()
                     }}
                     class="filled-tonal-button text-center"
-                    type='button'
+                    type="button"
                   >
                     作成
                   </button>

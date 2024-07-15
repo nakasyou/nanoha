@@ -1,4 +1,8 @@
-import { GoogleGenerativeAI, type Part, type Content } from '@google/generative-ai'
+import {
+  GoogleGenerativeAI,
+  type Part,
+  type Content,
+} from '@google/generative-ai'
 import { getGeminiApiToken } from './store'
 
 type Generated = null | AsyncGenerator<string, void, unknown>

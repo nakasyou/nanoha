@@ -90,7 +90,7 @@ export const Menu = () => {
                             setNewTitle(noteBookMetadata.noteName)
                           }}
                           class="text-button"
-                          type='button'
+                          type="button"
                         >
                           編集
                         </button>
@@ -117,7 +117,7 @@ export const Menu = () => {
                           setCanEditTitle(false)
                         }}
                         class="text-button"
-                        type='button'
+                        type="button"
                       >
                         完了
                       </button>
@@ -131,7 +131,7 @@ export const Menu = () => {
               {/* セーブ/ロード */}
               <div>
                 <div class="flex justify-center items-center gap-4">
-                  <button class="filled-button" onClick={onSave} type='button'>
+                  <button class="filled-button" onClick={onSave} type="button">
                     エクスポート
                   </button>
                 </div>

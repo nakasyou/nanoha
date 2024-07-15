@@ -120,7 +120,10 @@ export default (props: Props) => {
         <div class="lg:h-[100dvh] lg:border-r border-b lg:border-b-0 border-r-0">
           <Header />
         </div>
-        <div class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow" ref={scrollParent}>
+        <div
+          class="px-2 w-full pb-5 h-[100dvh] overflow-y-auto grow"
+          ref={scrollParent}
+        >
           <Show
             when={getMounted()}
             fallback={
@@ -144,7 +147,11 @@ export default (props: Props) => {
                 </div>
               </div>
             ) : (
-              <Notes notes={notes.notes()} setNotes={notes.setNotes} scrollParent={scrollParent} />
+              <Notes
+                notes={notes.notes()}
+                setNotes={notes.setNotes}
+                scrollParent={scrollParent}
+              />
             )}
           </Show>
         </div>

@@ -67,7 +67,7 @@ export const NoteList = component$((props) => {
       if (sortMode.value === 'updated') {
         return a.updated.getTime() - b.updated.getTime()
       }
-        return a.name < b.name ? -1 : 1
+      return a.name < b.name ? -1 : 1
     })
   })
 

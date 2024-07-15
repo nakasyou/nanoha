@@ -51,7 +51,7 @@ export default (props: Props) => {
             setIsOpen(!isOpen())
           }}
           title="ノートを追加する"
-          type='button'
+          type="button"
         >
           <div innerHTML={removeIconSize(IconPlus)} class="w-8 h-8" />
         </button>
@@ -73,7 +73,7 @@ export default (props: Props) => {
               !noteBookState.sheetDefaultState,
             )
           }}
-          type='button'
+          type="button"
           innerHTML={
             noteBookState.sheetDefaultState
               ? removeIconSize(IconEye)

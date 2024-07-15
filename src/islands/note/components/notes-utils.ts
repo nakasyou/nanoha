@@ -42,7 +42,7 @@ export interface NoteComponentProps<T extends MargedNoteData = MargedNoteData> {
   notes: Note[]
 }
 export type NoteComponent<T extends MargedNoteData = MargedNoteData> = (
-  props: NoteComponentProps<T>
+  props: NoteComponentProps<T>,
 ) => JSX.Element
 
 export interface NoteEvents {

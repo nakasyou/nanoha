@@ -54,7 +54,7 @@ export const GeminiApiToken = component$(() => {
             onClick$={() => {
               isEditMode.value = true
             }}
-            type='button'
+            type="button"
           >
             編集
           </button>

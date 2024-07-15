@@ -20,7 +20,7 @@ export const Navbar = () => {
         <div>
           {
             // biome-ignore lint/a11y/useAnchorContent: Icon
-            <a innerHTML={homeIcon} class="p-5" href="/app" title='home' />
+            <a innerHTML={homeIcon} class="p-5" href="/app" title="home" />
           }
         </div>
         <div>
@@ -29,7 +29,11 @@ export const Navbar = () => {
               when={getIconUrl()}
               fallback={<span innerHTML={removeIconSize(userIcon)} />}
             >
-              <img src={getIconUrl()!} class="w-9 h-9 rounded-full" alt='Icon' />
+              <img
+                src={getIconUrl()!}
+                class="w-9 h-9 rounded-full"
+                alt="Icon"
+              />
             </Show>
           </a>
         </div>

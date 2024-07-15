@@ -45,8 +45,8 @@ export const Dialog = <T extends DialogStyle, U = unknown>(
     ? {
         dialog: ReturnType<typeof createDialog<U>>
       }
-    // biome-ignore lint/complexity/noBannedTypes: Type
-    : {}),
+    : // biome-ignore lint/complexity/noBannedTypes: Type
+      {}),
 ) => {
   const [isOpen, setIsOpen] = createSignal(false)
   const close = (result: Parameters<typeof props.onClose>[0]) => {
@@ -118,12 +118,16 @@ export const Dialog = <T extends DialogStyle, U = unknown>(
                     true,
                   )
                 }
-                type='button'
+                type="button"
               >
                 {props.okLabel ?? (props.type === 'alert' ? 'OK' : 'はい')}
               </button>
               <Show when={props.type !== 'alert'}>
-                <button class="outlined-button" onClick={() => close(false)} type='button'>
+                <button
+                  class="outlined-button"
+                  onClick={() => close(false)}
+                  type="button"
+                >
                   キャンセル
                 </button>
               </Show>

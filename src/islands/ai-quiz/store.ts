@@ -1,22 +1,26 @@
-import { createContextId, type NoSerialize } from "@builder.io/qwik"
-import type { NoteData } from "../note/components/notes-utils"
+import { createContextId, type NoSerialize } from '@builder.io/qwik'
+import type { NoteData } from '../note/components/notes-utils'
 import type { QuizContent } from './constants'
-import type { NoteLoadType } from "../note/note-load-types"
+import type { NoteLoadType } from '../note/note-load-types'
 
 /**
  * クイズ
  */
 export interface Quiz {
   content: QuizContent
-  
+
   source: NoteData
 }
 
 export interface ScreenState {
-  note: NoSerialize<{
-    name: string
-    notes: NoteData[]
-  }> | 'pending' | 'notfound' | 'invalid'
+  note:
+    | NoSerialize<{
+        name: string
+        notes: NoteData[]
+      }>
+    | 'pending'
+    | 'notfound'
+    | 'invalid'
 
   started: boolean
 
@@ -48,4 +52,3 @@ export interface QuizState {
 
 export const SCREEN_STATE_CTX = createContextId<ScreenState>('screenState')
 export const QUIZ_STATE_CTX = createContextId<QuizState>('quizState')
-

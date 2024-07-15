@@ -204,7 +204,7 @@ export const TextNote = ((props) => {
     let rawText = ''
     for await (const text of stream) {
       rawText += text
-      pre.content = rawText//markdownParser.render(rawText)
+      pre.content = rawText //markdownParser.render(rawText)
     }
     editor.commands.deleteNode(pre.node.type)
     //pre.content = ''
@@ -273,14 +273,14 @@ export const TextNote = ((props) => {
                 <button
                   class="border-b w-full"
                   onClick={() => setGenerateMode('text')}
-                  type='button'
+                  type="button"
                 >
                   テキストから生成
                 </button>
                 <button
                   class="border-b w-full"
                   onClick={() => setGenerateMode('image')}
-                  type='button'
+                  type="button"
                 >
                   写真をスキャンして生成
                 </button>
@@ -324,7 +324,7 @@ export const TextNote = ((props) => {
                               imageInput.click()
                             }}
                             class="filled-tonal-button"
-                            type='button'
+                            type="button"
                           >
                             カメラを開く
                           </button>
@@ -337,7 +337,7 @@ export const TextNote = ((props) => {
                               imageInput.click()
                             }}
                             class="text-button"
-                            type='button'
+                            type="button"
                           >
                             写真を選択
                           </button>
@@ -425,7 +425,7 @@ export const TextNote = ((props) => {
             props.focus()
           }}
           class="min-h-5"
-          type='button'
+          type="button"
         />
       </div>
 
@@ -433,10 +433,11 @@ export const TextNote = ((props) => {
         <div
           class="fixed left-0 w-full flex justify-center"
           style={{
-            top:
-              `${(getVisualViewport()?.data?.height ?? 0) +
+            top: `${
+              (getVisualViewport()?.data?.height ?? 0) +
               (getVisualViewport()?.data?.pageTop ?? 0) -
-              32}px`,
+              32
+            }px`,
           }}
         >
           <div />
@@ -452,13 +453,17 @@ export const TextNote = ((props) => {
                     'bg-secondary-container text-secondary rounded':
                       data.isActive(),
                   }}
-                  type='button'
+                  type="button"
                 >
                   <div innerHTML={removeIconSize(data.icon)} class="w-8 h-8" />
                 </button>
               )}
             </For>
-            <button type="button" class="grid drop-shadow-none" onClick={openGenerateDialog}>
+            <button
+              type="button"
+              class="grid drop-shadow-none"
+              onClick={openGenerateDialog}
+            >
               <div innerHTML={removeIconSize(IconSparkles)} class="w-8 h-8" />
             </button>
           </div>

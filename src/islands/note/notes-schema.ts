@@ -13,7 +13,7 @@ export class NotesDB extends Dexie {
     super('notes') // データベース名をsuperのコンストラクタに渡す
 
     this.version(1).stores({
-      notes: '++id, name, nnote, updated'
+      notes: '++id, name, nnote, updated',
     })
 
     this.notes = this.table('notes')

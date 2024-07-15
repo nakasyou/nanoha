@@ -8,7 +8,7 @@ import {
   union,
   record,
   unknown,
-  pipe
+  pipe,
 } from 'valibot'
 
 /**
@@ -19,7 +19,7 @@ export const manifest0 = object({
 
   noteIds: array(
     object({
-      id: pipe(string(), uuid())
+      id: pipe(string(), uuid()),
     }),
   ),
 })

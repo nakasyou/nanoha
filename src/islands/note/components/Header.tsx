@@ -59,7 +59,7 @@ const Header = () => {
                     innerHTML={removeIconSize(IconPencil)}
                     title="編集モードに切り替える"
                     onClick={() => setNoteBookState('isEditMode', true)}
-                    type='button'
+                    type="button"
                   />
                 }
               >
@@ -68,7 +68,7 @@ const Header = () => {
                   innerHTML={removeIconSize(IconPlayerPlay)}
                   title="学習を開始する"
                   onClick={() => setNoteBookState('isEditMode', false)}
-                  type='button'
+                  type="button"
                 />
               </Show>
             </div>
@@ -91,7 +91,7 @@ const Header = () => {
                 title="AIを搭載したクイズを開く"
                 class="w-8 h-8"
                 innerHTML={iconAiQuiz}
-                type='button'
+                type="button"
               />
             </div>
             <div>
@@ -102,7 +102,7 @@ const Header = () => {
                 onClick={() => {
                   setNoteBookState('isMenuActive', !noteBookState.isMenuActive)
                 }}
-                type='button'
+                type="button"
               />
             </div>
           </div>
