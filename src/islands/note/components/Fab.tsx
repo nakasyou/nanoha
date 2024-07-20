@@ -1,13 +1,6 @@
 import { createSignal } from 'solid-js'
-import IconPlus from '@tabler/icons/outline/plus.svg?raw'
-import IconNote from '@tabler/icons/outline/notebook.svg?raw'
-import IconPhotoScan from '@tabler/icons/outline/photo-scan.svg?raw'
-
-import { removeIconSize } from '../utils/icon/removeIconSize'
 import { noteBookState, setNoteBookState } from '../store'
-
-import IconEye from '@tabler/icons/outline/eye.svg?raw'
-import IconEyeOff from '@tabler/icons/outline/eye-off.svg?raw'
+import { icon } from '../../../utils/icons'
 
 export interface Props {
   onAddTextNote?: () => void
@@ -33,7 +26,7 @@ export default (props: Props) => {
             onClick={() => props.onAddTextNote?.()}
             type="button"
           >
-            <div innerHTML={removeIconSize(IconNote)} class="w-5 h-5" />
+            <div innerHTML={icon('notebook')} class="w-5 h-5" />
           </button>
           <button
             title="スキャンノート"
@@ -41,7 +34,7 @@ export default (props: Props) => {
             onClick={() => props.onAddImageNote?.()}
             type="button"
           >
-            <div innerHTML={removeIconSize(IconPhotoScan)} class="w-5 h-5" />
+            <div innerHTML={icon('photoScan')} class="w-5 h-5" />
           </button>
         </div>
 
@@ -53,7 +46,7 @@ export default (props: Props) => {
           title="ノートを追加する"
           type="button"
         >
-          <div innerHTML={removeIconSize(IconPlus)} class="w-8 h-8" />
+          <div innerHTML={icon('plus')} class="w-8 h-8" />
         </button>
       </>
     )
@@ -75,9 +68,7 @@ export default (props: Props) => {
           }}
           type="button"
           innerHTML={
-            noteBookState.sheetDefaultState
-              ? removeIconSize(IconEye)
-              : removeIconSize(IconEyeOff)
+            noteBookState.sheetDefaultState ? icon('eye') : icon('eyeOff')
           }
         />
       )}

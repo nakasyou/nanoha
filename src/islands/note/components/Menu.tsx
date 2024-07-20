@@ -1,3 +1,4 @@
+import { icon } from '../../../utils/icons'
 import {
   noteBookMetadata,
   noteBookState,
@@ -5,8 +6,6 @@ import {
   setNoteBookMetadata,
   setNoteBookState,
 } from '../store'
-import IconX from '@tabler/icons/outline/x.svg?raw'
-import { removeIconSize } from '../utils/icon/removeIconSize'
 import { save, type LoadError } from '../utils/file-format'
 import { Dialog } from './utils/Dialog'
 import { Show, createSignal } from 'solid-js'
@@ -14,7 +13,7 @@ import { Show, createSignal } from 'solid-js'
 const CloseBtn = () => {
   return (
     <button
-      innerHTML={removeIconSize(IconX)}
+      innerHTML={icon('x')}
       class="w-8 h-8"
       onClick={() => {
         setNoteBookState('isMenuActive', false)

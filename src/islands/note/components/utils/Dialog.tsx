@@ -1,5 +1,4 @@
-import IconX from '@tabler/icons/outline/x.svg?raw'
-import { removeIconSize } from '../../utils/icon/removeIconSize'
+import { icon } from '../../../../utils/icons'
 import { Show, createSignal, onCleanup, onMount } from 'solid-js'
 
 export type DialogStyle = 'confirm' | 'custom' | 'alert'
@@ -97,7 +96,7 @@ export const Dialog = <T extends DialogStyle, U = unknown>(
             title="閉じる (esc)"
             class="p-2 rounded-full hover:border grid items-center justify-center"
           >
-            <div innerHTML={removeIconSize(IconX)} class="w-8 h-8" />
+            <div innerHTML={icon('x')} class="w-8 h-8" />
           </div>
         </div>
         <div class="mx-4">
