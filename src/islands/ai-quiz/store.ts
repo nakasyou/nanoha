@@ -27,6 +27,11 @@ export interface ScreenState {
   availableAI: boolean | null
 
   noteLoadType: NoteLoadType
+
+  /**
+   * 出題範囲
+   */
+  rangeNotes: Set<number>
 }
 
 export interface QuizState {

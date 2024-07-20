@@ -4,8 +4,6 @@ import {
   component$,
   useComputed$,
   useContext,
-  useContextProvider,
-  useStore,
 } from '@builder.io/qwik'
 import { QUIZ_STATE_CTX, type QuizState } from '../store'
 
