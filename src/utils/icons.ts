@@ -1,7 +1,3 @@
-import { removeIconSize } from '../islands/note/utils/icon/removeIconSize'
-
-// abcdefghijklmnopqrstuvwxyz
-
 import arrowLeft from '@tabler/icons/outline/arrow-left.svg?raw'
 import arrowNarrowDown from '@tabler/icons/outline/arrow-narrow-down.svg?raw'
 import arrowNarrowUp from '@tabler/icons/outline/arrow-narrow-up.svg?raw'
@@ -57,5 +53,8 @@ const icons = {
   user,
   x
 } as const satisfies Record<string, string>
+
+export const removeIconSize = (svg: string) =>
+  svg.replace(/width="[0-9]+"/, '').replace(/height="[0-9]+"/, '')
 
 export const icon = (name: keyof typeof icons) => removeIconSize(icons[name])
