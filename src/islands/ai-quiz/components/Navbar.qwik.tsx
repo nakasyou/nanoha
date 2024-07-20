@@ -15,12 +15,12 @@ const Settings = component$(() => {
           typeof screenState.note === 'string' ? '読み込み中' : <div>
             {
               screenState.note!.notes.map((note) => {
-                const text = new DOMParser().parseFromString(note.canToJsonData.html, 'text/html').documentElement.textContent
+                const text = new DOMParser().parseFromString(note.canToJsonData.html, 'text/html').documentElement.textContent ?? '空のノート'
                 return <label key={note.id}>
                   <div class="flex">
                     <input type="checkbox" />
                     <div>
-                      {text}
+                      {text?.length > 20 ? `${text.substring(0, 20)}...` : text}
                     </div>
                   </div>
                 </label>
