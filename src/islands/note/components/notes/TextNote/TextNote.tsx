@@ -418,14 +418,11 @@ export const TextNote = ((props) => {
         classList={{
           hidden: getIsActive() || !noteBookState.isEditMode,
         }}
+        class="textnote-tiptap-container nanohanote-textnote-styler break-words"
       >
-        <button
+        <div
           innerHTML={DOMPurify.sanitize(props.noteData.canToJsonData.html)}
-          onClick={() => {
-            props.focus()
-          }}
           class="min-h-5"
-          type="button"
         />
       </div>
 

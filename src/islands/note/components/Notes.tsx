@@ -91,7 +91,12 @@ export default (props: {
             handleUpdate()
           })
           const noteElement = (
-            <div class="border p-1 grow">
+            <div
+              class="border p-1 grow"
+              onPointerDown={() => {
+                setFocusedIndex(index())
+              }}
+            >
               <NoteComponent
                 noteData={note().noteData}
                 setNoteData={note().setNoteData}
