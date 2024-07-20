@@ -51,7 +51,7 @@ const icons = {
   sparkles,
   underline,
   user,
-  x
+  x,
 } as const satisfies Record<string, string>
 
 export const removeIconSize = (svg: string) =>

@@ -22,10 +22,7 @@ const NextButton = component$<{
   <div>
     <button class="flex items-center" onClick$={props.onClick$} type="button">
       <div class="font-bold text-lg hidden md:block">Next</div>
-      <div
-        dangerouslySetInnerHTML={icon('chevronRight')}
-        class="w-16 h-16"
-      />
+      <div dangerouslySetInnerHTML={icon('chevronRight')} class="w-16 h-16" />
     </button>
   </div>
 ))

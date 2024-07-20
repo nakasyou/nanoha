@@ -68,9 +68,7 @@ export default (props: Props) => {
           }}
           type="button"
           innerHTML={
-            noteBookState.sheetDefaultState
-              ? icon('eye')
-              : icon('eyeOff')
+            noteBookState.sheetDefaultState ? icon('eye') : icon('eyeOff')
           }
         />
       )}

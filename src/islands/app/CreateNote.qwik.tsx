@@ -79,10 +79,7 @@ export const CreateNote = component$(() => {
             </div>
           </div>
           <div class="items-center gap-2 filled-tonal-button hidden md:flex place-items-center">
-            <div
-              class="w-5 h-5"
-              dangerouslySetInnerHTML={icon('plus')}
-            />
+            <div class="w-5 h-5" dangerouslySetInnerHTML={icon('plus')} />
             <div class="">新しいノート</div>
           </div>
         </button>

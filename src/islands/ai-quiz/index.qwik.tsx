@@ -14,10 +14,7 @@ const NavBar = component$(() => {
   return (
     <div>
       <a class="w-8 h-8" href=".">
-        <div
-          dangerouslySetInnerHTML={icon('arrowLeft')}
-          class="w-8 h-8"
-        />
+        <div dangerouslySetInnerHTML={icon('arrowLeft')} class="w-8 h-8" />
       </a>
     </div>
   )
