@@ -4,15 +4,12 @@ import {
   useSignal,
   useStore,
   $,
-  type QRL,
   type NoSerialize,
   noSerialize,
 } from '@builder.io/qwik'
 import { NotesDB } from '../shared/storage'
 import { load, saveNoteDatas } from '../note/utils/file-format'
-import iconPlus from '@tabler/icons/outline/plus.svg?raw'
-import iconX from '@tabler/icons/outline/x.svg?raw'
-import { removeIconSize } from '../note/utils/icon/removeIconSize'
+import { icon } from '../../utils/icons'
 
 export const CreateNote = component$(() => {
   const isOpenedCreateNoteDialog = useSignal(false)
@@ -77,14 +74,14 @@ export const CreateNote = component$(() => {
             <div class="flex justify-center place-items-center items-center">
               <div
                 class="w-5 h-5 m-auto align-middle"
-                dangerouslySetInnerHTML={removeIconSize(iconPlus)}
+                dangerouslySetInnerHTML={icon('plus')}
               />
             </div>
           </div>
           <div class="items-center gap-2 filled-tonal-button hidden md:flex place-items-center">
             <div
               class="w-5 h-5"
-              dangerouslySetInnerHTML={removeIconSize(iconPlus)}
+              dangerouslySetInnerHTML={icon('plus')}
             />
             <div class="">新しいノート</div>
           </div>
@@ -98,7 +95,7 @@ export const CreateNote = component$(() => {
                 <div class="text-2xl">新しいノートを作成</div>
                 <div
                   class="w-8 h-8"
-                  dangerouslySetInnerHTML={removeIconSize(iconX)}
+                  dangerouslySetInnerHTML={icon('x')}
                   onClick$={() => {
                     isOpenedCreateNoteDialog.value = false
                   }}

@@ -1,10 +1,6 @@
-import IconArrowLeft from '@tabler/icons/outline/arrow-left.svg?raw'
-import IconPlayerPlay from '@tabler/icons/outline/player-play.svg?raw'
-import IconPencil from '@tabler/icons/outline/pencil.svg?raw'
-import IconMenu2 from '@tabler/icons/outline/menu-2.svg?raw'
 import iconAiQuiz from '../../../assets/icons/aiquiz.svg?raw'
 
-import { removeIconSize } from '../utils/icon/removeIconSize'
+import { icon } from '../../../utils/icons'
 
 import { noteBookState, setNoteBookState } from '../store'
 import { Show, createSignal, onMount } from 'solid-js'
@@ -41,7 +37,7 @@ const Header = () => {
         <div class="flex justify-between items-center flex-row lg:flex-col h-full">
           <div>
             <a href="/app" title="ホームに戻る">
-              <div innerHTML={removeIconSize(IconArrowLeft)} class="w-8 h-8" />
+              <div innerHTML={icon('arrowLeft')} class="w-8 h-8" />
             </a>
           </div>
           <div>
@@ -56,7 +52,7 @@ const Header = () => {
                 fallback={
                   <button
                     class="w-8 h-8"
-                    innerHTML={removeIconSize(IconPencil)}
+                    innerHTML={icon('pencil')}
                     title="編集モードに切り替える"
                     onClick={() => setNoteBookState('isEditMode', true)}
                     type="button"
@@ -65,7 +61,7 @@ const Header = () => {
               >
                 <button
                   class="w-8 h-8"
-                  innerHTML={removeIconSize(IconPlayerPlay)}
+                  innerHTML={icon('playerPlay')}
                   title="学習を開始する"
                   onClick={() => setNoteBookState('isEditMode', false)}
                   type="button"
@@ -98,7 +94,7 @@ const Header = () => {
               <button
                 title="メニューを開く"
                 class="w-8 h-8 z-50"
-                innerHTML={removeIconSize(IconMenu2)}
+                innerHTML={icon('menu2')}
                 onClick={() => {
                   setNoteBookState('isMenuActive', !noteBookState.isMenuActive)
                 }}

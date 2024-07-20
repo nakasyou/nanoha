@@ -8,9 +8,7 @@ import {
   useSignal,
   type QRL,
 } from '@builder.io/qwik'
-import { removeIconSize } from '../../note/utils/icon/removeIconSize'
-import iconChevronRight from '@tabler/icons/outline/chevron-right.svg?raw'
-import iconSend from '@tabler/icons/outline/send.svg?raw'
+import { icon } from '../../../utils/icons'
 import { useContext, type Signal } from '@builder.io/qwik'
 import { QUIZ_STATE_CTX } from '../store'
 import { getGoogleGenerativeAI } from '../../shared/gemini'
@@ -25,7 +23,7 @@ const NextButton = component$<{
     <button class="flex items-center" onClick$={props.onClick$} type="button">
       <div class="font-bold text-lg hidden md:block">Next</div>
       <div
-        dangerouslySetInnerHTML={removeIconSize(iconChevronRight)}
+        dangerouslySetInnerHTML={icon('chevronRight')}
         class="w-16 h-16"
       />
     </button>
@@ -138,7 +136,7 @@ export const AIExplanation = component$<{
           class="rounded-full p-2 border m-1"
         />
         <button
-          dangerouslySetInnerHTML={removeIconSize(iconSend)}
+          dangerouslySetInnerHTML={icon('send')}
           class="w-8 h-8 disabled:opacity-30"
           title="send message"
           onClick$={sendMessage}
