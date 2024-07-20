@@ -1,12 +1,8 @@
 import { createEffect, onMount, onCleanup, createSignal, Show } from 'solid-js'
 import Sheet, { type Sheets } from './Sheet'
 
-import IconArrowsMove from '@tabler/icons/outline/arrows-move.svg?raw'
-import IconHighlight from '@tabler/icons/outline/highlight.svg?raw'
-import IconEraser from '@tabler/icons/outline/eraser.svg?raw'
-
-import { removeIconSize } from '../../../../utils/icon/removeIconSize'
 import { Dialog } from '../../../utils/Dialog'
+import { icon } from '../../../../../../utils/icons'
 
 export interface Props {
   scanedImage?: Blob | undefined
@@ -359,7 +355,7 @@ export default (props: Props) => {
             disabled={editMode() === 'move'}
             type="button"
           >
-            <div innerHTML={removeIconSize(IconArrowsMove)} class="w-8 h-8" />
+            <div innerHTML={icon('arrowsMove')} class="w-8 h-8" />
           </button>
           <button
             class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none bg-secondary text-on-secondary disabled:bg-secondary-container disabled:text-on-secondary-container rounded-full p-1 border"
@@ -369,7 +365,7 @@ export default (props: Props) => {
             disabled={editMode() === 'paint'}
             type="button"
           >
-            <div innerHTML={IconHighlight} class="w-8 h-8" />
+            <div innerHTML={icon('highlight')} class="w-8 h-8" />
           </button>
           <button
             class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none bg-secondary text-on-secondary disabled:bg-secondary-container disabled:text-on-secondary-container rounded-full p-1 border"
@@ -379,7 +375,7 @@ export default (props: Props) => {
             disabled={editMode() === 'clear'}
             type="button"
           >
-            <div innerHTML={IconEraser} class="w-8 h-8" />
+            <div innerHTML={icon('eraser')} class="w-8 h-8" />
           </button>
         </div>
         <div>

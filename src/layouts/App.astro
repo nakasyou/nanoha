@@ -1,9 +1,6 @@
 ---
 import Base from './Base.astro'
-import { Navbar } from '../islands/app/navbar'
-import iconHome from '@tabler/icons/outline/home.svg?raw'
-import iconSettings from '@tabler/icons/outline/settings.svg?raw'
-import { removeIconSize } from '../islands/note/utils/icon/removeIconSize'
+import { icon } from '../utils/icons'
 ---
 
 <Base
@@ -20,10 +17,10 @@ import { removeIconSize } from '../islands/note/utils/icon/removeIconSize'
     </div>
     <div class="grid grid-cols-2 lg:grid-rows-2 lg:grid-cols-1 place-items-center">
       <a href="/app" title="Home">
-        <div set:html={removeIconSize(iconHome)} class="w-10 h-10" /> 
+        <div set:html={icon('home')} class="w-10 h-10" /> 
       </a>
       <a href="/app/settings" title="Home">
-        <div set:html={removeIconSize(iconSettings)} class="w-10 h-10" /> 
+        <div set:html={icon('settings')} class="w-10 h-10" /> 
       </a>
     </div>
   </div>

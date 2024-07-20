@@ -11,12 +11,7 @@ import {
   onMount,
   onCleanup,
 } from 'solid-js'
-import { removeIconSize } from '../../../utils/icon/removeIconSize'
-import IconNote from '@tabler/icons/outline/note.svg?raw'
-import IconBold from '@tabler/icons/outline/bold.svg?raw'
-import IconUnderline from '@tabler/icons/outline/underline.svg?raw'
-import IconSparkles from '@tabler/icons/outline/sparkles.svg?raw'
-
+import { icon } from '../../../../../utils/icons'
 import DOMPurify from 'dompurify'
 import { Editor } from '@tiptap/core'
 import { Dialog } from '../../utils/Dialog'
@@ -52,17 +47,17 @@ export const TextNote = ((props) => {
 
   const controllerItems = [
     {
-      icon: IconNote,
+      icon: icon('note'),
       toggle: 'toggleSheet',
       isActive: getIsActiveSheet,
     },
     {
-      icon: IconBold,
+      icon: icon('bold'),
       toggle: 'toggleBold',
       isActive: getIsActiveBold,
     },
     {
-      icon: IconUnderline,
+      icon: icon('underline'),
       toggle: 'toggleUnderline',
       isActive: getIsActiveUndlerline,
     },
@@ -452,7 +447,7 @@ export const TextNote = ((props) => {
                   }}
                   type="button"
                 >
-                  <div innerHTML={removeIconSize(data.icon)} class="w-8 h-8" />
+                  <div innerHTML={data.icon} class="w-8 h-8" />
                 </button>
               )}
             </For>
@@ -461,7 +456,7 @@ export const TextNote = ((props) => {
               class="grid drop-shadow-none"
               onClick={openGenerateDialog}
             >
-              <div innerHTML={removeIconSize(IconSparkles)} class="w-8 h-8" />
+              <div innerHTML={icon('sparkles')} class="w-8 h-8" />
             </button>
           </div>
           <div />

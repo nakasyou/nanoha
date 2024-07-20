@@ -5,8 +5,7 @@ import { type ScreenState, SCREEN_STATE_CTX } from './store'
 import { InitialScreen } from './components/InitialScreen.qwik'
 import type { NoteLoadType } from '../note/note-load-types'
 import { QuizScreen } from './components/Quiz.qwik'
-import IconArrowLeft from '@tabler/icons/outline/arrow-left.svg?raw'
-import { removeIconSize } from '../note/utils/icon/removeIconSize'
+import { icon } from '../../utils/icons'
 
 /**
  * ナビゲーター
@@ -15,10 +14,7 @@ const NavBar = component$(() => {
   return (
     <div>
       <a class="w-8 h-8" href=".">
-        <div
-          dangerouslySetInnerHTML={removeIconSize(IconArrowLeft)}
-          class="w-8 h-8"
-        />
+        <div dangerouslySetInnerHTML={icon('arrowLeft')} class="w-8 h-8" />
       </a>
     </div>
   )

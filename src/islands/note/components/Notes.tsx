@@ -12,11 +12,8 @@ import { moveArray } from '../utils/array/moveArray'
 
 import type { Note } from './notes-utils'
 import { noteBookState, notes, setNoteBookState } from '../store'
-import { Controller } from './note-components/Controller'
 import { Dialog } from './utils/Dialog'
-import iconGripHorizontal from '@tabler/icons/outline/grip-horizontal.svg?raw'
-import iconX from '@tabler/icons/outline/x.svg?raw'
-import { removeIconSize } from '../utils/icon/removeIconSize'
+import { icon } from '../../../utils/icons'
 
 export default (props: {
   notes: Note[]
@@ -241,7 +238,7 @@ export default (props: {
                         setDragTarget(null)
                       }}
                       class="touch-none w-8 h-8 text-gray-400"
-                      innerHTML={removeIconSize(iconGripHorizontal)}
+                      innerHTML={icon('gripHorizontal')}
                     />
                     <button
                       type="button"
@@ -249,7 +246,7 @@ export default (props: {
                         setIndexToRemove(index())
                       }}
                       class="touch-none w-8 h-8"
-                      innerHTML={removeIconSize(iconX)}
+                      innerHTML={icon('x')}
                     />
                   </div>
                 </Show>
