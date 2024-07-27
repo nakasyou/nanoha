@@ -10,6 +10,8 @@ export interface Quiz {
   content: QuizContent
 
   source: TextNoteData
+
+  id: number
 }
 
 export interface ScreenState {
@@ -32,31 +34,38 @@ export interface ScreenState {
    * 出題範囲
    */
   rangeNotes: Set<string>
+
+  lastMissedQuizIds: number[]
 }
 
-export interface QuizState {
+export type QuizFrom = 'generated' | 'missed'
+export type QuizState = {
   correctQuizzes: Quiz[]
   incorrectQuizzes: Quiz[]
 
   generatedQuizzes: number
 
-  quizzes: Quiz[]
+  quizzes: {
+    quiz: Quiz
+    from: QuizFrom
+  }[]
 
   current: {
     index: number
     quiz: Quiz
     choices: string[]
+    from: QuizFrom
   } | null
-
-  goalQuestions: number
 
   isFinished: boolean
 
   finishedQuizIndexes: Set<number>
+
+  lastMissedQuizzes: number
 }
 
 export interface Settings {
-  quizzes: number
+  quizzesByRound: number
 }
 
 export const SCREEN_STATE_CTX = createContextId<ScreenState>('screenState')
