@@ -1,7 +1,12 @@
 /** @jsxImportSource @builder.io/qwik */
 
 import { component$, useContextProvider, useStore } from '@builder.io/qwik'
-import { type ScreenState, type Settings, SCREEN_STATE_CTX, SETTINGS_CTX } from './store'
+import {
+  type ScreenState,
+  type Settings,
+  SCREEN_STATE_CTX,
+  SETTINGS_CTX,
+} from './store'
 import { InitialScreen } from './components/InitialScreen.qwik'
 import type { NoteLoadType } from '../note/note-load-types'
 import { QuizScreen } from './components/Quiz.qwik'

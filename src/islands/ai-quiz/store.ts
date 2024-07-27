@@ -55,7 +55,6 @@ export interface QuizState {
   finishedQuizIndexes: Set<number>
 }
 
-
 export interface Settings {
   quizzes: number
 }
