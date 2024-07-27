@@ -27,6 +27,11 @@ export interface ScreenState {
   availableAI: boolean | null
 
   noteLoadType: NoteLoadType
+
+  /**
+   * 出題範囲
+   */
+  rangeNotes: Set<string>
 }
 
 export interface QuizState {
@@ -50,5 +55,10 @@ export interface QuizState {
   finishedQuizIndexes: Set<number>
 }
 
+export interface Settings {
+  quizzes: number
+}
+
 export const SCREEN_STATE_CTX = createContextId<ScreenState>('screenState')
 export const QUIZ_STATE_CTX = createContextId<QuizState>('quizState')
+export const SETTINGS_CTX = createContextId<Settings>('settings')

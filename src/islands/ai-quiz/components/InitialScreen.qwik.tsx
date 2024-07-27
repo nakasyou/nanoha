@@ -56,12 +56,16 @@ export const InitialScreen = component$(() => {
       }
       return
     }
+    const textNotes = loaded.notes.filter(
+      (note): note is TextNoteData => note.type === 'text',
+    )
     screenState.note = noSerialize({
       name: gotNote.name,
-      notes: loaded.notes.filter(
-        (note): note is TextNoteData => note.type === 'text',
-      ),
+      notes: textNotes,
     })
+    for (let i = 0; i < textNotes.length; i++) {
+      screenState.rangeNotes.add(textNotes[i]!.id)
+    }
     stateToLoad.value = {
       type: 'success',
     }
