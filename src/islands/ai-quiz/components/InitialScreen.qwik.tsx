@@ -64,7 +64,7 @@ export const InitialScreen = component$(() => {
       notes: textNotes,
     })
     for (let i = 0; i < textNotes.length; i++) {
-      screenState.rangeNotes.add(i)
+      screenState.rangeNotes.add(textNotes[i]!.id)
     }
     stateToLoad.value = {
       type: 'success',

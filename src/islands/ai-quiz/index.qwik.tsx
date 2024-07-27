@@ -1,12 +1,11 @@
 /** @jsxImportSource @builder.io/qwik */
 
 import { component$, useContextProvider, useStore } from '@builder.io/qwik'
-import { type ScreenState, SCREEN_STATE_CTX } from './store'
+import { type ScreenState, type Settings, SCREEN_STATE_CTX, SETTINGS_CTX } from './store'
 import { InitialScreen } from './components/InitialScreen.qwik'
 import type { NoteLoadType } from '../note/note-load-types'
 import { QuizScreen } from './components/Quiz.qwik'
 import { Navbar } from './components/Navbar.qwik'
-
 
 export default component$<{
   noteLoadType: NoteLoadType
@@ -17,10 +16,15 @@ export default component$<{
 
     availableAI: null,
     noteLoadType: props.noteLoadType,
+
     rangeNotes: new Set(),
   })
-
   useContextProvider(SCREEN_STATE_CTX, screenState)
+
+  const settings = useStore<Settings>({
+    quizzes: 5,
+  })
+  useContextProvider(SETTINGS_CTX, settings)
 
   return (
     <div class="flex flex-col h-dvh lg:flex-row w-full">

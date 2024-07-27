@@ -31,7 +31,7 @@ export interface ScreenState {
   /**
    * 出題範囲
    */
-  rangeNotes: Set<number>
+  rangeNotes: Set<string>
 }
 
 export interface QuizState {
@@ -55,5 +55,11 @@ export interface QuizState {
   finishedQuizIndexes: Set<number>
 }
 
+
+export interface Settings {
+  quizzes: number
+}
+
 export const SCREEN_STATE_CTX = createContextId<ScreenState>('screenState')
 export const QUIZ_STATE_CTX = createContextId<QuizState>('quizState')
+export const SETTINGS_CTX = createContextId<Settings>('settings')
