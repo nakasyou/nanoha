@@ -1,12 +1,6 @@
 /** @jsxImportSource @builder.io/qwik */
 
-import {
-  component$,
-  useComputed$,
-  useContext,
-  useContextProvider,
-  useStore,
-} from '@builder.io/qwik'
+import { component$, useComputed$, useContext } from '@builder.io/qwik'
 import { QUIZ_STATE_CTX, type QuizState } from '../store'
 
 export const FinishedScreen = component$(() => {

@@ -6,8 +6,7 @@ import selectQuestion from './schemas/select-question.json'
  */
 export const PROMPT_TO_GENERATE_SELECT_QUIZ = `
 あなたは学習用の問題を生成するAIです。
-ユーザーからの文章にある通りに、重複のない問題を生成してください。
-
+ユーザーからの文章の中の情報のみを使用して、重複のない問題を生成してください。
 
 以下のJSONスキーマに従いなさい。
 ${JSON.stringify(selectQuestion)}
