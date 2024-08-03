@@ -38,7 +38,7 @@ export interface ScreenState {
   lastMissedQuizIds: number[]
 }
 
-export type QuizFrom = 'generated' | 'missed'
+export type QuizFrom = 'generated' | 'missed' | 'lowRate'
 export type QuizState = {
   correctQuizzes: Quiz[]
   incorrectQuizzes: Quiz[]
@@ -66,6 +66,7 @@ export type QuizState = {
 
 export interface Settings {
   quizzesByRound: number
+  lowRateQuizzesInRound: number
 }
 
 export const SCREEN_STATE_CTX = createContextId<ScreenState>('screenState')

@@ -15,6 +15,7 @@ import {
   SCREEN_STATE_CTX,
   SETTINGS_CTX,
   type Quiz,
+  type QuizFrom,
   type QuizState,
 } from '../store'
 import { shuffle } from '../../../utils/arr'
@@ -100,6 +101,43 @@ export const QuizScreen = component$(() => {
   useVisibleTask$(async ({ track }) => {
     track(() => quizState.isFinished)
 
+    const quizDB = new QuizDB()
+
+    const notes = typeof screenState.note === 'string' ? [] : screenState.note?.notes!
+    
+    const missedQuizzes: typeof quizState.quizzes = await Promise.all(screenState.lastMissedQuizIds.map(id => quizDB.quizzesByNote.get(id).then(q => ({
+      quiz: {
+        id,
+        content: q!.quiz,
+        source: notes.find(note => note.id === q!.noteId)!
+      },
+      from: 'missed',
+    } as const))))
+
+    quizState.lastMissedQuizzes = screenState.lastMissedQuizIds.length
+
+    // Low Correct Rate
+    const targetNotebook = screenState.noteLoadType.from === 'local' ? `local-${screenState.noteLoadType.id}` : ''
+    const howManyUseLowCorrectRate = settings.quizzesByRound - missedQuizzes.length
+    const pastQuizzes = await quizDB.quizzesByNote.where(['id', 'targetNotebook'])
+      .equals(targetNotebook)
+    console.log(pastQuizzes)
+    pastQuizzes.sort((a, b) => (a.rate.correct / a.rate.total) - (b.rate.correct / b.rate.total))
+
+    quizState.quizzes = [
+      ...missedQuizzes,
+      ...pastQuizzes.slice(0, howManyUseLowCorrectRate)
+        .map(q => ({
+          quiz: {
+            id: q.id!,
+            content: q!.quiz,
+            source: notes.find(note => note.id === q!.noteId)!
+          },
+          from: 'lowRate' satisfies QuizFrom,
+        }) as const),
+    ]
+
+
     isShownIncorrectScreen.value = false
     // Generate Quizzes
     if (
@@ -145,7 +183,6 @@ export const QuizScreen = component$(() => {
       if (!Array.isArray(contents)) {
         continue
       }
-      const quizDB = new QuizDB()
       const quizzes = await Promise.all(contents
         .filter(
           (content): content is QuizContent =>
@@ -185,21 +222,6 @@ export const QuizScreen = component$(() => {
     }
   })
 
-  useVisibleTask$(async ({ track }) => {
-    track(() => quizState.isFinished)
-
-    const notes = typeof screenState.note === 'string' ? [] : screenState.note?.notes!
-    const quizDB = new QuizDB()
-    quizState.quizzes = await Promise.all(screenState.lastMissedQuizIds.map(id => quizDB.quizzesByNote.get(id).then(q => ({
-      quiz: {
-        id,
-        content: q!.quiz,
-        source: notes.find(note => note.id === q!.noteId)!
-      },
-      from: 'missed',
-    } as const))))
-    quizState.lastMissedQuizzes = screenState.lastMissedQuizIds.length
-  })
   useVisibleTask$(({ track }) => {
     track(() => quizState.current)
     track(() => quizState.quizzes)
@@ -295,9 +317,9 @@ export const QuizScreen = component$(() => {
                 {
                   quizState.current.from === 'generated' ? (
                     '⚡新しい問題'
-                  ) : (
+                  ) : quizState.current.from === 'missed' ? (
                     '📝再チャレンジ'
-                  )
+                  ) : '😒低正答率'
                 }
               </div>
               <div class="grow grid items-center">

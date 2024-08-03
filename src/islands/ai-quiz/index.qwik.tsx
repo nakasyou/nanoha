@@ -30,6 +30,7 @@ export default component$<{
 
   const settings = useStore<Settings>({
     quizzesByRound: 5,
+    lowRateQuizzesInRound: 1
   })
   useContextProvider(SETTINGS_CTX, settings)
 

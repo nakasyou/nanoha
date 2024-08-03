@@ -29,7 +29,7 @@ export interface QuizzesByNote {
 export class QuizDB extends Dexie {
   quizzesByNote: Dexie.Table<QuizzesByNote, number>
   constructor() {
-    super('quiz')
+    super('quizzesByNote')
     
     this.version(1).stores({
       quizzesByNote: 'id++, targetNotebook, noteId, quiz, rate',
