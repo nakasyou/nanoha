@@ -12,7 +12,7 @@ export interface QuizzesByNote {
 
   quiz: SerializedQuiz
 
-  rate: {
+  rateSource: {
     /**
      * 正答数
      */
@@ -23,6 +23,8 @@ export interface QuizzesByNote {
     total: number
   }
 
+  rate: number
+
   noteId: string
 }
 
@@ -32,7 +34,7 @@ export class QuizDB extends Dexie {
     super('quizzesByNote')
     
     this.version(1).stores({
-      quizzesByNote: 'id++, targetNotebook, noteId, quiz, rate',
+      quizzesByNote: 'id++, targetNotebook, noteId, quiz, rateSource, rate',
     })
 
     this.quizzesByNote = this.table('quizzesByNote')

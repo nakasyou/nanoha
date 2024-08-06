@@ -118,15 +118,16 @@ export const QuizScreen = component$(() => {
 
     // Low Correct Rate
     const targetNotebook = screenState.noteLoadType.from === 'local' ? `local-${screenState.noteLoadType.id}` : ''
-    const howManyUseLowCorrectRate = settings.quizzesByRound - missedQuizzes.length
-    const pastQuizzes = await quizDB.quizzesByNote.where(['id', 'targetNotebook'])
-      .equals(targetNotebook)
-    console.log(pastQuizzes)
-    pastQuizzes.sort((a, b) => (a.rate.correct / a.rate.total) - (b.rate.correct / b.rate.total))
+    const howManyUseLowCorrectRate = Math.max(settings.quizzesByRound - missedQuizzes.length, 5)
+    const lowRateQuizzes = await quizDB.quizzesByNote
+      .where('targetNotebook').equals(targetNotebook)
+      .sortBy('rate')
 
     quizState.quizzes = [
       ...missedQuizzes,
-      ...pastQuizzes.slice(0, howManyUseLowCorrectRate)
+      ...lowRateQuizzes
+        .filter(q => screenState.rangeNotes.has(q.noteId))
+        .slice(0, howManyUseLowCorrectRate)
         .map(q => ({
           quiz: {
             id: q.id!,
@@ -137,8 +138,8 @@ export const QuizScreen = component$(() => {
         }) as const),
     ]
 
-
     isShownIncorrectScreen.value = false
+
     // Generate Quizzes
     if (
       screenState.note === 'pending' ||
@@ -196,7 +197,8 @@ export const QuizScreen = component$(() => {
                 type: 'select',
                 ...content
               },
-              rate: {
+              rate: 0,
+              rateSource: {
                 correct: 0,
                 total: 0
               },
@@ -322,6 +324,7 @@ export const QuizScreen = component$(() => {
                   ) : '😒低正答率'
                 }
               </div>
+              <div>(Debug: ID: {quizState.current.quiz.id})</div>
               <div class="grow grid items-center">
                 <div class="flex flex-col gap-2 justify-around grow">
                   {quizState.current.choices.map((answer, idx) => (

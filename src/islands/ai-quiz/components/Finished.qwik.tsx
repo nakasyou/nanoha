@@ -2,6 +2,7 @@
 
 import { component$, useComputed$, useContext, useVisibleTask$ } from '@builder.io/qwik'
 import { QUIZ_STATE_CTX, SCREEN_STATE_CTX } from '../store'
+import { QuizDB } from '../storage'
 
 export const FinishedScreen = component$(() => {
   const screenState = useContext(SCREEN_STATE_CTX)
@@ -17,9 +18,37 @@ export const FinishedScreen = component$(() => {
     }
   })
 
-  useVisibleTask$(({ track }) => {
+  useVisibleTask$(async ({ track }) => {
     track(() => quizState.incorrectQuizzes)
+
+    const quizDB = new QuizDB()
     screenState.lastMissedQuizIds = quizState.incorrectQuizzes.map((q) => q.id)
+
+    for (const q of quizState.incorrectQuizzes) {
+      const current = await quizDB.quizzesByNote.get(q.id)
+      if (!current) continue
+      current.rateSource.total++
+      await quizDB.quizzesByNote.update(q.id, {
+        rateSource: current.rateSource,
+        rate: current.rateSource.correct / current.rateSource.total,
+      })
+    }
+    for (const q of quizState.correctQuizzes) {
+      const current = await quizDB.quizzesByNote.get(q.id)
+      if (!current) continue
+      current.rateSource.correct++
+      current.rateSource.total++
+      const rate = current.rateSource.correct / current.rateSource.total
+      if (rate > 0.8) {
+        // もうたぶん覚えた
+        await quizDB.quizzesByNote.delete(q.id)
+        continue
+      }
+      await quizDB.quizzesByNote.update(q.id, {
+        rateSource: current.rateSource,
+        rate
+      })
+    }
   })
 
   return (
