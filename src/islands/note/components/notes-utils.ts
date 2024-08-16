@@ -24,6 +24,10 @@ export interface NoteData {
    * ID
    */
   id: string
+  /**
+   * 更新日
+   */
+  timestamp: number
 }
 
 export interface NoteComponentProps<T extends MargedNoteData = MargedNoteData> {

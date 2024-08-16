@@ -26,6 +26,8 @@ export interface QuizzesByNote {
   rate: number
 
   noteId: string
+
+  noteTimestamp: number
 }
 
 export class QuizDB extends Dexie {
@@ -34,7 +36,7 @@ export class QuizDB extends Dexie {
     super('quizzesByNote')
     
     this.version(1).stores({
-      quizzesByNote: 'id++, targetNotebook, noteId, quiz, rateSource, rate',
+      quizzesByNote: 'id++, targetNotebook, noteId, quiz, rateSource, rate, noteTimestamp'
     })
 
     this.quizzesByNote = this.table('quizzesByNote')

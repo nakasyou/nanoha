@@ -122,11 +122,22 @@ export const QuizScreen = component$(() => {
     const lowRateQuizzes = await quizDB.quizzesByNote
       .where('targetNotebook').equals(targetNotebook)
       .sortBy('rate')
+    const deletePromises: Promise<void>[] = []
 
     quizState.quizzes = [
       ...missedQuizzes,
       ...lowRateQuizzes
-        .filter(q => screenState.rangeNotes.has(q.noteId))
+        // Check timestamp as same
+        .filter(q => {
+          if (!screenState.rangeNotes.has(q.noteId)) {
+            return false
+          }
+          if(notes.find(note => note.id === q.noteId)!.timestamp === q.noteTimestamp) {
+            return true
+          }
+          deletePromises.push(quizDB.quizzesByNote.delete(q.id!))
+          return false
+        })
         .slice(0, howManyUseLowCorrectRate)
         .map(q => ({
           quiz: {
@@ -179,7 +190,13 @@ export const QuizScreen = component$(() => {
         .startChat()
         .sendMessage(randomNote?.canToJsonData.html || '')
 
-      const contents: unknown[] = JSON.parse(res.response.text())
+      let contents: unknown
+      try {
+        contents = JSON.parse(res.response.text())
+      } catch {
+        // Unable to parse
+        continue
+      }
 
       if (!Array.isArray(contents)) {
         continue
@@ -202,7 +219,8 @@ export const QuizScreen = component$(() => {
                 correct: 0,
                 total: 0
               },
-              targetNotebook: screenState.noteLoadType.from === 'local' ? `local-${screenState.noteLoadType.id}` : 'unknown'
+              targetNotebook: screenState.noteLoadType.from === 'local' ? `local-${screenState.noteLoadType.id}` : 'unknown',
+              noteTimestamp: randomNote.timestamp
             })
             return ({
               content: content,
@@ -324,7 +342,6 @@ export const QuizScreen = component$(() => {
                   ) : '😒低正答率'
                 }
               </div>
-              <div>(Debug: ID: {quizState.current.quiz.id})</div>
               <div class="grow grid items-center">
                 <div class="flex flex-col gap-2 justify-around grow">
                   {quizState.current.choices.map((answer, idx) => (

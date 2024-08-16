@@ -98,6 +98,7 @@ export const TextNote = ((props) => {
     }
   })
   const saveContent = () => {
+    props.setNoteData('timestamp', Date.now())
     props.setNoteData('canToJsonData', 'html', getEditor()?.getHTML() || '')
     props.updated()
   }
@@ -193,7 +194,6 @@ export const TextNote = ((props) => {
     }
     const paragraphId = Math.random().toString()
     editor.commands.setNode('llmpreview', { id: paragraphId })
-    console.log(editor, paragraphId)
     const pre = editor.$node('llmpreview', { id: paragraphId })!
     pre.content = '生成中...'
     let rawText = ''

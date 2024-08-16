@@ -55,6 +55,8 @@ export const saveNoteDatas = async (noteDatas: NoteData[]): Promise<Blob> => {
         blobMimetypes,
 
         noteData: thisNoteData.canToJsonData,
+
+        timestamp: thisNoteData.timestamp
       }
     })()
     fileTree[`${baseNoteDir}/note.json`] = textEncoder.encode(
@@ -185,6 +187,7 @@ export const load = async (data: Blob): Promise<LoadResult> => {
       blobs,
       type: noteDefineJsonData.type,
       id: id,
+      timestamp: noteDefineJsonData.timestamp,
     } as MargedNoteData)
   }
   return {
