@@ -48,6 +48,7 @@ export const CreateNote = component$(() => {
           canToJsonData: {
             html: 'これは新しいノートである',
           },
+          timestamp: Date.now(),
         },
       ]))
 

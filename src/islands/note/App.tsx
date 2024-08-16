@@ -42,6 +42,7 @@ export default (props: Props) => {
         },
         type: 'text',
         id: crypto.randomUUID(),
+        timestamp: Date.now(),
       }) as Note,
       ...notes.notes(),
     ])

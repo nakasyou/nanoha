@@ -9,6 +9,9 @@ import {
   record,
   unknown,
   pipe,
+  number,
+  optional,
+  type InferOutput,
 } from 'valibot'
 
 /**
@@ -36,5 +39,8 @@ export const note0 = object({
   blobMimetypes: record(string(), string()),
 
   noteData: unknown(),
+
+  // If undefined, fallback 0
+  timestamp: optional(number(), 0),
 })
-export type Note0 = InferInput<typeof note0>
+export type Note0 = InferOutput<typeof note0>

@@ -18,6 +18,7 @@ export const createImageNote = (initNoteData?: ImageNoteData) => {
       },
       type: 'image',
       id: crypto.randomUUID(),
+      timestamp: Date.now(),
     },
   )
   const addNote: Note<ImageNoteData> = {

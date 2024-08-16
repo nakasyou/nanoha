@@ -1,18 +1,58 @@
 /** @jsxImportSource @builder.io/qwik */
 
-import { component$, useComputed$, useContext } from '@builder.io/qwik'
-import { QUIZ_STATE_CTX, type QuizState } from '../store'
+import {
+  component$,
+  useComputed$,
+  useContext,
+  useVisibleTask$,
+} from '@builder.io/qwik'
+import { QUIZ_STATE_CTX, SCREEN_STATE_CTX } from '../store'
+import { QuizDB } from '../storage'
 
 export const FinishedScreen = component$(() => {
+  const screenState = useContext(SCREEN_STATE_CTX)
   const quizState = useContext(QUIZ_STATE_CTX)
 
   const result = useComputed$(() => {
     return {
-      all: quizState.goalQuestions,
+      all: quizState.correctQuizzes.length + quizState.incorrectQuizzes.length,
       correct: quizState.correctQuizzes.length,
       incorrect: quizState.incorrectQuizzes.length,
 
       isAllCorrect: quizState.incorrectQuizzes.length === 0,
+    }
+  })
+
+  useVisibleTask$(async ({ track }) => {
+    track(() => quizState.incorrectQuizzes)
+
+    const quizDB = new QuizDB()
+    screenState.lastMissedQuizIds = quizState.incorrectQuizzes.map((q) => q.id)
+
+    for (const q of quizState.incorrectQuizzes) {
+      const current = await quizDB.quizzesByNote.get(q.id)
+      if (!current) continue
+      current.rateSource.total++
+      await quizDB.quizzesByNote.update(q.id, {
+        rateSource: current.rateSource,
+        rate: current.rateSource.correct / current.rateSource.total,
+      })
+    }
+    for (const q of quizState.correctQuizzes) {
+      const current = await quizDB.quizzesByNote.get(q.id)
+      if (!current) continue
+      current.rateSource.correct++
+      current.rateSource.total++
+      const rate = current.rateSource.correct / current.rateSource.total
+      if (rate > 0.8) {
+        // もうたぶん覚えた
+        await quizDB.quizzesByNote.delete(q.id)
+        continue
+      }
+      await quizDB.quizzesByNote.update(q.id, {
+        rateSource: current.rateSource,
+        rate,
+      })
     }
   })
 
@@ -38,26 +78,7 @@ export const FinishedScreen = component$(() => {
       <div class="flex flex-col gap-2">
         <button
           onClick$={() => {
-            quizState.quizzes = quizState.incorrectQuizzes
-            quizState.goalQuestions = quizState.incorrectQuizzes.length
-            quizState.generatedQuizzes = quizState.incorrectQuizzes.length
-
-            quizState.correctQuizzes = []
-            quizState.incorrectQuizzes = []
-
-            quizState.current = null
-            quizState.isFinished = false
-          }}
-          class="filled-button disabled:opacity-30"
-          disabled={result.value.isAllCorrect}
-          type="button"
-        >
-          間違えた問題をやり直す
-        </button>
-        <button
-          onClick$={() => {
             quizState.quizzes = []
-            quizState.goalQuestions = 5
             quizState.correctQuizzes = []
             quizState.incorrectQuizzes = []
             quizState.current = null

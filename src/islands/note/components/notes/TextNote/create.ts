@@ -18,6 +18,7 @@ export const createTextNote = (initNoteData?: TextNoteData) => {
       },
       type: 'text',
       id: crypto.randomUUID(),
+      timestamp: Date.now(),
     },
   )
   const addNote: Note<TextNoteData> = {

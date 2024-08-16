@@ -23,11 +23,14 @@ export default component$<{
     noteLoadType: props.noteLoadType,
 
     rangeNotes: new Set(),
+
+    lastMissedQuizIds: [],
   })
   useContextProvider(SCREEN_STATE_CTX, screenState)
 
   const settings = useStore<Settings>({
-    quizzes: 5,
+    quizzesByRound: 5,
+    lowRateQuizzesInRound: 1,
   })
   useContextProvider(SETTINGS_CTX, settings)
 
