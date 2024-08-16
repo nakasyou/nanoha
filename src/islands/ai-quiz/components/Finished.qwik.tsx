@@ -1,6 +1,11 @@
 /** @jsxImportSource @builder.io/qwik */
 
-import { component$, useComputed$, useContext, useVisibleTask$ } from '@builder.io/qwik'
+import {
+  component$,
+  useComputed$,
+  useContext,
+  useVisibleTask$,
+} from '@builder.io/qwik'
 import { QUIZ_STATE_CTX, SCREEN_STATE_CTX } from '../store'
 import { QuizDB } from '../storage'
 
@@ -46,7 +51,7 @@ export const FinishedScreen = component$(() => {
       }
       await quizDB.quizzesByNote.update(q.id, {
         rateSource: current.rateSource,
-        rate
+        rate,
       })
     }
   })

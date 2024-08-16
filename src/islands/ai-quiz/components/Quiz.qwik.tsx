@@ -103,24 +103,39 @@ export const QuizScreen = component$(() => {
 
     const quizDB = new QuizDB()
 
-    const notes = typeof screenState.note === 'string' ? [] : screenState.note?.notes!
-    
-    const missedQuizzes: typeof quizState.quizzes = await Promise.all(screenState.lastMissedQuizIds.map(id => quizDB.quizzesByNote.get(id).then(q => ({
-      quiz: {
-        id,
-        content: q!.quiz,
-        source: notes.find(note => note.id === q!.noteId)!
-      },
-      from: 'missed',
-    } as const))))
+    const notes =
+      typeof screenState.note === 'string' ? [] : screenState.note?.notes!
+
+    const missedQuizzes: typeof quizState.quizzes = await Promise.all(
+      screenState.lastMissedQuizIds.map((id) =>
+        quizDB.quizzesByNote.get(id).then(
+          (q) =>
+            ({
+              quiz: {
+                id,
+                content: q!.quiz,
+                source: notes.find((note) => note.id === q!.noteId)!,
+              },
+              from: 'missed',
+            }) as const,
+        ),
+      ),
+    )
 
     quizState.lastMissedQuizzes = screenState.lastMissedQuizIds.length
 
     // Low Correct Rate
-    const targetNotebook = screenState.noteLoadType.from === 'local' ? `local-${screenState.noteLoadType.id}` : ''
-    const howManyUseLowCorrectRate = Math.max(settings.quizzesByRound - missedQuizzes.length, 5)
+    const targetNotebook =
+      screenState.noteLoadType.from === 'local'
+        ? `local-${screenState.noteLoadType.id}`
+        : ''
+    const howManyUseLowCorrectRate = Math.max(
+      settings.quizzesByRound - missedQuizzes.length,
+      5,
+    )
     const lowRateQuizzes = await quizDB.quizzesByNote
-      .where('targetNotebook').equals(targetNotebook)
+      .where('targetNotebook')
+      .equals(targetNotebook)
       .sortBy('rate')
     const deletePromises: Promise<void>[] = []
 
@@ -128,25 +143,31 @@ export const QuizScreen = component$(() => {
       ...missedQuizzes,
       ...lowRateQuizzes
         // Check timestamp as same
-        .filter(q => {
+        .filter((q) => {
           if (!screenState.rangeNotes.has(q.noteId)) {
             return false
           }
-          if(notes.find(note => note.id === q.noteId)!.timestamp === q.noteTimestamp) {
+          if (
+            notes.find((note) => note.id === q.noteId)!.timestamp ===
+            q.noteTimestamp
+          ) {
             return true
           }
           deletePromises.push(quizDB.quizzesByNote.delete(q.id!))
           return false
         })
         .slice(0, howManyUseLowCorrectRate)
-        .map(q => ({
-          quiz: {
-            id: q.id!,
-            content: q!.quiz,
-            source: notes.find(note => note.id === q!.noteId)!
-          },
-          from: 'lowRate' satisfies QuizFrom,
-        }) as const),
+        .map(
+          (q) =>
+            ({
+              quiz: {
+                id: q.id!,
+                content: q!.quiz,
+                source: notes.find((note) => note.id === q!.noteId)!,
+              },
+              from: 'lowRate' satisfies QuizFrom,
+            }) as const,
+        ),
     ]
 
     isShownIncorrectScreen.value = false
@@ -180,7 +201,10 @@ export const QuizScreen = component$(() => {
 
     let generatedQuizzes = 0
     while (true) {
-      if ((generatedQuizzes + quizState.lastMissedQuizzes) > settings.quizzesByRound) {
+      if (
+        generatedQuizzes + quizState.lastMissedQuizzes >
+        settings.quizzesByRound
+      ) {
         break
       }
       const randomNote =
@@ -201,38 +225,44 @@ export const QuizScreen = component$(() => {
       if (!Array.isArray(contents)) {
         continue
       }
-      const quizzes = await Promise.all(contents
-        .filter(
-          (content): content is QuizContent =>
-            safeParse(CONTENT_SCHEMA, content).success,
-        )
-        .map(
-          async (content): Promise<Quiz> => {
+      const quizzes = await Promise.all(
+        contents
+          .filter(
+            (content): content is QuizContent =>
+              safeParse(CONTENT_SCHEMA, content).success,
+          )
+          .map(async (content): Promise<Quiz> => {
             const res = await quizDB.quizzesByNote.add({
               noteId: randomNote.id,
               quiz: {
                 type: 'select',
-                ...content
+                ...content,
               },
               rate: 0,
               rateSource: {
                 correct: 0,
-                total: 0
+                total: 0,
               },
-              targetNotebook: screenState.noteLoadType.from === 'local' ? `local-${screenState.noteLoadType.id}` : 'unknown',
-              noteTimestamp: randomNote.timestamp
+              targetNotebook:
+                screenState.noteLoadType.from === 'local'
+                  ? `local-${screenState.noteLoadType.id}`
+                  : 'unknown',
+              noteTimestamp: randomNote.timestamp,
             })
-            return ({
+            return {
               content: content,
               source: randomNote,
-              id: res
-            })
-          },
-        ))
+              id: res,
+            }
+          }),
+      )
       const addingQuizzes: typeof quizState.quizzes = []
       for (const quiz of quizzes) {
         generatedQuizzes += 1
-        if ((generatedQuizzes + quizState.lastMissedQuizzes) > settings.quizzesByRound) {
+        if (
+          generatedQuizzes + quizState.lastMissedQuizzes >
+          settings.quizzesByRound
+        ) {
           break
         }
         addingQuizzes.push({ quiz, from: 'generated' })
@@ -334,13 +364,11 @@ export const QuizScreen = component$(() => {
               </div>
               <hr class="my-2" />
               <div class="text-base text-on-surface-variant text-right">
-                {
-                  quizState.current.from === 'generated' ? (
-                    '⚡新しい問題'
-                  ) : quizState.current.from === 'missed' ? (
-                    '📝再チャレンジ'
-                  ) : '😒低正答率'
-                }
+                {quizState.current.from === 'generated'
+                  ? '⚡新しい問題'
+                  : quizState.current.from === 'missed'
+                    ? '📝再チャレンジ'
+                    : '😒低正答率'}
               </div>
               <div class="grow grid items-center">
                 <div class="flex flex-col gap-2 justify-around grow">

@@ -34,9 +34,10 @@ export class QuizDB extends Dexie {
   quizzesByNote: Dexie.Table<QuizzesByNote, number>
   constructor() {
     super('quizzesByNote')
-    
+
     this.version(1).stores({
-      quizzesByNote: 'id++, targetNotebook, noteId, quiz, rateSource, rate, noteTimestamp'
+      quizzesByNote:
+        'id++, targetNotebook, noteId, quiz, rateSource, rate, noteTimestamp',
     })
 
     this.quizzesByNote = this.table('quizzesByNote')

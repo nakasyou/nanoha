@@ -24,13 +24,13 @@ export default component$<{
 
     rangeNotes: new Set(),
 
-    lastMissedQuizIds: []
+    lastMissedQuizIds: [],
   })
   useContextProvider(SCREEN_STATE_CTX, screenState)
 
   const settings = useStore<Settings>({
     quizzesByRound: 5,
-    lowRateQuizzesInRound: 1
+    lowRateQuizzesInRound: 1,
   })
   useContextProvider(SETTINGS_CTX, settings)
 

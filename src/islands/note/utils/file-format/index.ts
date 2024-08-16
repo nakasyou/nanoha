@@ -56,7 +56,7 @@ export const saveNoteDatas = async (noteDatas: NoteData[]): Promise<Blob> => {
 
         noteData: thisNoteData.canToJsonData,
 
-        timestamp: thisNoteData.timestamp
+        timestamp: thisNoteData.timestamp,
       }
     })()
     fileTree[`${baseNoteDir}/note.json`] = textEncoder.encode(
