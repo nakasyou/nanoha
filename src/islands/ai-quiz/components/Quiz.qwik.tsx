@@ -30,7 +30,8 @@ import {
 import { safeParse } from 'valibot'
 import { Loading } from './Utils.qwik'
 import { QuizDB } from '../storage'
-import { quizzesGenerator } from '../utils/generate-quizzes'
+import { QuizzesGenerator } from '../utils/generate-quizzes'
+import { handleError } from '../../../utils/throws'
 
 export const QuizScreen = component$(() => {
   const quizState = useStore<QuizState>(
@@ -181,8 +182,8 @@ export const QuizScreen = component$(() => {
     ) {
       return
     }
-    const generateQuizzes = quizzesGenerator()
-    if (!generateQuizzes) {
+    const quizzesGenerator = handleError(() => new QuizzesGenerator(sourceNotes))
+    if (!quizzesGenerator.success) {
       return alert('AIエラー')
     }
 
@@ -202,7 +203,7 @@ export const QuizScreen = component$(() => {
         sourceNotes[Math.floor(Math.random() * sourceNotes.length)]!
 
       const quizzes = await Promise.all(
-        (await generateQuizzes(randomNote)).map(
+        (await quizzesGenerator.result.generateQuizzes()).map(
           async (content): Promise<Quiz> => {
             const res = await quizDB.quizzesByNote.add({
               noteId: randomNote.id,

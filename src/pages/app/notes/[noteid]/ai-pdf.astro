@@ -1,0 +1,26 @@
+---
+import Base from '../../../../layouts/Base.astro'
+import { AIPDf } from '../../../../islands/ai-pdf/index'
+import type { NoteLoadType } from '../../../../islands/note/note-load-types'
+
+const noteId = Astro.params.noteid ?? ''
+
+let noteLoadType: NoteLoadType = {
+  from: 'unknown',
+}
+if (/^local\-.+$/.test(noteId)) {
+  noteLoadType = {
+    from: 'local',
+    id: Number.parseInt(noteId.split('-').slice(1).join('-')),
+  }
+}
+---
+<Base title="Generate AI Test with Nanoha" description="AI によるプリント生成" useViewTransitions={true} noIndex={true} bodyClass="bg-background text-on-background">
+  <AIPDf noteLoadType={noteLoadType} client:load />
+</Base>
+<style is:global>
+  .icon-tabler {
+    width: 100%;
+    height: 100%;
+  }
+</style>

@@ -8,6 +8,7 @@ import chevronRight from '@tabler/icons/outline/chevron-right.svg?raw'
 import eraser from '@tabler/icons/outline/eraser.svg?raw'
 import eye from '@tabler/icons/outline/eye.svg?raw'
 import eyeOff from '@tabler/icons/outline/eye-off.svg?raw'
+import fileText from '@tabler/icons/outline/file-text.svg?raw'
 import gripHorizontal from '@tabler/icons/outline/grip-horizontal.svg?raw'
 import highlight from '@tabler/icons/outline/highlight.svg?raw'
 import home from '@tabler/icons/outline/home.svg?raw'
@@ -36,6 +37,7 @@ const icons = {
   eraser,
   eye,
   eyeOff,
+  fileText,
   gripHorizontal,
   highlight,
   home,
