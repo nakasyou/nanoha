@@ -56,6 +56,7 @@ export const InitialScreen = component$(() => {
       }
       return
     }
+    document.title = `${gotNote.name} - Quiz with Nanoha`
     const textNotes = loaded.notes.filter(
       (note): note is TextNoteData => note.type === 'text',
     )

@@ -99,6 +99,9 @@ export default (props: Props) => {
       }
     }
   })
+  createEffect(() => {
+    document.title = `${noteBookMetadata.noteName} - Nanoha`
+  })
   onMount(() => {
     const url = new URL(location.href)
     if (url.searchParams.has('play')) {
