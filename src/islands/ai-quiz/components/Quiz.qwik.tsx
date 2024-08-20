@@ -30,6 +30,7 @@ import {
 import { safeParse } from 'valibot'
 import { Loading } from './Utils.qwik'
 import { QuizDB } from '../storage'
+import { quizzesGenerator } from '../utils/generate-quizzes'
 
 export const QuizScreen = component$(() => {
   const quizState = useStore<QuizState>(
@@ -180,20 +181,10 @@ export const QuizScreen = component$(() => {
     ) {
       return
     }
-    const gemini = getGoogleGenerativeAI()
-    if (!gemini) {
+    const generateQuizzes = quizzesGenerator()
+    if (!generateQuizzes) {
       return alert('AIエラー')
     }
-    const model = gemini.getGenerativeModel({
-      model: 'gemini-1.5-flash',
-      generationConfig: {
-        responseMimeType: 'application/json',
-      },
-      systemInstruction: {
-        role: 'system',
-        parts: [{ text: PROMPT_TO_GENERATE_SELECT_QUIZ }],
-      },
-    })
 
     const sourceNotes = screenState.note!.notes.filter(
       (note) => note.type === 'text',
@@ -210,28 +201,9 @@ export const QuizScreen = component$(() => {
       const randomNote =
         sourceNotes[Math.floor(Math.random() * sourceNotes.length)]!
 
-      const res = await model
-        .startChat()
-        .sendMessage(randomNote?.canToJsonData.html || '')
-
-      let contents: unknown
-      try {
-        contents = JSON.parse(res.response.text())
-      } catch {
-        // Unable to parse
-        continue
-      }
-
-      if (!Array.isArray(contents)) {
-        continue
-      }
       const quizzes = await Promise.all(
-        contents
-          .filter(
-            (content): content is QuizContent =>
-              safeParse(CONTENT_SCHEMA, content).success,
-          )
-          .map(async (content): Promise<Quiz> => {
+        (await generateQuizzes(randomNote)).map(
+          async (content): Promise<Quiz> => {
             const res = await quizDB.quizzesByNote.add({
               noteId: randomNote.id,
               quiz: {
@@ -254,7 +226,8 @@ export const QuizScreen = component$(() => {
               source: randomNote,
               id: res,
             }
-          }),
+          },
+        ),
       )
       const addingQuizzes: typeof quizState.quizzes = []
       for (const quiz of quizzes) {
