@@ -1,19 +1,19 @@
 /** @jsxImportSource @builder.io/qwik */
 import {
   $,
+  type NoSerialize,
+  type QRL,
   component$,
   noSerialize,
-  type NoSerialize,
   useComputed$,
   useSignal,
-  type QRL,
 } from '@builder.io/qwik'
-import { icon } from '../../../utils/icons'
-import { useContext, type Signal } from '@builder.io/qwik'
-import { QUIZ_STATE_CTX } from '../store'
-import { getGoogleGenerativeAI } from '../../shared/gemini'
-import dedent from 'dedent'
+import { type Signal, useContext } from '@builder.io/qwik'
 import type { ChatSession } from '@google/generative-ai'
+import dedent from 'dedent'
+import { icon } from '../../../utils/icons'
+import { getGoogleGenerativeAI } from '../../shared/gemini'
+import { QUIZ_STATE_CTX } from '../store'
 import { Loading } from './Utils.qwik'
 
 const NextButton = component$<{

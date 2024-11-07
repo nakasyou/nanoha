@@ -2,11 +2,11 @@ import iconAiQuiz from '../../../assets/icons/aiquiz.svg?raw'
 
 import { icon } from '../../../utils/icons'
 
-import { noteBookState, setNoteBookState } from '../store'
 import { Show, createSignal, onMount } from 'solid-js'
 import { getGeminiApiToken } from '../../shared/store'
-import { Dialog } from './utils/Dialog'
 import type { NoteLoadType } from '../note-load-types'
+import { noteBookState, setNoteBookState } from '../store'
+import { Dialog } from './utils/Dialog'
 
 const Header = () => {
   const [getIsAIQuizActive, setIsAIQuizActive] = createSignal<boolean>()

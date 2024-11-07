@@ -1,14 +1,14 @@
 /** @jsxImportSource @builder.io/qwik */
 import {
-  component$,
+  $,
   type HTMLAttributes,
   type NoSerialize,
-  noSerialize,
   Slot,
+  component$,
+  noSerialize,
+  useOnDocument,
   useSignal,
   useVisibleTask$,
-  useOnDocument,
-  $,
 } from '@builder.io/qwik'
 import { type Wave, wave } from '@ns/ha'
 

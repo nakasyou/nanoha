@@ -10,27 +10,27 @@ import {
   useStylesScoped$,
   useVisibleTask$,
 } from '@builder.io/qwik'
-import {
-  QUIZ_STATE_CTX,
-  SCREEN_STATE_CTX,
-  SETTINGS_CTX,
-  type Quiz,
-  type QuizFrom,
-  type QuizState,
-} from '../store'
+import { safeParse } from 'valibot'
 import { shuffle } from '../../../utils/arr'
-import { Incorrect } from './Incorrect.qwik'
-import { FinishedScreen } from './Finished.qwik'
 import { getGoogleGenerativeAI } from '../../shared/gemini'
 import {
   CONTENT_SCHEMA,
   PROMPT_TO_GENERATE_SELECT_QUIZ,
   type QuizContent,
 } from '../constants'
-import { safeParse } from 'valibot'
-import { Loading } from './Utils.qwik'
 import { QuizDB } from '../storage'
+import {
+  QUIZ_STATE_CTX,
+  type Quiz,
+  type QuizFrom,
+  type QuizState,
+  SCREEN_STATE_CTX,
+  SETTINGS_CTX,
+} from '../store'
 import { quizzesGenerator } from '../utils/generate-quizzes'
+import { FinishedScreen } from './Finished.qwik'
+import { Incorrect } from './Incorrect.qwik'
+import { Loading } from './Utils.qwik'
 
 export const QuizScreen = component$(() => {
   const quizState = useStore<QuizState>(

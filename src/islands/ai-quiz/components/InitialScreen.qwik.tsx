@@ -1,17 +1,17 @@
 /** @jsxImportSource @builder.io/qwik */
 import {
+  type JSXOutput,
   component$,
+  noSerialize,
   useContext,
   useSignal,
   useVisibleTask$,
-  type JSXOutput,
-  noSerialize,
 } from '@builder.io/qwik'
-import { SCREEN_STATE_CTX } from '../store'
+import type { TextNoteData } from '../../note/components/notes/TextNote/types'
+import { load } from '../../note/utils/file-format'
 import { loadNoteFromType } from '../../shared/storage'
 import { getGeminiApiToken } from '../../shared/store'
-import { load } from '../../note/utils/file-format'
-import type { TextNoteData } from '../../note/components/notes/TextNote/types'
+import { SCREEN_STATE_CTX } from '../store'
 
 /**
  * 最初の画面

@@ -1,5 +1,5 @@
-import { icon } from '../../../../utils/icons'
 import { Show, createSignal, onCleanup, onMount } from 'solid-js'
+import { icon } from '../../../../utils/icons'
 
 export type DialogStyle = 'confirm' | 'custom' | 'alert'
 

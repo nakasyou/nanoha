@@ -1,9 +1,9 @@
 import { Show, createEffect } from 'solid-js'
+import type { SetStoreFunction } from 'solid-js/store'
 import { Dialog, createDialog } from '../../../utils/Dialog'
+import type { ImageNoteData } from '../types'
 import EditorCore from './EditorCore'
 import type { Sheets } from './Sheet'
-import type { ImageNoteData } from '../types'
-import type { SetStoreFunction } from 'solid-js/store'
 
 export interface Props {
   onEnd(data: ScanedImageEditedData | null): void

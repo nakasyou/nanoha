@@ -1,7 +1,7 @@
-import { createContextId, type NoSerialize } from '@builder.io/qwik'
-import type { QuizContent } from './constants'
-import type { NoteLoadType } from '../note/note-load-types'
+import { type NoSerialize, createContextId } from '@builder.io/qwik'
 import type { TextNoteData } from '../note/components/notes/TextNote/types'
+import type { NoteLoadType } from '../note/note-load-types'
+import type { QuizContent } from './constants'
 
 /**
  * クイズ

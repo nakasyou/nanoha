@@ -35,5 +35,8 @@
   "formatter": {
     "indentWidth": 2,
     "indentStyle": "space"
+  },
+  "files": {
+    "ignore": ["node_modules", "**/*.css"]
   }
 }

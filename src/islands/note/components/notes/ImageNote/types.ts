@@ -1,4 +1,4 @@
-import type { NoteData, NoteComponent } from '../../notes-utils'
+import type { NoteComponent, NoteData } from '../../notes-utils'
 import type { Sheets } from './components/Sheet'
 
 export interface ImageNoteCanToJsonData {

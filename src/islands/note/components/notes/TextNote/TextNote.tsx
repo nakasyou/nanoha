@@ -1,29 +1,29 @@
-import type { NoteComponent, NoteComponentProps } from '../../notes-utils'
-import StarterKit from '@tiptap/starter-kit'
-import type { TextNoteData } from './types'
-import { ExtensionSheet, ExtensionPreviewLLM } from './tiptap/plugins'
+import { Editor } from '@tiptap/core'
 import { Underline } from '@tiptap/extension-underline'
+import StarterKit from '@tiptap/starter-kit'
+import DOMPurify from 'dompurify'
 import {
   For,
   Show,
   createEffect,
   createSignal,
-  onMount,
   onCleanup,
+  onMount,
 } from 'solid-js'
 import { icon } from '../../../../../utils/icons'
-import DOMPurify from 'dompurify'
-import { Editor } from '@tiptap/core'
-import { Dialog } from '../../utils/Dialog'
 import { noteBookState } from '../../../store'
+import type { NoteComponent, NoteComponentProps } from '../../notes-utils'
+import { Dialog } from '../../utils/Dialog'
 import { Player } from './Player'
+import { ExtensionPreviewLLM, ExtensionSheet } from './tiptap/plugins'
+import type { TextNoteData } from './types'
 
 import './TextNoteStyle.css'
-import type { SetStoreFunction } from 'solid-js/store'
-import { getVisualViewport } from '../../../window-apis'
-import { getGoogleGenerativeAI } from '../../../../shared/gemini'
-import markdownIt from 'markdown-it'
 import dedent from 'dedent'
+import markdownIt from 'markdown-it'
+import type { SetStoreFunction } from 'solid-js/store'
+import { getGoogleGenerativeAI } from '../../../../shared/gemini'
+import { getVisualViewport } from '../../../window-apis'
 
 const markdownParser = markdownIt()
 

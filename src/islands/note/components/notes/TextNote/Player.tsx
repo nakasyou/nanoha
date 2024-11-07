@@ -1,6 +1,6 @@
+import DOMPurify from 'dompurify'
 import { createEffect, createMemo, createSignal, onMount } from 'solid-js'
 import { noteBookState } from '../../../store'
-import DOMPurify from 'dompurify'
 
 export const Player = (props: { html: string }) => {
   const html = createMemo((): string => {

@@ -1,13 +1,13 @@
-import type { NoteComponent, NoteComponentProps } from '../../notes-utils'
-import type { SetStoreFunction } from 'solid-js/store'
-import type { ImageNoteData } from './types'
 import { Show, createMemo, createSignal } from 'solid-js'
+import type { SetStoreFunction } from 'solid-js/store'
+import type { NoteComponent, NoteComponentProps } from '../../notes-utils'
+import type { ImageNoteData } from './types'
 
-import { Dialog } from '../../utils/Dialog'
-import { Controller } from '../../note-components/Controller'
 import { noteBookState, setNoteBookState } from '../../../store'
-import { ScanedImageEditor } from './components/ScanedImageEditor'
+import { Controller } from '../../note-components/Controller'
+import { Dialog } from '../../utils/Dialog'
 import Player from './components/Player'
+import { ScanedImageEditor } from './components/ScanedImageEditor'
 
 export const ImageNote = ((props) => {
   const [getIsActive, setIsActive] = createSignal(false)

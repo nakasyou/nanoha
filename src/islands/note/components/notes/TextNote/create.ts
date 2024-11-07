@@ -1,7 +1,7 @@
-import type { TextNoteCanToJsonData, TextNoteData } from './types'
+import { createStore } from 'solid-js/store'
 import type { Note, NoteData } from '../../notes-utils'
 import { TextNote } from './TextNote'
-import { createStore } from 'solid-js/store'
+import type { TextNoteCanToJsonData, TextNoteData } from './types'
 
 export const createTextNote = (initNoteData?: TextNoteData) => {
   /*const [noteData, setNoteData] = createStore<TextNoteData>({

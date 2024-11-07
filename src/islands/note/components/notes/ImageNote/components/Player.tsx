@@ -5,9 +5,9 @@ import {
   createSignal,
   onMount,
 } from 'solid-js'
+import { noteBookState } from '../../../../store'
 import type { Sheets } from './Sheet'
 import Sheet from './Sheet'
-import { noteBookState } from '../../../../store'
 
 const getImageElementByUrl = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {

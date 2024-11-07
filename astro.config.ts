@@ -1,10 +1,10 @@
-import { defineConfig } from 'astro/config'
+import sitemap from '@astrojs/sitemap'
 import solidJs from '@astrojs/solid-js'
 import tailwind from '@astrojs/tailwind'
+import { defineConfig } from 'astro/config'
 import { passthroughImageService } from 'astro/config'
-import sitemap from '@astrojs/sitemap'
-import cloudflare from './src/integrations/cloudflare'
 import { imagetools } from 'vite-imagetools'
+import cloudflare from './src/integrations/cloudflare'
 
 import qwikdev from '@qwikdev/astro'
 import type { AstroIntegration } from 'astro'

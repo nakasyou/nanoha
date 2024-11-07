@@ -6,8 +6,8 @@ import {
   useContext,
   useVisibleTask$,
 } from '@builder.io/qwik'
-import { QUIZ_STATE_CTX, SCREEN_STATE_CTX } from '../store'
 import { QuizDB } from '../storage'
+import { QUIZ_STATE_CTX, SCREEN_STATE_CTX } from '../store'
 
 export const FinishedScreen = component$(() => {
   const screenState = useContext(SCREEN_STATE_CTX)

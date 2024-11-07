@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro'
-import { fetchAccessToken, redirectUri } from '../../utils/google-oauth'
 import { number, object, safeParse, string } from 'valibot'
+import { fetchAccessToken, redirectUri } from '../../utils/google-oauth'
 
 export const GET: APIRoute = async (c) => {
   const code = c.url.searchParams.get('code')

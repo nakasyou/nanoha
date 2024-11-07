@@ -1,19 +1,19 @@
+import { Key } from '@solid-primitives/keyed'
 import {
-  createSignal,
   type Accessor,
-  type Setter,
   type JSX,
-  createEffect,
+  type Setter,
   Show,
+  createEffect,
+  createSignal,
   onMount,
 } from 'solid-js'
-import { Key } from '@solid-primitives/keyed'
 import { moveArray } from '../utils/array/moveArray'
 
-import type { Note } from './notes-utils'
-import { noteBookState, notes, setNoteBookState } from '../store'
-import { Dialog } from './utils/Dialog'
 import { icon } from '../../../utils/icons'
+import { noteBookState, notes, setNoteBookState } from '../store'
+import type { Note } from './notes-utils'
+import { Dialog } from './utils/Dialog'
 
 export default (props: {
   notes: Note[]

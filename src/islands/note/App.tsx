@@ -1,23 +1,23 @@
+import { Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
+import Fab from './components/Fab'
+import Header from './components/Header'
 import Notes from './components/Notes'
 import { createTextNote } from './components/notes/TextNote'
-import Header from './components/Header'
-import Fab from './components/Fab'
-import { Show, createSignal, onMount, onCleanup, createEffect } from 'solid-js'
 
 import './App.css'
-import { createImageNote } from './components/notes/ImageNote'
+import type { Props } from '.'
+import { NotesDB } from '../shared/storage'
 import { Menu } from './components/Menu'
+import { loadFromBlob } from './components/load-process'
+import { createImageNote } from './components/notes/ImageNote'
+import { Dialog } from './components/utils/Dialog'
 import {
+  noteBookMetadata,
   noteBookState,
   notes,
-  setNoteBookState,
   setNoteBookMetadata,
-  noteBookMetadata,
+  setNoteBookState,
 } from './store'
-import type { Props } from '.'
-import { Dialog } from './components/utils/Dialog'
-import { NotesDB } from '../shared/storage'
-import { loadFromBlob } from './components/load-process'
 import { save as saveFromNotes } from './utils/file-format'
 
 import iconSvg from '../../assets/icon-new.svg?raw'

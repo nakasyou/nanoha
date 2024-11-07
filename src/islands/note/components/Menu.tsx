@@ -1,3 +1,4 @@
+import { Show, createSignal } from 'solid-js'
 import { icon } from '../../../utils/icons'
 import {
   noteBookMetadata,
@@ -6,9 +7,8 @@ import {
   setNoteBookMetadata,
   setNoteBookState,
 } from '../store'
-import { save, type LoadError } from '../utils/file-format'
+import { type LoadError, save } from '../utils/file-format'
 import { Dialog } from './utils/Dialog'
-import { Show, createSignal } from 'solid-js'
 
 const CloseBtn = () => {
   return (

@@ -1,7 +1,7 @@
-import type { AstroConfig, AstroIntegration } from 'astro'
 import * as fs from 'node:fs/promises'
-import fg from 'fast-glob'
 import path from 'node:path'
+import type { AstroConfig, AstroIntegration } from 'astro'
+import fg from 'fast-glob'
 
 export default (): AstroIntegration => {
   let buildConfig: AstroConfig['build']
@@ -97,7 +97,7 @@ export default (): AstroIntegration => {
           await fs.mkdir(path.dirname(targetPath), {
             recursive: true,
           })
-          await fs.writeFile(targetPath, content)
+          await fs.writeFile(targetPath, content.toString('utf-8'))
         }
       },
     },

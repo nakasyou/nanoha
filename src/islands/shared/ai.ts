@@ -1,7 +1,7 @@
 import {
+  type Content,
   GoogleGenerativeAI,
   type Part,
-  type Content,
 } from '@google/generative-ai'
 import { getGeminiApiToken } from './store'
 

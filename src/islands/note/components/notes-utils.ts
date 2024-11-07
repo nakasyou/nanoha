@@ -1,9 +1,9 @@
-import { createSignal, type Accessor, type Setter } from 'solid-js'
+import { type Accessor, type Setter, createSignal } from 'solid-js'
 import type { JSX } from 'solid-js/jsx-runtime'
-import type { Note0 } from '../utils/file-format/manifest-schema'
 import type { SetStoreFunction } from 'solid-js/store'
-import type { TextNoteData } from './notes/TextNote/types'
+import type { Note0 } from '../utils/file-format/manifest-schema'
 import type { ImageNoteData } from './notes/ImageNote/types'
+import type { TextNoteData } from './notes/TextNote/types'
 
 export type MargedNoteData = TextNoteData | ImageNoteData
 

@@ -1,13 +1,13 @@
 import {
+  type BaseSchema,
+  type InferOutput,
+  any,
   number,
   object,
-  parse,
-  string,
-  type InferOutput,
-  type BaseSchema,
-  any,
-  safeParse,
   optional,
+  parse,
+  safeParse,
+  string,
 } from 'valibot'
 
 export const redirectUri = new URL(

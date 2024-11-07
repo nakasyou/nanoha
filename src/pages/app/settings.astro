@@ -1,8 +1,8 @@
 ---
-import App from '../../layouts/App.astro'
-import { GeminiApiToken } from '../../islands/settings/index.qwik'
 import packageJson from '../../../package.json'
 import { commitHash, gitBranch } from '../../components/datas'
+import { GeminiApiToken } from '../../islands/settings/index.qwik'
+import App from '../../layouts/App.astro'
 ---
 <App title="Notes | Nanoha" description="Settings | Nanoha" useViewTransitions={false} bodyClass="text-on-background bg-background">
   <div class="px-5 py-2 h-full overflow-auto">

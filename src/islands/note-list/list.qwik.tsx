@@ -1,15 +1,15 @@
 /** @jsxImportSource @builder.io/qwik */
 import {
   $,
-  component$,
   type QRL,
+  component$,
   useOnDocument,
   useSignal,
   useVisibleTask$,
 } from '@builder.io/qwik'
-import { type Notes, NotesDB } from '../note/notes-schema'
 import classnames from 'classnames'
 import { Button } from '../../components/Button.qwik'
+import { type Notes, NotesDB } from '../note/notes-schema'
 
 const NoteListItem = component$<{
   note: Notes

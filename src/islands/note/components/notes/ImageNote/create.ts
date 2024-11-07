@@ -1,7 +1,7 @@
 import { createStore } from 'solid-js/store'
-import type { ImageNoteData } from './types'
 import type { Note } from '../../notes-utils'
 import { ImageNote } from './ImageNote'
+import type { ImageNoteData } from './types'
 
 export const createImageNote = (initNoteData?: ImageNoteData) => {
   /*const [noteData, setNoteData] = createStore<TextNoteData>({

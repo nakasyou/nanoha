@@ -1,7 +1,7 @@
 ---
-import PageLayout from '../layouts/Page.astro'
-import fg from 'fast-glob'
 import fs from 'node:fs/promises'
+import fg from 'fast-glob'
+import PageLayout from '../layouts/Page.astro'
 
 const packages = await Promise.all(
   (

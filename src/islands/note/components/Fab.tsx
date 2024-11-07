@@ -1,6 +1,6 @@
 import { createSignal } from 'solid-js'
-import { noteBookState, setNoteBookState } from '../store'
 import { icon } from '../../../utils/icons'
+import { noteBookState, setNoteBookState } from '../store'
 
 export interface Props {
   onAddTextNote?: () => void

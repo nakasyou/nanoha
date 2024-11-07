@@ -1,17 +1,17 @@
 import {
-  object,
-  literal,
-  array,
-  string,
-  uuid,
   type InferInput,
-  union,
-  record,
-  unknown,
-  pipe,
-  number,
-  optional,
   type InferOutput,
+  array,
+  literal,
+  number,
+  object,
+  optional,
+  pipe,
+  record,
+  string,
+  union,
+  unknown,
+  uuid,
 } from 'valibot'
 
 /**

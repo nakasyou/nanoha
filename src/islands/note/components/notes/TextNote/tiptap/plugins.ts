@@ -1,4 +1,4 @@
-import { Node, Mark, mergeAttributes, type AnyExtension } from '@tiptap/core'
+import { type AnyExtension, Mark, Node, mergeAttributes } from '@tiptap/core'
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {

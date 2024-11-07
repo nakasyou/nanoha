@@ -1,6 +1,6 @@
+import { App } from 'astro/app'
 // @ts-check
 import { Hono } from 'hono'
-import { App } from 'astro/app'
 
 export function createExports(manifest: import('astro').SSRManifest) {
   const app = new App(manifest)
