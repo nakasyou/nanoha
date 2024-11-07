@@ -15,7 +15,7 @@
     "@astrojs/sitemap": "^3.0.5",
     "@astrojs/tailwind": "^5.1.0",
     "@builder.io/qwik": "1.5.6",
-    "@google/generative-ai": "^0.17.0",
+    "@google/generative-ai": "^0.18.0",
     "@ns/ha": "npm:@jsr/ns__ha@^0.1.2",
     "@qwikdev/astro": "^0.5.14",
     "@solid-primitives/keyed": "^1.2.0",
@@ -26,7 +26,7 @@
     "@tiptap/pm": "^2.1.11",
     "@tiptap/starter-kit": "^2.2.1",
     "array-move": "^4.0.0",
-    "astro": "4.14.2",
+    "astro": "4.15.4",
     "classnames": "^2.3.2",
     "dedent": "^1.5.3",
     "dexie": "^4.0.1",
@@ -39,7 +39,7 @@
     "solid-js": "^1.7.12",
     "tailwindcss": "^3.0.24",
     "typescript": "^5.3.3",
-    "valibot": "^0.37.0",
+    "valibot": "^0.41.0",
     "vite-imagetools": "^7.0.0"
   },
   "devDependencies": {
