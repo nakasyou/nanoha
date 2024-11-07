@@ -417,7 +417,7 @@ export const TextNote = ((props) => {
       >
         <div
           innerHTML={DOMPurify.sanitize(props.noteData.canToJsonData.html)}
-          class="min-h-5"
+          class="min-h-5 p-2"
         />
       </div>
 
