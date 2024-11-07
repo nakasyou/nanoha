@@ -13,7 +13,7 @@ import {
 export const redirectUri = new URL(
   '/google-oauth/callback',
   import.meta.env.DEV
-    ? import.meta.env.DEV_SITE ?? 'http://localhost:4321'
+    ? (import.meta.env.DEV_SITE ?? 'http://localhost:4321')
     : import.meta.env.SITE,
 ).href
 
