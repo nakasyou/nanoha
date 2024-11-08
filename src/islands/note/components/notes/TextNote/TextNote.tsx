@@ -129,90 +129,6 @@ export const TextNote = ((props) => {
     }
   })
 
-  const insertWithGenerate = async (prompt: string) => {
-    const editor = getEditor()
-    if (!editor) {
-      return
-    }
-    //editor.chain().insertContent(``).focus().run()
-    const ai = getGoogleGenerativeAI()
-    if (!ai) {
-      if (confirm('AI 機能が設定されていません。\n設定を開きますか？')) {
-        location.href = '/app/settings#ai'
-      }
-      return
-    }
-    const image = getGenerateMode() === 'image' && getImageBlobToGenerate()
-    const model = ai.getGenerativeModel({
-      model: image ? 'gemini-1.5-pro' : 'gemini-1.5-flash',
-    })
-    const stream = image
-      ? await model
-          .startChat({
-            systemInstruction: {
-              role: 'model',
-              parts: [
-                {
-                  text: dedent`画像を抽出し、そっくりそのまま書き出しなさい。省略せずに画像の文字全てを書き出すこと。画像に書いていないことは書かないこと。`,
-                },
-              ],
-            },
-          })
-          .sendMessageStream([
-            {
-              text: prompt,
-            },
-            {
-              inlineData: {
-                mimeType: image.type,
-                data: await new Promise<string>((resolve) => {const reader = new FileReader();reader.onloadend = () =>resolve((reader.result as string).split(',')[1]!);reader.readAsDataURL(image)}),
-              },
-            },
-          ])
-      : await model
-          .startChat({
-            systemInstruction: {
-              role: 'model',
-              parts: [
-                {
-                  text: 'ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。',
-                },
-              ],
-            },
-          })
-          .sendMessageStream(prompt)
-    insertFromStream(
-      (async function* () {
-        for await (const chunk of stream.stream) {
-          yield chunk.text()
-        }
-      })(),
-    )
-  }
-  const insertFromStream = async (
-    stream: AsyncGenerator<string, void, unknown>,
-  ) => {
-    const editor = getEditor()
-    if (!editor) {
-      return
-    }
-    const paragraphId = Math.random().toString()
-    editor.commands.setNode('llmpreview', { id: paragraphId })
-    const pre = editor.$node('llmpreview', { id: paragraphId })!
-    pre.content = '生成中...'
-    let rawText = ''
-    for await (const text of stream) {
-      rawText += text
-      pre.content = rawText //markdownParser.render(rawText)
-    }
-    editor.commands.deleteNode(pre.node.type)
-    //pre.content = ''
-    editor.commands.insertContent(
-      markdownParser.render(rawText.replace(/\*\*[\s\S]*?\*\*/g,(str) => `((${str.slice(2, -2)}))`,),).replace(/\(\([\s\S]*?\)\)/g,(str) => `<span data-nanohasheet="true">${str.slice(2, -2)}</span>`,),
-    )
-    saveContent()
-  }
-
   const handleAltG = (evt: KeyboardEvent) => {
     if (evt.altKey && evt.key === 'g') {
       setIsShowLlmPromptDialog(true)
@@ -231,11 +147,8 @@ export const TextNote = ((props) => {
     <div>
       <Show when={getIsShowLlmPromptDialog()}>
         <Dialog
-          onClose={(result) => {
+          onClose={() => {
             setIsShowLlmPromptDialog(false)
-            if (result) {
-              insertWithGenerate(getPrompt())
-            }
           }}
           type="custom"
           title="Generate with AI"
@@ -245,7 +158,17 @@ export const TextNote = ((props) => {
           {(close) => <AIDialogCore close={(r) => {
             getEditor()?.commands.insertContent(r)
             close(null)
-          }} />}
+          }} initPrompt={(() => {
+            const editor = getEditor()
+            if (!editor) {
+              return ''
+            }
+            const { from, to, empty } = editor.state.selection
+            if (empty) {
+              return
+            }
+            return editor.state.doc.textBetween(from, to, ' ')
+          })()} />}
         </Dialog>
       </Show>
 

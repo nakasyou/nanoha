@@ -71,13 +71,14 @@ const getGemini = (): GoogleGenerativeAI => {
 }
 export const FromText = (props: {
   setStream(stream: GenerateContentStreamResult): void
+  initPrompt?: string
 }) => {
   const [getCurrentPlaceholder, setCurrentPlaceholder] = createSignal({
     isWriting: false,
     current: '',
     index: 0,
   })
-  const [getPrompt, setPrompt] = createSignal('')
+  const [getPrompt, setPrompt] = createSignal(props.initPrompt ?? '')
 
   let cleanupped = false
   onMount(() => {
@@ -287,6 +288,7 @@ const FromImageScanner = (props: {
 }
 export const AIDialogCore = (props: {
   close(result: string): void
+  initPrompt?: string
 }) => {
   const [getGenerateMode, setGenerateMode] = createSignal<Mode>('text')
   const [getStream, setStream] = createSignal<GenerateContentStreamResult>()
@@ -317,7 +319,7 @@ export const AIDialogCore = (props: {
               when={getGenerateMode() === 'text'}
               fallback={<FromImage setStream={setStream} />}
             >
-              <FromText setStream={setStream} />
+              <FromText setStream={setStream} initPrompt={props.initPrompt} />
             </Show>
           </>
         }
@@ -342,104 +344,4 @@ export const AIDialogCore = (props: {
       </Show>
     </div>
   )
-  /*return (
-    <div>
-      <Show when={getGenerateMode() === 'image'}>
-        {(() => {
-          let imageInput!: HTMLInputElement
-          const [getCapture, setCapture] = createSignal<string | undefined>(
-            void 0,
-          )
-          return (
-            <div>
-              <div class="text-xl text-center">画像を選択:</div>
-              <div class="p-2">
-                <Show when={getImageBlobToGenerate()}>
-                  <div class="grid place-items-center">
-                    <img
-                      class="max-h-[30dvh] max-w-full"
-                      src={URL.createObjectURL(getImageBlobToGenerate()!)}
-                      alt={getImageBlobToGenerate()!.name}
-                    />
-                  </div>
-                  <div class="text-center">
-                    {getImageBlobToGenerate()!.name}
-                  </div>
-                </Show>
-              </div>
-              <div class="flex items-center justify-center gap-3">
-                <div>
-                  <button
-                    onClick={() => {
-                      setCapture('camera')
-                      imageInput.click()
-                    }}
-                    class="filled-tonal-button"
-                    type="button"
-                  >
-                    カメラを開く
-                  </button>
-                </div>
-                <div>
-                  または
-                  <button
-                    onClick={() => {
-                      setCapture(void 0)
-                      imageInput.click()
-                    }}
-                    class="text-button"
-                    type="button"
-                  >
-                    写真を選択
-                  </button>
-                </div>
-              </div>
-              <input
-                type="file"
-                hidden
-                accept="image/*"
-                capture={getCapture()}
-                ref={imageInput}
-                onChange={(e) => {
-                  const file = e.target?.files?.[0]
-                  if (file) {
-                    setImageBlobToGenarate(() => file)
-                  }
-                }}
-              />
-              <hr class="my-2" />
-            </div>
-          )
-        })()}
-      </Show>
-      <label>
-        <div class="text-center text-lg">
-          <Show
-            when={getGenerateMode() === 'text'}
-            fallback="どのようにスキャンするかの指示を入力:"
-          >
-            AIへのプロンプトを入力:
-          </Show>
-        </div>
-        <textarea
-          ref={llmTextArea}
-          placeholder={
-            getGenerateMode() === 'text'
-              ? '水の電気分解について、小学生でもわかるように説明して...'
-              : '赤い文字で書かれているところを重要語句として隠して...'
-          }
-          oninput={(evt) => {
-            setPrompt(evt.currentTarget.value)
-          }}
-          onKeyDown={(evt) => {
-            if (evt.key === 'Enter' && evt.shiftKey) {
-              evt.preventDefault()
-              close(true)
-            }
-          }}
-          class="border rounded-lg w-full p-1 border-outlined bg-surface"
-        />
-      </label>
-    </div>
-  )*/
 }
