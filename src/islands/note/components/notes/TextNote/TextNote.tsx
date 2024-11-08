@@ -107,6 +107,16 @@ export const TextNote = ((props) => {
     setIsActive(evt.isActive)
   })
 
+  let lastActive = getIsActive()
+  createEffect(() => {
+    if (getIsActive() && !lastActive) {
+      requestAnimationFrame(() => {
+        getEditor()?.commands.focus()
+      })
+    }
+    lastActive = getIsActive()
+  })
+
   createEffect(() => {
     const isActive = getIsActive()
     const editor = getEditor()
