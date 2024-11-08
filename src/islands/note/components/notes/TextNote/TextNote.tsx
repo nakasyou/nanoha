@@ -165,12 +165,7 @@ export const TextNote = ((props) => {
             {
               inlineData: {
                 mimeType: image.type,
-                data: await new Promise<string>((resolve) => {
-                  const reader = new FileReader()
-                  reader.onloadend = () =>
-                    resolve((reader.result as string).split(',')[1]!)
-                  reader.readAsDataURL(image)
-                }),
+                data: await new Promise<string>((resolve) => {const reader = new FileReader();reader.onloadend = () =>resolve((reader.result as string).split(',')[1]!);reader.readAsDataURL(image)}),
               },
             },
           ])
