@@ -13,7 +13,7 @@ import {
 import { icon } from '../../../../../utils/icons'
 import { noteBookState } from '../../../store'
 import type { NoteComponent, NoteComponentProps } from '../../notes-utils'
-import { Dialog } from '../../utils/Dialog'
+import { Dialog, createDialog } from '../../utils/Dialog'
 import { Player } from './Player'
 import { ExtensionPreviewLLM, ExtensionSheet } from './tiptap/plugins'
 import type { TextNoteData } from './types'
@@ -186,7 +186,6 @@ export const TextNote = ((props) => {
             },
           })
           .sendMessageStream(prompt)
-
     insertFromStream(
       (async function* () {
         for await (const chunk of stream.stream) {
@@ -214,17 +213,7 @@ export const TextNote = ((props) => {
     editor.commands.deleteNode(pre.node.type)
     //pre.content = ''
     editor.commands.insertContent(
-      markdownParser
-        .render(
-          rawText.replace(
-            /\*\*[\s\S]*?\*\*/g,
-            (str) => `((${str.slice(2, -2)}))`,
-          ),
-        )
-        .replace(
-          /\(\([\s\S]*?\)\)/g,
-          (str) => `<span data-nanohasheet="true">${str.slice(2, -2)}</span>`,
-        ),
+      markdownParser.render(rawText.replace(/\*\*[\s\S]*?\*\*/g,(str) => `((${str.slice(2, -2)}))`,),).replace(/\(\([\s\S]*?\)\)/g,(str) => `<span data-nanohasheet="true">${str.slice(2, -2)}</span>`,),
     )
     saveContent()
   }
@@ -241,6 +230,8 @@ export const TextNote = ((props) => {
   onCleanup(() => {
     document.removeEventListener('keydown', handleAltG)
   })
+
+  const aiDialog = createDialog()
   return (
     <div>
       <Show when={getIsShowLlmPromptDialog()}>
@@ -251,11 +242,15 @@ export const TextNote = ((props) => {
               insertWithGenerate(getPrompt())
             }
           }}
-          type="confirm"
+          type="custom"
           title="Generate with AI"
           okLabel="生成"
+          dialog={aiDialog}
         >
-          {(close) => <AIDialogCore />}
+          {(close) => <AIDialogCore close={(r) => {
+            getEditor()?.commands.insertContent(r)
+            close(null)
+          }} />}
         </Dialog>
       </Show>
 

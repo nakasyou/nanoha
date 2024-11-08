@@ -1,6 +1,13 @@
-import { createSignal, onCleanup, onMount, Show } from "solid-js"
+import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js"
+import { getGoogleGenerativeAI } from "../../../../shared/gemini"
+import type { GenerateContentStreamResult, GoogleGenerativeAI } from "@google/generative-ai"
+import markdownIt from "markdown-it"
+
+const markdownParser = markdownIt()
 
 type Mode = 'text' | 'image'
+
+const renderMarkdown = (markdown: string) =>       markdownParser.render(markdown.replace(/\*\*[\s\S]*?\*\*/g,(str) => `((${str.slice(2, -2)}))`,),).replace(/\(\([\s\S]*?\)\)/g,(str) => `<span data-nanohasheet="true" class="nanoha-sheet">${str.slice(2, -2)}</span>`,)
 
 const ModeSwitcher = (props: {
   mode: Mode
@@ -39,12 +46,26 @@ const FROM_TEXT_PLACEHOLDER_CONTENTS: string[] = [
   '日本語の品詞についての暗記シートを作成して',
   '英語の曜日についての暗記シート'
 ]
-export const FromText = () => {
+
+const getGemini = (): GoogleGenerativeAI => {
+  const ai = getGoogleGenerativeAI()
+  if (!ai) {
+    if (confirm('AI 機能が設定されていません。\n設定を開きますか？')) {
+      location.href = '/app/settings#ai'
+    }
+    throw 0
+  }
+  return ai
+}
+export const FromText = (props: {
+  setStream(stream: GenerateContentStreamResult): void
+}) => {
   const [getCurrentPlaceholder, setCurrentPlaceholder] = createSignal({
     isWriting: false,
     current: '',
     index: 0,
   })
+  const [getPrompt, setPrompt] = createSignal('')
 
   let cleanupped = false
   onMount(() => {
@@ -96,22 +117,75 @@ export const FromText = () => {
     cleanupped = true
   })
 
+  const generate = async () => {
+    const gemini = getGemini()
+    const model = gemini.getGenerativeModel({
+      model: 'gemini-1.5-flash'
+    })
+    props.setStream(await model.startChat({
+      systemInstruction: {
+        role: 'model',
+        parts: [
+          {
+            text: 'ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。太字の場所はユーザーに見えません。また、単語の一覧を箇条書きにすることはしないでください。',
+          }
+        ]
+      }
+    }).sendMessageStream(getPrompt()))
+  }
+
   return <div>
     <div>
       <label>
         <div>プロンプトを入力...</div>
-        <textarea placeholder={getCurrentPlaceholder().current} />
+        <textarea placeholder={getCurrentPlaceholder().current} class="w-full p-1 h-20" value={getPrompt()} onInput={e => setPrompt(e.target.value)} />
       </label>
+      <button onClick={generate} class="filled-button my-2 disabled:opacity-70" disabled={!getPrompt()}>生成</button>
     </div>
   </div>
 }
-
-export const AIDialogCore = () => {
-  const [getGenerateMode, setGenerateMode] = createSignal<Mode>('text')
+export const FromImage = (props: {
+  setStream(stream: GenerateContentStreamResult): void
+}) => {
   return <div>
-    <ModeSwitcher mode={getGenerateMode()} onChange={setGenerateMode} />
-    <Show when={getGenerateMode() === 'text'}>
-      <FromText />
+    <input ref={inputRef} type="file"></input>
+  </div>
+}
+export const AIDialogCore = (props: {
+  close(result: string): void
+}) => {
+  const [getGenerateMode, setGenerateMode] = createSignal<Mode>('text')
+  const [getStream, setStream] = createSignal<GenerateContentStreamResult>()
+  const [getGenerated, setGenerated] = createSignal('')
+  const [getIsGenerating, setIsGenerating] = createSignal(false)
+
+  createEffect(() => {
+    const stream = getStream()
+    if (!stream) {
+      return
+    }
+    ;(async () => {
+      setIsGenerating(true)
+      for await (const chunk of stream.stream) {
+        setGenerated(`${getGenerated()}${chunk.text()}`)
+      }
+      setIsGenerating(false)
+    })()
+  })
+  return <div>
+    <Show when={getStream()} fallback={
+      <>
+        <ModeSwitcher mode={getGenerateMode()} onChange={setGenerateMode} />
+        <Show when={getGenerateMode() === 'text'}>
+          <FromText setStream={setStream} />
+        </Show>
+      </>
+    }>
+      <div>
+        <Show when={getIsGenerating()}><div class="text-2xl">生成中...</div></Show>
+        <div class="nanohanote-textnote-styler border p-1" innerHTML={renderMarkdown(getGenerated())} />
+        <button onClick={() => props.close(renderMarkdown(getGenerated()))} class="filled-button disabled:opacity-80" disabled={getIsGenerating()}>結果を挿入する</button>
+      </div>
     </Show>
   </div>
   /*return (
