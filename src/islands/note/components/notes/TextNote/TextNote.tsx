@@ -26,8 +26,6 @@ import { getGoogleGenerativeAI } from '../../../../shared/gemini'
 import { getVisualViewport } from '../../../window-apis'
 import { AIDialogCore } from './AI'
 
-const markdownParser = markdownIt()
-
 export const TextNote = ((props) => {
   let editorRef!: HTMLDivElement
 
@@ -39,11 +37,6 @@ export const TextNote = ((props) => {
   const [getIsActive, setIsActive] = createSignal(false)
   const [getIsShowLlmPromptDialog, setIsShowLlmPromptDialog] =
     createSignal(false)
-  const [getPrompt, setPrompt] = createSignal('')
-  const [getImageBlobToGenerate, setImageBlobToGenarate] = createSignal<Blob>()
-  const [getGenerateMode, setGenerateMode] = createSignal<'text' | 'image'>(
-    'text',
-  )
 
   const controllerItems = [
     {
