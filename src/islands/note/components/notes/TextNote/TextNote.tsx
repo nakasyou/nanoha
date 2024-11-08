@@ -148,20 +148,25 @@ export const TextNote = ((props) => {
           okLabel="生成"
           dialog={aiDialog}
         >
-          {(close) => <AIDialogCore close={(r) => {
-            getEditor()?.commands.insertContent(r)
-            close(null)
-          }} initPrompt={(() => {
-            const editor = getEditor()
-            if (!editor) {
-              return ''
-            }
-            const { from, to, empty } = editor.state.selection
-            if (empty) {
-              return
-            }
-            return editor.state.doc.textBetween(from, to, ' ')
-          })()} />}
+          {(close) => (
+            <AIDialogCore
+              close={(r) => {
+                getEditor()?.commands.insertContent(r)
+                close(null)
+              }}
+              initPrompt={(() => {
+                const editor = getEditor()
+                if (!editor) {
+                  return ''
+                }
+                const { from, to, empty } = editor.state.selection
+                if (empty) {
+                  return
+                }
+                return editor.state.doc.textBetween(from, to, ' ')
+              })()}
+            />
+          )}
         </Dialog>
       </Show>
 

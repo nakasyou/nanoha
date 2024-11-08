@@ -1,10 +1,20 @@
-import { createComputed, createEffect, createResource, untrack, createSignal, createMemo, onCleanup, onMount, Show } from 'solid-js'
-import { getGoogleGenerativeAI } from '../../../../shared/gemini'
 import type {
   GenerateContentStreamResult,
   GoogleGenerativeAI,
 } from '@google/generative-ai'
 import markdownIt from 'markdown-it'
+import {
+  Show,
+  createComputed,
+  createEffect,
+  createMemo,
+  createResource,
+  createSignal,
+  onCleanup,
+  onMount,
+  untrack,
+} from 'solid-js'
+import { getGoogleGenerativeAI } from '../../../../shared/gemini'
 
 const markdownParser = markdownIt()
 
@@ -32,14 +42,18 @@ const ModeSwitcher = (props: {
         onClick={() => props.onChange('text')}
         type="button"
       >
-        テキストから<wbr />生成
+        テキストから
+        <wbr />
+        生成
       </button>
       <button
         class="border-b w-full"
         onClick={() => props.onChange('image')}
         type="button"
       >
-        写真を<wbr />スキャンして生成
+        写真を
+        <wbr />
+        スキャンして生成
       </button>
       <div
         class="border-t border-primary w-full transition-transform duration-200 ease-in -translate-y-px"
@@ -205,59 +219,80 @@ export const FromImage = (props: {
 
     const ai = getGemini()
     const model = ai.getGenerativeModel({
-      model: 'gemini-1.5-pro'
+      model: 'gemini-1.5-pro',
     })
-    const b64= await new Promise<string>((resolve) => {
+    const b64 = await new Promise<string>((resolve) => {
       const reader = new FileReader()
-      reader.onloadend = () =>resolve((reader.result as string).split(',')[1]!)
+      reader.onloadend = () => resolve((reader.result as string).split(',')[1]!)
       reader.readAsDataURL(file)
     })
 
-    const stream = await model.startChat({
-      systemInstruction: {
-        role: 'model',
-        parts: [{
-          text: '画像を抽出し、そっくりそのまま書き出しなさい。省略せずに画像の文字全てを書き出すこと。画像に書いていないことは書かないこと。また、ユーザーからの指示があれば、条件を満たす場所をMarkdownの太字で表現しなさい。'
-        }]
-      }
-    }).sendMessageStream([{
-      text: ''
-    }, {
-      inlineData: {
-        mimeType: file.type,
-        data: b64
-      }
-    }])
+    const stream = await model
+      .startChat({
+        systemInstruction: {
+          role: 'model',
+          parts: [
+            {
+              text: '画像を抽出し、そっくりそのまま書き出しなさい。省略せずに画像の文字全てを書き出すこと。画像に書いていないことは書かないこと。また、ユーザーからの指示があれば、条件を満たす場所をMarkdownの太字で表現しなさい。',
+            },
+          ],
+        },
+      })
+      .sendMessageStream([
+        {
+          text: '',
+        },
+        {
+          inlineData: {
+            mimeType: file.type,
+            data: b64,
+          },
+        },
+      ])
     props.setStream(stream)
   }
 
-  return <div>
-    <Show when={getImageFile()} fallback={
-      <div>
-        <FromImageScanner scaned={setImageFile} />
-      </div>
-    }>
-      <div class="h-[70dvh] grid grid-cols-1 md:grid-cols-2">
-        <div>
-          <img class="max-h-full p-2" src={getScanedImageURL()} alt="Scaned" />
+  return (
+    <div>
+      <Show
+        when={getImageFile()}
+        fallback={
+          <div>
+            <FromImageScanner scaned={setImageFile} />
+          </div>
+        }
+      >
+        <div class="h-[70dvh] grid grid-cols-1 md:grid-cols-2">
+          <div>
+            <img
+              class="max-h-full p-2"
+              src={getScanedImageURL()}
+              alt="Scaned"
+            />
+          </div>
+          <div class="h-full">
+            <label class="h-full flex flex-col">
+              <div>どのように処理するかのカスタムプロンプト(任意)</div>
+              <textarea class="w-full m-1 p-1 border grow" placeholder="" />
+              <button onClick={generate} type="button" class="filled-button">
+                生成
+              </button>
+            </label>
+          </div>
         </div>
-        <div class="h-full">
-          <label class="h-full flex flex-col">
-            <div>どのように処理するかのカスタムプロンプト(任意)</div>
-            <textarea class="w-full m-1 p-1 border grow" placeholder="" />
-            <button onClick={generate} type="button" class="filled-button">生成</button>
-          </label>
-        </div>
-      </div>
-    </Show>
-  </div>
+      </Show>
+    </div>
+  )
 }
 const FromImageScanner = (props: {
   scaned(file: File): void
 }) => {
   let inputRef!: HTMLInputElement
   const [getIsUsingCamera, setIsUsingCamera] = createSignal(false)
-  const open = (useCamera: boolean) => {setIsUsingCamera(useCamera);inputRef.click()}
+  const open = (useCamera: boolean) => {
+    setIsUsingCamera(useCamera)
+    inputRef.click()
+  }
 
   return (
     <div>
@@ -273,7 +308,7 @@ const FromImageScanner = (props: {
         capture={getIsUsingCamera() ? 'camera' : void 0}
       />
       <div class="flex justify-center p-2 gap-1 flex-wrap">
-        <button class="filled-button" type="button" onClick={() => open(true)} >
+        <button class="filled-button" type="button" onClick={() => open(true)}>
           カメラを開く
         </button>
         <div>
