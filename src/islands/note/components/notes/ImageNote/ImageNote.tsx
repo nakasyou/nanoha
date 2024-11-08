@@ -10,11 +10,8 @@ import Player from './components/Player'
 import { ScanedImageEditor } from './components/ScanedImageEditor'
 
 export const ImageNote = ((props) => {
-  const [getIsActive, setIsActive] = createSignal(false)
+  const getIsActive = createMemo(() => props.focusedIndex === props.index)
 
-  props.on('focus', (evt) => {
-    setIsActive(evt.isActive)
-  })
   const imageUrl = createMemo(() => {
     const nowImageBlob = props.noteData.blobs.scanedImage
     return nowImageBlob ? URL.createObjectURL(nowImageBlob) : null

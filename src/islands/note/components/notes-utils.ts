@@ -35,35 +35,23 @@ export interface NoteComponentProps<T extends MargedNoteData = MargedNoteData> {
   setNoteData: SetStoreFunction<T>
 
   focus(): void
-  on<EventType extends keyof NoteEvents>(
-    type: EventType,
-    listenter: (evt: NoteEventArgs[EventType]) => void,
-  ): void
 
   updated(): void
 
   index: number
   notes: Note[]
+
+  focusedIndex: number
 }
 export type NoteComponent<T extends MargedNoteData = MargedNoteData> = (
   props: NoteComponentProps<T>,
 ) => JSX.Element
 
-export interface NoteEvents {
-  focus?: ((evt: NoteEventArgs['focus']) => void)[]
-}
-export interface NoteEventArgs {
-  focus: {
-    isActive: boolean
-  }
-}
 export interface Note<T extends MargedNoteData = MargedNoteData> {
   Component: NoteComponent<T>
 
   noteData: T
   setNoteData: SetStoreFunction<T>
-
-  events: NoteEvents
 }
 
 export const createNotes = (): {

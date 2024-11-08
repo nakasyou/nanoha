@@ -30,19 +30,6 @@ export default (props: {
     notes.notes
     handleUpdate()
   })
-  createEffect(() => {
-    const focused = getFocusedIndex()
-    let i = 0
-    for (const eachNote of props.notes) {
-      const isActive = focused === i
-      for (const focusEventListener of eachNote.events.focus || []) {
-        focusEventListener({
-          isActive,
-        })
-      }
-      i++
-    }
-  })
 
   const getNoteRect: Record<string, () => DOMRect> = {}
 
@@ -101,16 +88,9 @@ export default (props: {
                   setFocusedIndex(index())
                 }}
                 updated={handleUpdate}
-                on={(type, listener) => {
-                  const thisNote = props.notes[index()]
-                  if (!thisNote) return
-                  if (!thisNote.events[type]) {
-                    thisNote.events[type] = []
-                  }
-                  thisNote.events[type]?.push(listener)
-                }}
                 index={index()}
                 notes={props.notes}
+                focusedIndex={getFocusedIndex()}
               />
             </div>
           )

@@ -19,10 +19,6 @@ import { ExtensionPreviewLLM, ExtensionSheet } from './tiptap/plugins'
 import type { TextNoteData } from './types'
 
 import './TextNoteStyle.css'
-import dedent from 'dedent'
-import markdownIt from 'markdown-it'
-import type { SetStoreFunction } from 'solid-js/store'
-import { getGoogleGenerativeAI } from '../../../../shared/gemini'
 import { getVisualViewport } from '../../../window-apis'
 import { AIDialogCore } from './AI'
 
@@ -96,16 +92,16 @@ export const TextNote = ((props) => {
     props.updated()
   }
 
-  props.on('focus', (evt) => {
-    setIsActive(evt.isActive)
+  createEffect(() => {
+    setIsActive(props.focusedIndex === props.index)
   })
 
   let lastActive = getIsActive()
   createEffect(() => {
     if (getIsActive() && !lastActive) {
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         getEditor()?.commands.focus()
-      })
+      }, 100)
     }
     lastActive = getIsActive()
   })
@@ -152,6 +148,7 @@ export const TextNote = ((props) => {
             <AIDialogCore
               close={(r) => {
                 getEditor()?.commands.insertContent(r)
+                saveContent()
                 close(null)
               }}
               initPrompt={(() => {
