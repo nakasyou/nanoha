@@ -89,17 +89,6 @@ export default (props: Props) => {
   const [getLoadError, setLoadError] = createSignal<string>()
 
   createEffect(() => {
-    if (!noteBookState.isEditMode) {
-      for (const note of notes.notes()) {
-        for (const handler of note.events?.focus ?? []) {
-          handler({
-            isActive: false,
-          })
-        }
-      }
-    }
-  })
-  createEffect(() => {
     document.title = `${noteBookMetadata.noteName} - Nanoha`
   })
   onMount(() => {

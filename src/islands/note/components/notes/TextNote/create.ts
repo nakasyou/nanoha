@@ -25,7 +25,6 @@ export const createTextNote = (initNoteData?: TextNoteData) => {
     Component: TextNote,
     noteData,
     setNoteData,
-    events: {},
   }
   return addNote
 }
