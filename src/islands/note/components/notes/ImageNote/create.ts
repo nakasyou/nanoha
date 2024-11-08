@@ -25,7 +25,6 @@ export const createImageNote = (initNoteData?: ImageNoteData) => {
     Component: ImageNote,
     noteData,
     setNoteData,
-    events: {},
   }
   return addNote
 }
