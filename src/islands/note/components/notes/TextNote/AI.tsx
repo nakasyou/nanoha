@@ -1,9 +1,9 @@
 import {
+  type GenerateContentResponse,
   type GenerateContentStreamResult,
   type GoogleGenerativeAI,
-  GoogleGenerativeAIResponseError,
-  type GenerateContentResponse,
   GoogleGenerativeAIFetchError,
+  GoogleGenerativeAIResponseError,
 } from '@google/generative-ai'
 import markdownIt from 'markdown-it'
 import {
