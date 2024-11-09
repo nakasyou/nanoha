@@ -15,6 +15,7 @@ import {
   untrack,
 } from 'solid-js'
 import { getGoogleGenerativeAI } from '../../../../shared/gemini'
+import { Spinner } from '../../utils/Spinner'
 
 const markdownParser = markdownIt()
 
@@ -93,6 +94,7 @@ export const FromText = (props: {
     index: 0,
   })
   const [getPrompt, setPrompt] = createSignal(props.initPrompt ?? '')
+  const [getIsPreprocessing, setIsPreprocessing] = createSignal(false)
 
   let cleanupped = false
   onMount(() => {
@@ -150,6 +152,7 @@ export const FromText = (props: {
   })
 
   const generate = async () => {
+    setIsPreprocessing(true)
     const gemini = getGemini()
     const model = gemini.getGenerativeModel({
       model: 'gemini-1.5-flash',
@@ -168,6 +171,7 @@ export const FromText = (props: {
         })
         .sendMessageStream(getPrompt()),
     )
+    setIsPreprocessing(false)
   }
 
   return (
@@ -184,11 +188,14 @@ export const FromText = (props: {
         </label>
         <button
           onClick={generate}
-          class="filled-button my-2 disabled:opacity-70"
-          disabled={!getPrompt()}
+          class="filled-button my-2 disabled:opacity-70 flex justify-center items-center gap-1"
+          disabled={!getPrompt() || getIsPreprocessing()}
           type="button"
         >
-          生成
+          <Show when={getIsPreprocessing()} fallback='生成'>
+            <Spinner />
+            準備中...
+          </Show>
         </button>
       </div>
     </div>
@@ -199,6 +206,7 @@ export const FromImage = (props: {
 }) => {
   const [getImageFile, setImageFile] = createSignal<File>()
   const [getScanedImageURL, setScanedImageURL] = createSignal<string>()
+  const [getIsPreprocessing, setIsPreprocessing] = createSignal(false)
 
   createEffect(() => {
     untrack(() => {
@@ -212,6 +220,7 @@ export const FromImage = (props: {
   })
 
   const generate = async () => {
+    setIsPreprocessing(true)
     const file = getImageFile()
     if (!file) {
       return
@@ -250,6 +259,7 @@ export const FromImage = (props: {
         },
       ])
     props.setStream(stream)
+    setIsPreprocessing(false)
   }
 
   return (
@@ -274,8 +284,11 @@ export const FromImage = (props: {
             <label class="h-full flex flex-col">
               <div>どのように処理するかのカスタムプロンプト(任意)</div>
               <textarea class="w-full m-1 p-1 border grow" placeholder="" />
-              <button onClick={generate} type="button" class="filled-button">
-                生成
+              <button onClick={generate} type="button" class="filled-button disabled:opacity-80 flex items-center gap-1 justify-center" disabled={getIsPreprocessing()}>
+                <Show when={getIsPreprocessing()} fallback={'生成'}>
+                  <Spinner />
+                  準備中...
+                </Show>
               </button>
             </label>
           </div>
@@ -329,6 +342,7 @@ export const AIDialogCore = (props: {
   const [getStream, setStream] = createSignal<GenerateContentStreamResult>()
   const [getGenerated, setGenerated] = createSignal('')
   const [getIsGenerating, setIsGenerating] = createSignal(false)
+  let outputRef!: HTMLDivElement
 
   createEffect(() => {
     const stream = getStream()
@@ -339,6 +353,10 @@ export const AIDialogCore = (props: {
       setIsGenerating(true)
       for await (const chunk of stream.stream) {
         setGenerated(`${getGenerated()}${chunk.text()}`)
+        outputRef.scrollTo({
+          behavior: 'smooth',
+          top: 100 + outputRef.scrollHeight
+        })
       }
       setIsGenerating(false)
     })()
@@ -360,12 +378,10 @@ export const AIDialogCore = (props: {
         }
       >
         <div>
-          <Show when={getIsGenerating()}>
-            <div class="text-2xl">生成中...</div>
-          </Show>
           <div
-            class="nanohanote-textnote-styler border p-1"
+            class="nanohanote-textnote-styler border p-1 max-h-[70dvh] overflow-y-scroll break-words"
             innerHTML={renderMarkdown(getGenerated())}
+            ref={outputRef}
           />
           <button
             onClick={() => props.close(renderMarkdown(getGenerated()))}
@@ -373,7 +389,12 @@ export const AIDialogCore = (props: {
             disabled={getIsGenerating()}
             type="button"
           >
-            結果を挿入する
+            <Show when={getIsGenerating()} fallback='結果を挿入する'>
+              <div class="flex gap-2 justify-start items-center">
+                <Spinner />
+                生成中...
+              </div>
+            </Show>
           </button>
         </div>
       </Show>
