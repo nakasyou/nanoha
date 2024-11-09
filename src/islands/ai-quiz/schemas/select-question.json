@@ -12,18 +12,21 @@
         "type": "string",
         "description": "不正解時に表示される解説"
       },
-      "correctAnswer": {
-        "type": "string",
-        "description": "正解。用語などを出題してもよい。しなくてもよい"
-      },
-      "damyAnswers": {
+      "choices": {
         "type": "array",
+        "description": "選択肢。2個から5個まで",
         "items": {
           "type": "string"
-        },
-        "description": "不正解と明らかなダミー"
+        }
+      },
+      "corrects": {
+        "type": "array",
+        "description": "正解の選択肢のインデックス。完答形式。",
+        "items": {
+          "type": "number"
+        }
       }
     },
-    "required": ["question", "explanation", "correctAnswer", "damyAnswers"]
+    "required": ["question", "explanation", "choices", "corrects"]
   }
 }

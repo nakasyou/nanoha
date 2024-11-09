@@ -1,4 +1,4 @@
-import { type InferOutput, array, object, string } from 'valibot'
+import { type InferOutput, array, number, object, string } from 'valibot'
 import selectQuestion from './schemas/select-question.json'
 
 /**
@@ -15,8 +15,8 @@ ${JSON.stringify(selectQuestion)}
 export const CONTENT_SCHEMA = object({
   question: string(),
   explanation: string(),
-  correctAnswer: string(),
-  damyAnswers: array(string()),
+  choices: array(string()),
+  corrects: array(number()),
 })
 
 export type QuizContent = InferOutput<typeof CONTENT_SCHEMA>
