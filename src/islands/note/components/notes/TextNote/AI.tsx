@@ -1,10 +1,15 @@
-import type {
-  GenerateContentStreamResult,
-  GoogleGenerativeAI,
+import {
+  type GenerateContentResponse,
+  type GenerateContentStreamResult,
+  type GoogleGenerativeAI,
+  GoogleGenerativeAIFetchError,
+  GoogleGenerativeAIResponseError,
 } from '@google/generative-ai'
 import markdownIt from 'markdown-it'
 import {
+  Match,
   Show,
+  Switch,
   createComputed,
   createEffect,
   createMemo,
@@ -15,10 +20,14 @@ import {
   untrack,
 } from 'solid-js'
 import { getGoogleGenerativeAI } from '../../../../shared/gemini'
+import { Spinner } from '../../utils/Spinner'
 
 const markdownParser = markdownIt()
 
 type Mode = 'text' | 'image'
+type Generate = {
+  generate: () => Promise<GenerateContentStreamResult>
+}
 
 const renderMarkdown = (markdown: string) =>
   markdownParser
@@ -84,7 +93,7 @@ const getGemini = (): GoogleGenerativeAI => {
   return ai
 }
 export const FromText = (props: {
-  setStream(stream: GenerateContentStreamResult): void
+  setStream(stream: Generate): void
   initPrompt?: string
 }) => {
   const [getCurrentPlaceholder, setCurrentPlaceholder] = createSignal({
@@ -93,6 +102,7 @@ export const FromText = (props: {
     index: 0,
   })
   const [getPrompt, setPrompt] = createSignal(props.initPrompt ?? '')
+  const [getIsPreprocessing, setIsPreprocessing] = createSignal(false)
 
   let cleanupped = false
   onMount(() => {
@@ -150,24 +160,27 @@ export const FromText = (props: {
   })
 
   const generate = async () => {
+    setIsPreprocessing(true)
     const gemini = getGemini()
     const model = gemini.getGenerativeModel({
       model: 'gemini-1.5-flash',
     })
-    props.setStream(
-      await model
-        .startChat({
-          systemInstruction: {
-            role: 'model',
-            parts: [
-              {
-                text: 'ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。太字の場所はユーザーに見えません。また、単語の一覧を箇条書きにすることはしないでください。',
-              },
-            ],
-          },
-        })
-        .sendMessageStream(getPrompt()),
-    )
+    props.setStream({
+      generate: () =>
+        model
+          .startChat({
+            systemInstruction: {
+              role: 'model',
+              parts: [
+                {
+                  text: 'ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。太字の場所はユーザーに見えません。また、単語の一覧を箇条書きにすることはしないでください。',
+                },
+              ],
+            },
+          })
+          .sendMessageStream(getPrompt()),
+    })
+    setIsPreprocessing(false)
   }
 
   return (
@@ -184,21 +197,25 @@ export const FromText = (props: {
         </label>
         <button
           onClick={generate}
-          class="filled-button my-2 disabled:opacity-70"
-          disabled={!getPrompt()}
+          class="filled-button my-2 disabled:opacity-70 flex justify-center items-center gap-1"
+          disabled={!getPrompt() || getIsPreprocessing()}
           type="button"
         >
-          生成
+          <Show when={getIsPreprocessing()} fallback="生成">
+            <Spinner />
+            準備中...
+          </Show>
         </button>
       </div>
     </div>
   )
 }
 export const FromImage = (props: {
-  setStream(stream: GenerateContentStreamResult): void
+  setStream(stream: Generate): void
 }) => {
   const [getImageFile, setImageFile] = createSignal<File>()
   const [getScanedImageURL, setScanedImageURL] = createSignal<string>()
+  const [getIsPreprocessing, setIsPreprocessing] = createSignal(false)
 
   createEffect(() => {
     untrack(() => {
@@ -212,6 +229,7 @@ export const FromImage = (props: {
   })
 
   const generate = async () => {
+    setIsPreprocessing(true)
     const file = getImageFile()
     if (!file) {
       return
@@ -227,29 +245,31 @@ export const FromImage = (props: {
       reader.readAsDataURL(file)
     })
 
-    const stream = await model
-      .startChat({
-        systemInstruction: {
-          role: 'model',
-          parts: [
-            {
-              text: '画像を抽出し、そっくりそのまま書き出しなさい。省略せずに画像の文字全てを書き出すこと。画像に書いていないことは書かないこと。また、ユーザーからの指示があれば、条件を満たす場所をMarkdownの太字で表現しなさい。',
-            },
-          ],
-        },
-      })
-      .sendMessageStream([
-        {
-          text: '',
-        },
-        {
-          inlineData: {
-            mimeType: file.type,
-            data: b64,
+    const generate = () =>
+      model
+        .startChat({
+          systemInstruction: {
+            role: 'model',
+            parts: [
+              {
+                text: '画像を抽出し、そっくりそのまま書き出しなさい。省略せずに画像の文字全てを書き出すこと。画像に書いていないことは書かないこと。また、ユーザーからの指示があれば、条件を満たす場所をMarkdownの太字で表現しなさい。',
+              },
+            ],
           },
-        },
-      ])
-    props.setStream(stream)
+        })
+        .sendMessageStream([
+          {
+            text: '',
+          },
+          {
+            inlineData: {
+              mimeType: file.type,
+              data: b64,
+            },
+          },
+        ])
+    props.setStream({ generate })
+    setIsPreprocessing(false)
   }
 
   return (
@@ -274,8 +294,16 @@ export const FromImage = (props: {
             <label class="h-full flex flex-col">
               <div>どのように処理するかのカスタムプロンプト(任意)</div>
               <textarea class="w-full m-1 p-1 border grow" placeholder="" />
-              <button onClick={generate} type="button" class="filled-button">
-                生成
+              <button
+                onClick={generate}
+                type="button"
+                class="filled-button disabled:opacity-80 flex items-center gap-1 justify-center"
+                disabled={getIsPreprocessing()}
+              >
+                <Show when={getIsPreprocessing()} fallback={'生成'}>
+                  <Spinner />
+                  準備中...
+                </Show>
               </button>
             </label>
           </div>
@@ -326,22 +354,81 @@ export const AIDialogCore = (props: {
   initPrompt?: string
 }) => {
   const [getGenerateMode, setGenerateMode] = createSignal<Mode>('text')
-  const [getStream, setStream] = createSignal<GenerateContentStreamResult>()
+  const [getStream, setStream] = createSignal<Generate>()
   const [getGenerated, setGenerated] = createSignal('')
   const [getIsGenerating, setIsGenerating] = createSignal(false)
+  const [getGenerateError, setGenerateError] = createSignal<{
+    type: 'SERVICE_UNAVAILABLE' | 'UNKNOWN' | 'SAFETY' | 'RATE_LIMIT'
+    isFetchError: boolean
+  }>()
+  let outputRef!: HTMLDivElement
 
-  createEffect(() => {
-    const stream = getStream()
-    if (!stream) {
+  const generate = async () => {
+    setIsGenerating(true)
+    setGenerated('')
+    setGenerateError()
+    const streamer = getStream()
+    if (!streamer) {
       return
     }
-    ;(async () => {
-      setIsGenerating(true)
-      for await (const chunk of stream.stream) {
-        setGenerated(`${getGenerated()}${chunk.text()}`)
+    let stream: GenerateContentStreamResult
+    try {
+      stream = await streamer.generate()
+    } catch (error) {
+      if (error instanceof GoogleGenerativeAIFetchError) {
+        switch (error.status) {
+          case 429:
+            setGenerateError({ type: 'RATE_LIMIT', isFetchError: true })
+            break
+          case 500:
+          case 503:
+            setGenerateError({
+              type: 'SERVICE_UNAVAILABLE',
+              isFetchError: true,
+            })
+            break
+          default:
+            setGenerateError({ type: 'UNKNOWN', isFetchError: true })
+            break
+        }
+        setIsGenerating(false)
+        return
       }
       setIsGenerating(false)
-    })()
+      return
+    }
+    try {
+      for await (const chunk of stream.stream) {
+        setGenerated(`${getGenerated()}${chunk.text()}`)
+        outputRef.scrollTo({
+          behavior: 'smooth',
+          top: 100 + outputRef.scrollHeight,
+        })
+      }
+    } catch (error) {
+      if (error instanceof GoogleGenerativeAIResponseError) {
+        const response = (
+          error as GoogleGenerativeAIResponseError<GenerateContentResponse>
+        ).response
+        if (response?.candidates?.[0]?.finishReason === 'SAFETY') {
+          setGenerateError({
+            type: 'SAFETY',
+            isFetchError: false,
+          })
+          return
+        }
+      }
+      setGenerateError({
+        type: 'UNKNOWN',
+        isFetchError: false,
+      })
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+  createEffect(() => {
+    getStream()
+    generate()
   })
   return (
     <div>
@@ -360,21 +447,75 @@ export const AIDialogCore = (props: {
         }
       >
         <div>
-          <Show when={getIsGenerating()}>
-            <div class="text-2xl">生成中...</div>
-          </Show>
           <div
-            class="nanohanote-textnote-styler border p-1"
+            class="nanohanote-textnote-styler border p-1 max-h-[70dvh] overflow-y-scroll break-words"
             innerHTML={renderMarkdown(getGenerated())}
+            ref={outputRef}
           />
-          <button
-            onClick={() => props.close(renderMarkdown(getGenerated()))}
-            class="filled-button disabled:opacity-80"
-            disabled={getIsGenerating()}
-            type="button"
+          <div
+            classList={{
+              'grid grid-cols-1 md:grid-cols-2': !!getGenerateError(),
+            }}
           >
-            結果を挿入する
-          </button>
+            <div class="text-error">
+              <Switch>
+                <Match when={getGenerateError()?.type === 'SAFETY'}>
+                  安全上の理由により停止されました
+                </Match>
+                <Match when={getGenerateError()?.type === 'RATE_LIMIT'}>
+                  API
+                  呼び出しの上限に達しました。時間をおいて試す、またはカスタム
+                  Gemini API Key
+                  を設定するか、更新することにより解決するかもしれません。
+                </Match>
+                <Match
+                  when={getGenerateError()?.type === 'SERVICE_UNAVAILABLE'}
+                >
+                  Google
+                  のサーバーにエラーが発生している可能性があります。時間をおいて試してください。
+                </Match>
+                <Match when={getGenerateError()?.type === 'UNKNOWN'}>
+                  Gemini の使用において、不明なエラーが発生しました。
+                </Match>
+              </Switch>
+            </div>
+            <div class="flex items-center">
+              <Show when={!getIsGenerating() && getGenerateError()}>
+                <button class="filled-button" type="button" onClick={generate}>
+                  再生成
+                </button>
+              </Show>
+              <Show when={!getGenerateError()?.isFetchError}>
+                <button
+                  onClick={() => props.close(renderMarkdown(getGenerated()))}
+                  classList={{
+                    'text-button': !!getGenerateError(),
+                    'filled-button': !getGenerateError(),
+                  }}
+                  class="disabled:opacity-80"
+                  disabled={getIsGenerating()}
+                  type="button"
+                >
+                  <Show
+                    when={getIsGenerating()}
+                    fallback={
+                      getGenerateError() ? 'このまま挿入' : '結果を挿入する'
+                    }
+                  >
+                    <div class="flex gap-2 justify-start items-center">
+                      <Spinner />
+                      生成中...
+                    </div>
+                  </Show>
+                </button>
+              </Show>
+              <Show when={!getIsGenerating() && !getGenerateError()}>
+                <button class="text-button" type="button" onClick={generate}>
+                  再生成
+                </button>
+              </Show>
+            </div>
+          </div>
         </div>
       </Show>
     </div>
