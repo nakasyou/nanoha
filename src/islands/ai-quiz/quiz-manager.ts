@@ -76,7 +76,7 @@ export class QuizManager {
           reason: 'new'
         }))
       }
-      await this.#addProposedQuizz(notes, n)
+      await this.#addProposedQuizz(notes, noteId)
     }
   }
 }
