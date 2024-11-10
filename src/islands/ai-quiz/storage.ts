@@ -1,45 +1,33 @@
 import Dexie from 'dexie'
 import type { QuizContent } from './constants'
 
-type SerializedQuiz = {
-  type: 'select'
-} & QuizContent
-
-export interface QuizzesByNote {
+export interface Quizzes {
   id?: number
 
-  targetNotebook: string
+  /** ノートの ID */
+  noteId: number
+  /** ノートの中のノートの ID */
+  noteDataId: string
 
-  quiz: SerializedQuiz
+  /** 問題 */
+  content: QuizContent
 
-  rateSource: {
-    /**
-     * 正答数
-     */
-    correct: number
-    /**
-     * 出題数
-     */
-    total: number
-  }
-
-  rate: number
-
-  noteId: string
-
-  noteTimestamp: number
+  /** 何回出題した？ */
+  proposeCount: number
+  /** 何回正解した？ */
+  correctCount: number
 }
 
 export class QuizDB extends Dexie {
-  quizzesByNote: Dexie.Table<QuizzesByNote, number>
+  quizzes: Dexie.Table<Quizzes, number>
   constructor() {
-    super('quizzesByNote')
+    super('quizzes')
 
     this.version(1).stores({
-      quizzesByNote:
-        'id++, targetNotebook, noteId, quiz, rateSource, rate, noteTimestamp',
+      quizzes:
+        'id++, noteId, noteDataId, content, proposeCount, correctCount',
     })
 
-    this.quizzesByNote = this.table('quizzesByNote')
+    this.quizzes = this.table('quizzes')
   }
 }

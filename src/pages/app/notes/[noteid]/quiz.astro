@@ -16,7 +16,7 @@ if (/^local\-.+$/.test(noteId)) {
 }
 ---
 <Base title="AI Quiz with Nanoha" description="AI によるクイズ" useViewTransitions={true} noIndex={true} bodyClass="bg-background text-on-background">
-  <QuizApp noteLoadType={noteLoadType} />
+  <QuizApp client:load noteLoadType={noteLoadType} />
 </Base>
 <style is:global>
   .icon-tabler {

@@ -12,18 +12,18 @@
         "type": "string",
         "description": "不正解時に表示される解説"
       },
-      "choices": {
+      "damys": {
         "type": "array",
-        "description": "選択肢。2個から5個まで",
+        "description": "ダミーの選択肢。",
         "items": {
           "type": "string"
         }
       },
       "corrects": {
         "type": "array",
-        "description": "正解の選択肢のインデックス。完答形式。",
+        "description": "正解の選択肢のリスト。",
         "items": {
-          "type": "number"
+          "type": "string"
         }
       }
     },
