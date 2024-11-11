@@ -31,13 +31,28 @@ const generateQuizzesFromAI = async (text: string): Promise<QuizContent[]> => {
   if (!Array.isArray(json)) {
     return []
   }
-  return json.filter(r => safeParse(CONTENT_SCHEMA, r).success)
+  return json.flatMap(r => {
+    const parsed = safeParse(CONTENT_SCHEMA, r)
+    if (!parsed.success) {
+      return []
+    }
+    const data = parsed.output
+    if (!new Set(data.damys).isDisjointFrom(new Set(data.corrects))) {
+      return []
+    }
+    return [data]
+  })
 }
 
 export interface GeneratedQuiz {
   content: QuizContent
   noteDataId: string
-  reason: 'new'
+  reason: 'new' | 'lowRate'
+  id: number
+  rate: {
+    proposed: number
+    correct: number
+  }
 }
 export class QuizManager {
   #db: QuizDB
@@ -49,6 +64,13 @@ export class QuizManager {
       noteId,
       proposeCount: 0
     }).toArray()
+    return quizzes
+  }
+  async getLowCorrectRateQuizzes(noteId: number) {
+    const quizzes = (await this.#db.quizzes.where({
+      noteId
+    }).toArray())
+      .filter(q => q.proposeCount > 0).sort((a, b) => (a.correctCount / a.proposeCount) - (b.correctCount / b.proposeCount))
     return quizzes
   }
   async #addProposedQuizz(notes: MargedNoteData[], noteId: number) {
@@ -67,25 +89,53 @@ export class QuizManager {
     await this.#db.quizzes.bulkAdd(quizzes)
   }
   async generateQuizzes(n: number, notes: MargedNoteData[], noteId: number): Promise<GeneratedQuiz[]> {
+    const quizzes: Map<number, GeneratedQuiz> = new Map()
+
+    // First, propose 5 low rate quizzes
+    const lowRates = await this.getLowCorrectRateQuizzes(noteId)
+    for (let i = 0; i < 5; i++) {
+      const lowRateQuiz = lowRates[i]
+      if (!lowRateQuiz) {
+        break
+      }
+      quizzes.set(lowRateQuiz.id ?? 0, {
+        content: lowRateQuiz.content,
+        id: lowRateQuiz.id ?? 0,
+        reason: 'lowRate',
+        noteDataId: lowRateQuiz.noteDataId,
+        rate: {
+          proposed: lowRateQuiz.proposeCount, correct: lowRateQuiz.correctCount
+        }
+      })
+    }
+
+    // Second, generate quizzes
     while (true) {
-      const gotQuizzes = await this.#getNeverProposedQuizzes(noteId)
-      if (gotQuizzes.length >= n) {
-        return shuffle(gotQuizzes).slice(0, n).map(data => ({
-          content: data.content,
-          noteDataId: data.noteDataId,
+      const gotQuizzes = shuffle(await this.#getNeverProposedQuizzes(noteId))
+      for (const quiz of gotQuizzes) {
+        quizzes.set(quiz.id ?? 0, {
+          id: quiz.id ?? 0,
+          content: quiz.content,
           reason: 'new',
-          id: data.id ?? 0
-        }))
+          noteDataId: quiz.noteDataId,
+          rate: { proposed: quiz.proposeCount, correct: quiz.correctCount }
+        })
+      }
+
+      if ([...quizzes.keys()].length >= n) {
+        return shuffle([...quizzes.values()])
       }
       await this.#addProposedQuizz(notes, noteId)
     }
   }
-  async updateQuizStat (id: number, corrected: boolean) {
+  async updateQuizStat(id: number, corrected: boolean) {
     const prev = await this.#db.quizzes.get(id)
-    if (corrected) {
-      prev.correctCount ++
+    if (!prev) {
+      return
     }
-    prev.proposeCount ++
-    await this.#db.quizzes
+    await this.#db.quizzes.update(id, {
+      proposeCount: prev.proposeCount + 1,
+      correctCount: corrected ? prev.correctCount + 1 : prev.correctCount
+    })
   }
 }

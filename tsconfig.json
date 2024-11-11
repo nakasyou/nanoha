@@ -5,7 +5,9 @@
     "jsxImportSource": "solid-js",
     "allowImportingTsExtensions": true,
     "types": ["bun-types"],
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "lib": ["dom", "ESNext"],
+    "target": "ESNext"
   },
   "exclude": ["dist", "./node_modules/@qwikdev/astro/**/*"]
 }
