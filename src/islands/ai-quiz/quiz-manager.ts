@@ -70,13 +70,22 @@ export class QuizManager {
     while (true) {
       const gotQuizzes = await this.#getNeverProposedQuizzes(noteId)
       if (gotQuizzes.length >= n) {
-        return shuffle(gotQuizzes).map(data => ({
+        return shuffle(gotQuizzes).slice(0, n).map(data => ({
           content: data.content,
           noteDataId: data.noteDataId,
-          reason: 'new'
+          reason: 'new',
+          id: data.id ?? 0
         }))
       }
       await this.#addProposedQuizz(notes, noteId)
     }
+  }
+  async updateQuizStat (id: number, corrected: boolean) {
+    const prev = await this.#db.quizzes.get(id)
+    if (corrected) {
+      prev.correctCount ++
+    }
+    prev.proposeCount ++
+    await this.#db.quizzes
   }
 }
