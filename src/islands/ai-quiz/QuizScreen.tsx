@@ -35,17 +35,17 @@ const QuizSelection = (props: {
   })
 
   return (
-      <button
-        type="button"
-        class="w-full block transition-all h-auto min-h-[2.5rem]"
-        classList={{
-          'filled-button': getSelected(),
-          'outlined-button': !getSelected(),
-        }}
-        onClick={() => setSelected(!getSelected())}
-      >
-        {props.text}
-      </button>
+    <button
+      type="button"
+      class="w-full block transition-all h-auto min-h-[2.5rem]"
+      classList={{
+        'filled-button': getSelected(),
+        'outlined-button': !getSelected(),
+      }}
+      onClick={() => setSelected(!getSelected())}
+    >
+      {props.text}
+    </button>
   )
 }
 
@@ -68,20 +68,20 @@ const SelectAnswerScreen = (props: {
       <div class="">
         <div class="text-lg">{props.quiz.content.question}</div>
         <div class="text-right">
-        <Show
-          when={props.quiz.reason === 'new'}
-          fallback={
-            <>
-              😒低正答率 (
-              {Math.round(
-                (props.quiz.rate.correct / props.quiz.rate.proposed) * 10000,
-              ) / 100}
-              %)
-            </>
-          }
-        >
-          ⚡新しい問題
-        </Show>
+          <Show
+            when={props.quiz.reason === 'new'}
+            fallback={
+              <>
+                😒低正答率 (
+                {Math.round(
+                  (props.quiz.rate.correct / props.quiz.rate.proposed) * 10000,
+                ) / 100}
+                %)
+              </>
+            }
+          >
+            ⚡新しい問題
+          </Show>
         </div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -246,10 +246,26 @@ const ExplainScreen = (props: {
               </For>
             </div>
             <div class="flex gap-2 flex-wrap justify-center my-5">
-              <button class="flex items-center text-button md:hidden"type="button"onClick={() => {setIsShownExplain(true);setTimeout(() => setIsTopExplain(true), 50)}}><div innerHTML={icon('sparkles')} class="w-8 h-8" />解説を見る</button>
-              <button class="flex items-center filled-button" type="button" onClick={() => props.onEnd()}>次の問題<div innerHTML={icon('chevronRight')} class="w-8 h-8" /></button>
+              <button
+                class="flex items-center text-button md:hidden"
+                type="button"
+                onClick={() => {
+                  setIsShownExplain(true)
+                  setTimeout(() => setIsTopExplain(true), 50)
+                }}
+              >
+                <div innerHTML={icon('sparkles')} class="w-8 h-8" />
+                解説を見る
+              </button>
+              <button
+                class="flex items-center filled-button"
+                type="button"
+                onClick={() => props.onEnd()}
+              >
+                次の問題
+                <div innerHTML={icon('chevronRight')} class="w-8 h-8" />
+              </button>
             </div>
-
           </div>
           <div class="hidden md:block w-1/2 h-full">
             <ExplainContent quiz={props.quiz} />
@@ -368,7 +384,6 @@ export const QuizScreen = (props: {
     setIsShownExplain(false)
     setIsShownCorrect(false)
   }
-
 
   return (
     <div class="h-full flex flex-col">

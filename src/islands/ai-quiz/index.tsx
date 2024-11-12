@@ -70,8 +70,20 @@ export default (props: {
                   <hr class="my-1" />
                   <div class="mb-1">AI によるスマートな学習</div>
                   <div class="flex justify-center gap-2 flex-wrap">
-                    <button type="button" class="filled-button" onClick={() => setIsShownQuizScreen(true)}>学習を開始する</button>
-                    <button type="button" class="text-button" onClick={() => finish()}>戻る</button>
+                    <button
+                      type="button"
+                      class="filled-button"
+                      onClick={() => setIsShownQuizScreen(true)}
+                    >
+                      学習を開始する
+                    </button>
+                    <button
+                      type="button"
+                      class="text-button"
+                      onClick={() => finish()}
+                    >
+                      戻る
+                    </button>
                   </div>
                 </div>
               </div>
@@ -85,7 +97,10 @@ export default (props: {
           </>
         }
       >
-        <QuizScreen notes={getNote() as MargedNoteData[]} noteId={getNoteId() as number} />
+        <QuizScreen
+          notes={getNote() as MargedNoteData[]}
+          noteId={getNoteId() as number}
+        />
       </Show>
     </div>
   )
