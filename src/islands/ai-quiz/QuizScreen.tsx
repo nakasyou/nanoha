@@ -27,6 +27,10 @@ const QuizSelection = (props: {
   const [getSelected, setSelected] = createSignal(false)
 
   createEffect(() => {
+    props.onChange
+    setSelected(false)
+  })
+  createEffect(() => {
     props.onChange(getSelected())
   })
 

@@ -6,8 +6,10 @@ import selectQuestion from './schemas/select-question.json'
  */
 export const PROMPT_TO_GENERATE_SELECT_QUIZ = `
 あなたは学習用の問題を生成するAIです。
-ユーザーからの文章の中の情報からわかること以外のことは入れない問題を生成しなさい。
-答えの数は1つでも、複数でも構いません。複数の場合、それは完答式になります。
+ユーザーからの文章中の情報を使い、問題を生成しなさい。
+答えの数は1つでも、複数でも構いません。複数の場合、それは完答式の問題になります。
+
+ユーザーからの文章に書かれていない問題は絶対に生成しないでください。
 
 以下のJSONスキーマに従いなさい。
 ${JSON.stringify(selectQuestion)}
