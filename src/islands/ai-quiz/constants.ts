@@ -1,4 +1,4 @@
-import { type InferOutput, array, object, string } from 'valibot'
+import { type InferOutput, array, number, object, string } from 'valibot'
 import selectQuestion from './schemas/select-question.json'
 
 /**
@@ -6,7 +6,10 @@ import selectQuestion from './schemas/select-question.json'
  */
 export const PROMPT_TO_GENERATE_SELECT_QUIZ = `
 あなたは学習用の問題を生成するAIです。
-ユーザーからの文章の中の情報のみを使用して、重複のない問題を生成してください。
+ユーザーからの文章中の情報を使い、問題を生成しなさい。
+答えの数は1つでも、複数でも構いません。複数の場合、それは完答式の問題になります。
+
+ユーザーからの文章に書かれていない問題は絶対に生成しないでください。
 
 以下のJSONスキーマに従いなさい。
 ${JSON.stringify(selectQuestion)}
@@ -15,8 +18,8 @@ ${JSON.stringify(selectQuestion)}
 export const CONTENT_SCHEMA = object({
   question: string(),
   explanation: string(),
-  correctAnswer: string(),
-  damyAnswers: array(string()),
+  damys: array(string()),
+  corrects: array(string()),
 })
 
 export type QuizContent = InferOutput<typeof CONTENT_SCHEMA>

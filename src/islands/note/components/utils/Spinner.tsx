@@ -1,5 +1,10 @@
-export const Spinner = () => {
+export const Spinner = (props: {
+  class?: string
+}) => {
   return (
-    <div class="animate-spin h-[1.2rem] w-[1.2rem] border-2 border-surface rounded-full border-t-transparent inline-block" />
+    <div
+      classList={{ [props.class ?? '']: true }}
+      class="animate-spin h-[1.2rem] w-[1.2rem] border-2 rounded-full border-t-transparent inline-block"
+    />
   )
 }
