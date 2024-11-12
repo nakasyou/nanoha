@@ -8,6 +8,8 @@ export interface Quizzes {
   noteId: number
   /** ノートの中のノートの ID */
   noteDataId: string
+  /** ノートの SHA256 */
+  noteHash: string
 
   /** 問題 */
   content: QuizContent
@@ -25,7 +27,7 @@ export class QuizDB extends Dexie {
 
     this.version(1).stores({
       quizzes:
-        'id++, noteId, noteDataId, content, proposeCount, correctCount',
+        'id++, noteId, noteDataId, noteHash, content, proposeCount, correctCount',
     })
 
     this.quizzes = this.table('quizzes')

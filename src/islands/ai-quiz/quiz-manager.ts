@@ -5,6 +5,7 @@ import type { MargedNoteData } from '../note/components/notes-utils'
 import type { TextNoteData } from '../note/components/notes/TextNote/types'
 import type { QuizDB, Quizzes } from './storage'
 import { shuffle } from '../../utils/arr'
+import { sha256 } from '../shared/hash'
 
 const generateQuizzesFromAI = async (text: string): Promise<QuizContent[]> => {
   const gemini = getGoogleGenerativeAI()
@@ -53,24 +54,58 @@ export interface GeneratedQuiz {
     proposed: number
     correct: number
   }
+  usedNote: TextNoteData
 }
 export class QuizManager {
   #db: QuizDB
   constructor(db: QuizDB) {
     this.#db = db
   }
-  async #getNeverProposedQuizzes(noteId: number) {
+  async #getNeverProposedQuizzes(noteId: number, notes: MargedNoteData[]) {
+    const noteHashes = new Set(await Promise.all(notes.map(note => sha256(JSON.stringify(note.canToJsonData)))))
+
     const quizzes = await this.#db.quizzes.where({
       noteId,
       proposeCount: 0
     }).toArray()
+
+    const toDeleteIndexes: number[] = []
+    for (let i = 0; i < quizzes.length; i++) {
+      const quiz = quizzes[i]!
+      if (!noteHashes.has(quiz.noteHash)) {
+        await this.#db.quizzes.delete(quiz.id!)
+
+        toDeleteIndexes.push(i)
+      }
+    }
+
+    for (const toDeleteIndex of toDeleteIndexes.reverse()) {
+      quizzes.splice(toDeleteIndex, 1)
+    }
+
     return quizzes
   }
-  async getLowCorrectRateQuizzes(noteId: number) {
+  async getLowCorrectRateQuizzes(noteId: number, notes: MargedNoteData[]) {
+    const noteHashes = new Set(await Promise.all(notes.map(note => sha256(JSON.stringify(note.canToJsonData)))))
+
     const quizzes = (await this.#db.quizzes.where({
       noteId
     }).toArray())
       .filter(q => q.proposeCount > 0).sort((a, b) => (a.correctCount / a.proposeCount) - (b.correctCount / b.proposeCount))
+
+    const toDeleteIndexes: number[] = []
+    for (let i = 0; i < quizzes.length; i++) {
+      const quiz = quizzes[i]!
+      if (!noteHashes.has(quiz.noteHash)) {
+        await this.#db.quizzes.delete(quiz.id!)
+
+        toDeleteIndexes.push(i)
+      }
+    }
+    for (const toDeleteIndex of toDeleteIndexes.reverse()) {
+      quizzes.splice(toDeleteIndex, 1)
+    }
+
     return quizzes
   }
   async #addProposedQuizz(notes: MargedNoteData[], noteId: number) {
@@ -78,13 +113,14 @@ export class QuizManager {
     const randomTextNote = textNotes[Math.floor(textNotes.length * Math.random())]
     const generated = await generateQuizzesFromAI(randomTextNote?.canToJsonData.html ?? '')
 
-    const quizzes = generated.map(content => ({
+    const quizzes = await Promise.all(generated.map(async content => ({
       content,
       correctCount: 0,
       proposeCount: 0,
       noteDataId: randomTextNote?.id ?? '',
-      noteId
-    } satisfies Quizzes))
+      noteId,
+      noteHash: await sha256(JSON.stringify(randomTextNote?.canToJsonData))
+    } satisfies Quizzes)))
 
     await this.#db.quizzes.bulkAdd(quizzes)
   }
@@ -92,7 +128,7 @@ export class QuizManager {
     const quizzes: Map<number, GeneratedQuiz> = new Map()
 
     // First, propose 5 low rate quizzes
-    const lowRates = await this.getLowCorrectRateQuizzes(noteId)
+    const lowRates = await this.getLowCorrectRateQuizzes(noteId, notes)
     for (let i = 0; i < 5; i++) {
       const lowRateQuiz = lowRates[i]
       if (!lowRateQuiz) {
@@ -105,25 +141,27 @@ export class QuizManager {
         noteDataId: lowRateQuiz.noteDataId,
         rate: {
           proposed: lowRateQuiz.proposeCount, correct: lowRateQuiz.correctCount
-        }
+        },
+        usedNote: notes.find(note => note.id === lowRateQuiz.noteDataId)! as TextNoteData
       })
     }
 
     // Second, generate quizzes
     while (true) {
-      const gotQuizzes = shuffle(await this.#getNeverProposedQuizzes(noteId))
+      const gotQuizzes = shuffle(await this.#getNeverProposedQuizzes(noteId, notes))
       for (const quiz of gotQuizzes) {
         quizzes.set(quiz.id ?? 0, {
           id: quiz.id ?? 0,
           content: quiz.content,
           reason: 'new',
           noteDataId: quiz.noteDataId,
-          rate: { proposed: quiz.proposeCount, correct: quiz.correctCount }
+          rate: { proposed: quiz.proposeCount, correct: quiz.correctCount },
+          usedNote: notes.find(note => note.id === quiz.noteDataId)! as TextNoteData
         })
       }
 
       if ([...quizzes.keys()].length >= n) {
-        return shuffle([...quizzes.values()])
+        return shuffle([...quizzes.values()]).slice(0, n)
       }
       await this.#addProposedQuizz(notes, noteId)
     }

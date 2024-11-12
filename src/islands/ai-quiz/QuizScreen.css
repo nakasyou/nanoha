@@ -1,0 +1,3 @@
+.nanoha-sheet {
+    @apply bg-secondary-container text-on-secondary-container;
+}

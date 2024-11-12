@@ -12,6 +12,8 @@ import { QuizDB, type Quizzes } from './storage'
 import type { QuizContent } from './constants'
 import { shuffle } from '../../utils/arr'
 import { icon } from '../../utils/icons'
+import type { TextNoteData } from '../note/components/notes/TextNote/types'
+import './QuizScreen.css'
 
 const QuizSelection = (props: {
   text: string
@@ -66,8 +68,8 @@ const SelectAnswerScreen = (props: {
               😒低正答率 (
               {Math.round(
                 (props.quiz.rate.correct / props.quiz.rate.proposed) * 10000,
-              ) / 100}%
-              )
+              ) / 100}
+              % )
             </div>
           }
         >
@@ -134,6 +136,22 @@ const CorrectShow = (props: {
   )
 }
 
+const ExplainContent = (props: {
+  quiz: GeneratedQuiz
+}) => {
+  return <div class="h-full flex flex-col justify-between gap-2">
+    <div class="h-1/2">
+      <div class="font-bold">✨AI による解説</div>
+      <div class="overflow-y-auto p-2 border h-full">{props.quiz.content.explanation}</div>
+    </div>
+    <div class="h-1/2">
+      <div class="font-bold">📒使用されたノート</div>
+      <div class="overflow-y-auto p-2 border h-1/2">
+        <div innerHTML={props.quiz.usedNote.canToJsonData.html} />
+      </div>
+    </div>
+  </div>
+}
 /** 不正解時 */
 const ExplainScreen = (props: {
   quiz: GeneratedQuiz
@@ -141,13 +159,30 @@ const ExplainScreen = (props: {
 
   onEnd(): void
 }) => {
+  const [getIsShownExplain, setIsShownExplain] = createSignal(false)
+  const [getIsTopExplain, setIsTopExplain] = createSignal(false)
+
   return (
     <div class="h-full flex flex-col justify-between p-2">
+      <Show when={getIsShownExplain()}>
+        <div classList={{ 'translate-y-[100%] opacity-0': !getIsTopExplain() }} class="p-2 transition-all bg-background border border-outlined w-full h-dvh fixed top-0 left-0 z-30">
+          <div class="flex justify-between items-center">
+            <div class="text-2xl">解説</div>
+            <button onClick={() => {
+              setIsTopExplain(false)
+              setTimeout(() => {
+                setIsShownExplain(false)
+              }, 200)
+            }} type="button" innerHTML={icon('x')} class="w-10 h-10" />
+          </div>
+          <ExplainContent quiz={props.quiz} />
+        </div>
+      </Show>
       <div>
         <div class="text-3xl text-center my-2">😒不正解..</div>
         <div class="text-center p-2">{props.quiz.content.question}</div>
       </div>
-      <div class="grid place-items-center">
+      <div class="grid md:grid-cols-2 p-2 place-items-center">
         <div class="grid grid-cols-3 gap-2">
           <div>選択肢</div>
           <div>あなたの回答</div>
@@ -185,8 +220,22 @@ const ExplainScreen = (props: {
             )}
           </For>
         </div>
+        <div class="hidden md:block">
+          <ExplainContent quiz={props.quiz}/>
+        </div>
       </div>
       <div class="grid place-items-center">
+        <button
+          class="flex items-center text-button md:hidden"
+          type="button"
+          onClick={() => {
+            setIsShownExplain(true)
+            setTimeout(() => setIsTopExplain(true), 50)
+          }}
+        >
+          <div innerHTML={icon('sparkles')} class="w-8 h-8" />
+          解説を見る
+        </button>
         <button
           class="flex items-center filled-button"
           type="button"
@@ -246,26 +295,27 @@ const ResultScreen = (props: {
   )
 }
 
+const QUESTION_COUNT = 10
 export const QuizScreen = (props: {
   notes: MargedNoteData[]
   noteId: number
 }) => {
   const [getQuizzes, setQuizzes] = createSignal<GeneratedQuiz[]>([])
-  const [getQuizIndex, setQuizIndex] = createSignal(0)
+  const [getQuizIndex, setQuizIndex] = createSignal(-1)
   const [getIsShownCorrect, setIsShownCorrect] = createSignal(false)
   const [getIsShownExplain, setIsShownExplain] = createSignal(false)
   const [getSelected, setSelected] = createSignal<string[]>([])
   const [getCorrectCount, setCorrectCount] = createSignal(0)
   const currentQuiz = createMemo(() => getQuizzes()[getQuizIndex()])
 
-  const isFinished = createMemo(() => getQuizIndex() === 10)
+  const isFinished = createMemo(() => getQuizIndex() >= QUESTION_COUNT)
 
   let quizManager!: QuizManager
 
   const nextRound = async () => {
     // Generate
     const generated = await quizManager.generateQuizzes(
-      10,
+      QUESTION_COUNT,
       props.notes,
       props.noteId,
     )
@@ -313,48 +363,58 @@ export const QuizScreen = (props: {
   }
 
   return (
-    <div class="h-full">
-      <Show
-        when={currentQuiz()}
-        fallback={
-          <Show
-            when={isFinished()}
-            fallback={
-              <div class="h-full grid place-items-center">生成中...</div>
-            }
-          >
-            <ResultScreen
-              all={10}
-              correct={getCorrectCount()}
-              onFinish={() => finish()}
-              onNextRound={() => nextRound()}
-            />
-          </Show>
-        }
-      >
-        {(quiz) => (
-          <Show
-            when={getIsShownExplain()}
-            fallback={
-              <SelectAnswerScreen quiz={quiz()} onAnswer={(s) => answered(s)} />
-            }
-          >
-            <ExplainScreen
-              quiz={currentQuiz()!}
-              selected={getSelected()}
-              onEnd={() => nextQuiz()}
-            />
-          </Show>
-        )}
+    <div class="h-full flex flex-col">
+      <Show when={!isFinished()}>
+        <div>
+          {getQuizIndex() + 1} / {QUESTION_COUNT}
+        </div>
       </Show>
-      <Show when={getIsShownCorrect()}>
-        <CorrectShow
-          onEndShow={() => {
-            setIsShownCorrect(false)
-            nextQuiz()
-          }}
-        />
-      </Show>
+      <div class="grow">
+        <Show
+          when={currentQuiz()}
+          fallback={
+            <Show
+              when={isFinished()}
+              fallback={
+                <div class="h-full grid place-items-center">生成中...</div>
+              }
+            >
+              <ResultScreen
+                all={QUESTION_COUNT}
+                correct={getCorrectCount()}
+                onFinish={() => finish()}
+                onNextRound={() => nextRound()}
+              />
+            </Show>
+          }
+        >
+          {(quiz) => (
+            <Show
+              when={getIsShownExplain()}
+              fallback={
+                <SelectAnswerScreen
+                  quiz={quiz()}
+                  onAnswer={(s) => answered(s)}
+                />
+              }
+            >
+              <ExplainScreen
+                quiz={quiz()}
+                selected={getSelected()}
+                onEnd={() => nextQuiz()}
+              />
+            </Show>
+          )}
+        </Show>
+        <Show when={getIsShownCorrect()}>
+          <CorrectShow
+            onEndShow={() => {
+              setIsShownCorrect(false)
+              nextQuiz()
+            }}
+          />
+        </Show>
+      </div>
     </div>
   )
 }
