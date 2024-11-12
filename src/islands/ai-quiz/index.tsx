@@ -4,7 +4,7 @@ import { loadNoteFromType } from '../shared/storage'
 import { load } from '../note/utils/file-format'
 import type { MargedNoteData } from '../note/components/notes-utils'
 import { Spinner } from '../note/components/utils/Spinner'
-import { QuizScreen } from './QuizScreen'
+import { finish, QuizScreen } from './QuizScreen'
 
 export const Navbar = () => {}
 
@@ -65,9 +65,15 @@ export default (props: {
           <>
             <Show when={getNoteLoadState() === 'loaded'}>
               <div class="h-full grid place-items-center">
-                <button type="button" class="filled-button" onClick={() => setIsShownQuizScreen(true)}>
-                  学習を開始する
-                </button>
+                <div class="text-center">
+                  <div class="text-3xl font-bold">Quiz with AI</div>
+                  <hr class="my-1" />
+                  <div class="mb-1">AI によるスマートな学習</div>
+                  <div class="flex justify-center gap-2 flex-wrap">
+                    <button type="button" class="filled-button" onClick={() => setIsShownQuizScreen(true)}>学習を開始する</button>
+                    <button type="button" class="text-button" onClick={() => finish()}>戻る</button>
+                  </div>
+                </div>
               </div>
             </Show>
             <Show when={getNoteLoadState() === 'pending'}>

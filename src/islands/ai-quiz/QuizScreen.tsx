@@ -15,6 +15,10 @@ import { icon } from '../../utils/icons'
 import type { TextNoteData } from '../note/components/notes/TextNote/types'
 import './QuizScreen.css'
 
+export const finish = () => {
+  location.href = location.href.replace(/\/quiz\/?$/, '')
+}
+
 const QuizSelection = (props: {
   text: string
 
@@ -27,10 +31,9 @@ const QuizSelection = (props: {
   })
 
   return (
-    <div class="w-full">
       <button
         type="button"
-        class="w-full block transition-all"
+        class="w-full block transition-all h-auto min-h-[2.5rem]"
         classList={{
           'filled-button': getSelected(),
           'outlined-button': !getSelected(),
@@ -39,7 +42,6 @@ const QuizSelection = (props: {
       >
         {props.text}
       </button>
-    </div>
   )
 }
 
@@ -59,24 +61,26 @@ const SelectAnswerScreen = (props: {
 
   return (
     <div class="h-full grid place-items-center">
-      <div class="text-lg p-2">
-        <div>{props.quiz.content.question}</div>
+      <div class="">
+        <div class="text-lg">{props.quiz.content.question}</div>
+        <div class="text-right">
         <Show
           when={props.quiz.reason === 'new'}
           fallback={
-            <div>
+            <>
               😒低正答率 (
               {Math.round(
                 (props.quiz.rate.correct / props.quiz.rate.proposed) * 10000,
               ) / 100}
-              % )
-            </div>
+              %)
+            </>
           }
         >
           ⚡新しい問題
         </Show>
+        </div>
       </div>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
         <For each={getSelections()}>
           {(selection) => (
             <QuizSelection
@@ -139,18 +143,20 @@ const CorrectShow = (props: {
 const ExplainContent = (props: {
   quiz: GeneratedQuiz
 }) => {
-  return <div class="h-full flex flex-col justify-between gap-2">
-    <div class="h-1/2">
-      <div class="font-bold">✨AI による解説</div>
-      <div class="overflow-y-auto p-2 border h-full">{props.quiz.content.explanation}</div>
-    </div>
-    <div class="h-1/2">
-      <div class="font-bold">📒使用されたノート</div>
-      <div class="overflow-y-auto p-2 border h-1/2">
-        <div innerHTML={props.quiz.usedNote.canToJsonData.html} />
+  return (
+    <div class="h-full gap-2">
+      <div class="flex flex-col">
+        <div class="font-bold">✨AI による解説</div>
+        <div class="p-2 grow">{props.quiz.content.explanation}</div>
+      </div>
+      <div class="flex flex-col">
+        <div class="font-bold">📒使用されたノート</div>
+        <div class="p-2 border grow">
+          <div innerHTML={props.quiz.usedNote.canToJsonData.html} />
+        </div>
       </div>
     </div>
-  </div>
+  )
 }
 /** 不正解時 */
 const ExplainScreen = (props: {
@@ -163,87 +169,88 @@ const ExplainScreen = (props: {
   const [getIsTopExplain, setIsTopExplain] = createSignal(false)
 
   return (
-    <div class="h-full flex flex-col justify-between p-2">
+    <div class="h-full flex flex-col p-2">
       <Show when={getIsShownExplain()}>
-        <div classList={{ 'translate-y-[100%] opacity-0': !getIsTopExplain() }} class="p-2 transition-all bg-background border border-outlined w-full h-dvh fixed top-0 left-0 z-30">
+        <div
+          classList={{ 'translate-y-[100%] opacity-0': !getIsTopExplain() }}
+          class="p-2 transition-all bg-background border border-outlined w-full h-dvh fixed top-0 left-0 z-30 flex flex-col"
+        >
           <div class="flex justify-between items-center">
             <div class="text-2xl">解説</div>
-            <button onClick={() => {
-              setIsTopExplain(false)
-              setTimeout(() => {
-                setIsShownExplain(false)
-              }, 200)
-            }} type="button" innerHTML={icon('x')} class="w-10 h-10" />
+            <button
+              onClick={() => {
+                setIsTopExplain(false)
+                setTimeout(() => {
+                  setIsShownExplain(false)
+                }, 200)
+              }}
+              type="button"
+              innerHTML={icon('x')}
+              class="w-10 h-10"
+            />
           </div>
-          <ExplainContent quiz={props.quiz} />
+          <div class="overflow-y-scroll grow">
+            <ExplainContent quiz={props.quiz} />
+          </div>
         </div>
       </Show>
       <div>
         <div class="text-3xl text-center my-2">😒不正解..</div>
         <div class="text-center p-2">{props.quiz.content.question}</div>
       </div>
-      <div class="grid md:grid-cols-2 p-2 place-items-center">
-        <div class="grid grid-cols-3 gap-2">
-          <div>選択肢</div>
-          <div>あなたの回答</div>
-          <div>正解</div>
-          <For
-            each={[...props.quiz.content.corrects, ...props.quiz.content.damys]}
-          >
-            {(selection) => (
-              <>
-                <div
-                  classList={{
-                    'text-green-500':
-                      props.selected.includes(selection) ===
-                      props.quiz.content.corrects.includes(selection),
-                    'text-red-500':
-                      props.selected.includes(selection) !==
-                      props.quiz.content.corrects.includes(selection),
-                  }}
-                >
-                  {selection}
-                </div>
-                <Show
-                  when={props.selected.includes(selection)}
-                  fallback={<div>✖</div>}
-                >
-                  <div>✅</div>
-                </Show>
-                <Show
-                  when={props.quiz.content.corrects.includes(selection)}
-                  fallback={<div>✖</div>}
-                >
-                  <div>✅</div>
-                </Show>
-              </>
-            )}
-          </For>
+      <div class="grow">
+        <div class="h-full md:flex md:items-start grid place-items-center">
+          <div class="md:w-1/2">
+            <div class="h-full grid grid-cols-3 gap-2 p-2">
+              <div>選択肢</div>
+              <div>あなたの回答</div>
+              <div>正解</div>
+              <For
+                each={[
+                  ...props.quiz.content.corrects,
+                  ...props.quiz.content.damys,
+                ]}
+              >
+                {(selection) => (
+                  <>
+                    <div
+                      classList={{
+                        'text-green-500':
+                          props.selected.includes(selection) ===
+                          props.quiz.content.corrects.includes(selection),
+                        'text-red-500':
+                          props.selected.includes(selection) !==
+                          props.quiz.content.corrects.includes(selection),
+                      }}
+                    >
+                      {selection}
+                    </div>
+                    <Show
+                      when={props.selected.includes(selection)}
+                      fallback={<div>✖</div>}
+                    >
+                      <div>✅</div>
+                    </Show>
+                    <Show
+                      when={props.quiz.content.corrects.includes(selection)}
+                      fallback={<div>✖</div>}
+                    >
+                      <div>✅</div>
+                    </Show>
+                  </>
+                )}
+              </For>
+            </div>
+            <div class="flex gap-2 flex-wrap justify-center my-5">
+              <button class="flex items-center text-button md:hidden"type="button"onClick={() => {setIsShownExplain(true);setTimeout(() => setIsTopExplain(true), 50)}}><div innerHTML={icon('sparkles')} class="w-8 h-8" />解説を見る</button>
+              <button class="flex items-center filled-button" type="button" onClick={() => props.onEnd()}>次の問題<div innerHTML={icon('chevronRight')} class="w-8 h-8" /></button>
+            </div>
+
+          </div>
+          <div class="hidden md:block w-1/2 h-full">
+            <ExplainContent quiz={props.quiz} />
+          </div>
         </div>
-        <div class="hidden md:block">
-          <ExplainContent quiz={props.quiz}/>
-        </div>
-      </div>
-      <div class="grid place-items-center">
-        <button
-          class="flex items-center text-button md:hidden"
-          type="button"
-          onClick={() => {
-            setIsShownExplain(true)
-            setTimeout(() => setIsTopExplain(true), 50)
-          }}
-        >
-          <div innerHTML={icon('sparkles')} class="w-8 h-8" />
-          解説を見る
-        </button>
-        <button
-          class="flex items-center filled-button"
-          type="button"
-          onClick={() => props.onEnd()}
-        >
-          次の問題
-          <div innerHTML={icon('chevronRight')} class="w-8 h-8" />
-        </button>
       </div>
     </div>
   )
@@ -358,15 +365,17 @@ export const QuizScreen = (props: {
     setIsShownCorrect(false)
   }
 
-  const finish = () => {
-    location.href = location.href.replace(/\/quiz\/?$/, '')
-  }
 
   return (
     <div class="h-full flex flex-col">
       <Show when={!isFinished()}>
-        <div>
-          {getQuizIndex() + 1} / {QUESTION_COUNT}
+        <div class="flex w-full justify-between items-center px-2">
+          <div>
+            問{getQuizIndex() + 1} / {QUESTION_COUNT}
+          </div>
+          <button class="text-button" type="button" onClick={finish}>
+            終了する
+          </button>
         </div>
       </Show>
       <div class="grow">
