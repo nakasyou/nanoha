@@ -237,7 +237,7 @@ export const FromImage = (props: {
 
     const ai = getGemini()
     const model = ai.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-1.5-pro',
     })
     const b64 = await new Promise<string>((resolve) => {
       const reader = new FileReader()
