@@ -70,7 +70,7 @@ export const TextNote = ((props) => {
         ExtensionPreviewLLM,
         Underline,
       ],
-      content: props.noteData.canToJsonData.html,
+      content: props.noteData.canToJsonData.html
     })
     setEditor(editor)
 
@@ -78,6 +78,9 @@ export const TextNote = ((props) => {
       setIsActiveSheet(editor.isActive('sheet'))
       setIsActiveBold(editor.isActive('bold'))
       setIsActiveUndlerline(editor.isActive('underline'))
+    })
+    editor.on('update', () => {
+      saveContent()
     })
   }
 
