@@ -39,21 +39,25 @@ export const TextNote = ((props) => {
       icon: icon('note'),
       toggle: 'toggleSheet',
       isActive: getIsActiveSheet,
+      title: '隠す',
     },
     {
       icon: icon('bold'),
       toggle: 'toggleBold',
       isActive: getIsActiveBold,
+      title: '太字にする',
     },
     {
       icon: icon('underline'),
       toggle: 'toggleUnderline',
       isActive: getIsActiveUndlerline,
+      title: '下線をつける',
     },
   ] satisfies {
     icon: string
     toggle: keyof Editor['commands'] & `toggle${string}`
     isActive: () => boolean
+    title: string
   }[]
 
   const startEditor = () => {
@@ -70,7 +74,7 @@ export const TextNote = ((props) => {
         ExtensionPreviewLLM,
         Underline,
       ],
-      content: props.noteData.canToJsonData.html
+      content: props.noteData.canToJsonData.html,
     })
     setEditor(editor)
 
@@ -214,7 +218,7 @@ export const TextNote = ((props) => {
           }}
         >
           <div />
-          <div class="flex justify-center gap-2 bg-white p-1 pb-0 mb-1 rounded-md">
+          <div class="flex justify-center gap-2 p-1 pb-0 mb-1 rounded-md">
             <For each={controllerItems}>
               {(data) => (
                 <button
@@ -227,6 +231,7 @@ export const TextNote = ((props) => {
                       data.isActive(),
                   }}
                   type="button"
+                  title={data.title}
                 >
                   <div innerHTML={data.icon} class="w-8 h-8" />
                 </button>
@@ -236,6 +241,7 @@ export const TextNote = ((props) => {
               type="button"
               class="grid drop-shadow-none"
               onClick={() => setIsShowLlmPromptDialog(true)}
+              title="AI 生成を利用する"
             >
               <div innerHTML={icon('sparkles')} class="w-8 h-8" />
             </button>
