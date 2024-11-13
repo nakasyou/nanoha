@@ -65,7 +65,7 @@ export const NoteList = component$((props) => {
     const notesDB = new NotesDB()
     notes.value = (await notesDB.notes.toArray()).sort((a, b) => {
       if (sortMode.value === 'updated') {
-        return a.updated.getTime() - b.updated.getTime()
+        return b.updated.getTime() - a.updated.getTime()
       }
       return a.name < b.name ? -1 : 1
     })
