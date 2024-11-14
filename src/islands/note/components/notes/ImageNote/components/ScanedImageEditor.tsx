@@ -1,4 +1,4 @@
-import { Show, createEffect } from 'solid-js'
+import { Show, createEffect, createSignal } from 'solid-js'
 import type { SetStoreFunction } from 'solid-js/store'
 import { Dialog, createDialog } from '../../../utils/Dialog'
 import type { ImageNoteData } from '../types'
@@ -18,6 +18,8 @@ export const ScanedImageEditor = (props: Props) => {
   const dialog = createDialog<boolean>()
 
   let scanInputRef!: HTMLInputElement
+
+  const [getImageType, setImageType] = createSignal<string>()
 
   const reScan = () => {
     scanInputRef.oninput = () => {

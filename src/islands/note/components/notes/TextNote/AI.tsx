@@ -19,7 +19,7 @@ import {
   onMount,
   untrack,
 } from 'solid-js'
-import { getGoogleGenerativeAI } from '../../../../shared/gemini'
+import { getGemini } from '../../../../shared/gemini'
 import { Spinner } from '../../utils/Spinner'
 
 const markdownParser = markdownIt()
@@ -82,16 +82,6 @@ const FROM_TEXT_PLACEHOLDER_CONTENTS: string[] = [
   '英語の曜日についての暗記シート',
 ]
 
-const getGemini = (): GoogleGenerativeAI => {
-  const ai = getGoogleGenerativeAI()
-  if (!ai) {
-    if (confirm('AI 機能が設定されていません。\n設定を開きますか？')) {
-      location.href = '/app/settings#ai'
-    }
-    throw 0
-  }
-  return ai
-}
 export const FromText = (props: {
   setStream(stream: Generate): void
   initPrompt?: string

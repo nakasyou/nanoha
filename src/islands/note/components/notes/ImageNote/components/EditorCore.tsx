@@ -3,6 +3,8 @@ import Sheet, { type Sheets } from './Sheet'
 
 import { icon } from '../../../../../../utils/icons'
 import { Dialog } from '../../../utils/Dialog'
+import { Spinner } from '../../../utils/Spinner'
+import { getGemini } from '../../../../../shared/gemini'
 
 export interface Props {
   scanedImage?: Blob | undefined
@@ -12,6 +14,11 @@ export interface Props {
   sheets?: Sheets
 
   rescan(): void
+}
+
+const IMAGE_TYPES: Record<string, string> = {
+  'image/png': 'png',
+  'image/jpeg': 'jpeg',
 }
 
 export default (props: Props) => {
@@ -243,9 +250,11 @@ export default (props: Props) => {
   }
   const sheetClicked = (sheetIndex: number) => {
     if (editMode() === 'clear') {
-      const lastSheets = sheets()
-      lastSheets.splice(sheetIndex, 1)
-      setSheets(lastSheets)
+      setSheets(sheets => {
+        const newSheets = [...sheets]
+        newSheets.splice(sheetIndex, 1)
+        return newSheets
+      })
       setTmpSheet(Math.random())
     }
   }
@@ -267,8 +276,144 @@ export default (props: Props) => {
     document.removeEventListener('pointercancel', pointerUp)
     document.removeEventListener('wheel', onWheel)
   })
+
+  const [getIsOCRIng, setIsOCRIng] = createSignal(false)
+  const ocr = async () => {
+    setIsOCRIng(true)
+
+    const imageType = IMAGE_TYPES[props.scanedImage!.type]
+    if (!imageType) {
+      alert('このファイル形式はサポートされていません')
+      setIsOCRIng(false)
+      return
+    }
+    let ocrResult:
+      | {
+          success: true
+          text: string
+          lines: {
+            /** Text in the line */
+            text: string
+            tokens: {
+              text: string
+              boundingBox: {
+                top: number
+                left: number
+                right: number
+                bottom: number
+                width: number
+                height: number
+              }
+            }[]
+          }[]
+        }
+      | {
+          success: false
+          error: string
+        }
+    try {
+      ocrResult = await fetch(
+        `https://ocr.evex.land?lang=ja&fileType=${imageType}`,
+        {
+          method: 'POST',
+          body: props.scanedImage!!,
+        },
+      ).then((res) => res.json())
+      if (!ocrResult.success) {
+        alert(`OCRエラーが発生しました: ${ocrResult.error}`)
+        setIsOCRIng(false)
+        return
+      }
+    } catch {
+      alert('OCR エラーが発生しました。時間をおいて試してください。')
+      setIsOCRIng(false)
+      return
+    }
+
+    const gemini = getGemini()
+
+    let importants: string[]
+    try {
+      const generated = await gemini
+        .getGenerativeModel({
+          model: 'gemini-1.5-pro',
+          generationConfig: {
+            responseMimeType: 'application/json',
+          },
+          systemInstruction: {
+            role: 'model',
+            parts: [
+              {
+                text: '渡されたテキストから、重要な単語をそのまま書き出し、結果を\n{ "words": ["重要単語", "重要単語2"] }\nの配列形式で返しなさい。',
+              },
+            ],
+          },
+        })
+        .startChat()
+        .sendMessage(ocrResult.text)
+      const parsed = JSON.parse(generated.response.text()).words
+      if (!Array.isArray(parsed)) {
+        throw new Error('This is not array')
+      }
+      importants = parsed.filter(word => typeof word === 'string')
+    } catch {
+      alert('生成にエラーが発生しました。時間をおいて試してください。')
+      setIsOCRIng(false)
+      return
+    }
+
+    const covers: {
+      top: number
+      left: number
+      width: number
+      height: number
+    }[][] = []
+    for (const line of ocrResult.lines) {
+      const tokenLength = line.tokens.length
+      for (let offset = 0; offset < tokenLength; offset ++) {
+        let text = ''
+        for (let i = offset; i < tokenLength; i++) {
+          text += line.tokens[i]!.text
+          for (const important of importants) {
+            if (text !== important) {
+              continue
+            }
+            covers.push(line.tokens.slice(Math.max(0, offset), i + 1).map(a => a.boundingBox))
+          }
+        }
+      }
+    }
+    const newSheets: Sheets = covers.map((covers): Sheets[number] => {
+      const maxHeight = covers.reduce((a, b) => Math.max(a, b.height), 0) * 1.5
+      const positions = covers.map(bb => ({x: bb.left + bb.width / 2, y: bb.top + bb.height / 2}))
+
+      const startPosition = {
+        x: covers[0]!.left - covers[0]!.width,
+        y: covers[0]!.top + covers[0]!.height / 2
+      }
+      const endPosition = {
+        x: covers.at(-1)!.left + covers.at(-1)!.width,
+        y: covers.at(-1)!.top + covers.at(-1)!.height / 2
+      }
+      return {
+        weight: maxHeight,
+        startPosition,
+        positions: [startPosition, ...positions, endPosition]
+      }
+    })
+    setSheets(sheets => [...sheets, ...newSheets])
+    setIsOCRIng(false)
+  }
   return (
     <div>
+      <Show when={getIsOCRIng()}>
+        <div class="fixed top-0 left-0 w-full h-dvh bg-[#000a] z-50 grid place-items-center">
+          <div class="flex items-center">
+            <Spinner />
+            <div class="text-white">処理中...</div>
+          </div>
+        </div>
+      </Show>
       <Show when={getRescanConfirm()}>
         <Dialog
           type="confirm"
@@ -376,6 +521,15 @@ export default (props: Props) => {
             type="button"
           >
             <div innerHTML={icon('eraser')} class="w-8 h-8" />
+          </button>
+          <button
+            class="grid hover:drop-shadow drop-shadow-none disabled:drop-shadow-none bg-secondary text-on-secondary disabled:bg-secondary-container disabled:text-on-secondary-container rounded-full p-1 border"
+            onClick={() => {
+              ocr()
+            }}
+            type="button"
+          >
+            <div innerHTML={icon('sparkles')} class="w-8 h-8" />
           </button>
         </div>
         <div>

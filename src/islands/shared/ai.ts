@@ -14,6 +14,7 @@ interface GenerateWithLLM {
     systemPrompt?: string,
   ): Generated
 }
+
 export const generateWithLLM: GenerateWithLLM = (
   input,
   modelLabel,
