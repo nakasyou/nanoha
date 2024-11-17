@@ -1,5 +1,4 @@
 ---
-import Footer from '../components/Footer.astro'
 import type { Props as HeaderProps } from '../components/Header.astro'
 import Header from '../components/Header.astro'
 import BaseLayout, { type Props as BaseProps } from './Base.astro'
@@ -12,6 +11,5 @@ export type Props = BaseProps & {
   <div class="">
     <Header headerSticky={Astro.props.headerSticky ?? 'sticky'}/>
     <slot />
-    <Footer />
   </div>
 </BaseLayout>
