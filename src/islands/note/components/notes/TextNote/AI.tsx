@@ -47,7 +47,7 @@ const ModeSwitcher = (props: {
   return (
     <div class="grid grid-cols-2 place-items-center">
       <button
-        class="border-b w-full"
+        class="border-b w-full h-full"
         onClick={() => props.onChange('text')}
         type="button"
       >
@@ -56,7 +56,7 @@ const ModeSwitcher = (props: {
         生成
       </button>
       <button
-        class="border-b w-full"
+        class="border-b w-full h-full"
         onClick={() => props.onChange('image')}
         type="button"
       >
@@ -282,13 +282,11 @@ export const FromImage = (props: {
           </div>
         }
       >
-        <div class="h-[70dvh] grid grid-cols-1 md:grid-cols-2">
+        <div class="h-[70dvh] max-h-[70dvh] grid grid-rows-2 grid-cols-1 md:grid-rows-1 md:grid-cols-2">
           <div>
-            <img
-              class="max-h-full p-2"
-              src={getScanedImageURL()}
-              alt="Scaned"
-            />
+            <div style={{
+              'background-image': `url("${getScanedImageURL()}")`
+            }} class="w-full h-full bg-no-repeat bg-center bg-contain" />
           </div>
           <div class="h-full">
             <label class="h-full flex flex-col">
