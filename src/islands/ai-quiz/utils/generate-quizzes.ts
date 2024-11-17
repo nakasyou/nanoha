@@ -13,6 +13,7 @@ export const quizzesGenerator = () => {
     return null
   }
 
+
   const model = gemini.getGenerativeModel({
     model: 'gemini-1.5-flash',
     generationConfig: {
