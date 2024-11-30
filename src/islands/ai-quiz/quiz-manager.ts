@@ -1,16 +1,16 @@
 import { parse, safeParse } from 'valibot'
+import { shuffle } from '../../utils/arr'
+import type { MargedNoteData } from '../note/components/notes-utils'
+import type { TextNoteData } from '../note/components/notes/TextNote/types'
 import { getGoogleGenerativeAI } from '../shared/gemini'
+import { sha256 } from '../shared/hash'
+import { generate } from '../shared/llm'
 import {
   CONTENT_SCHEMA,
   PROMPT_TO_GENERATE_SELECT_QUIZ,
   type QuizContent,
 } from './constants'
-import type { MargedNoteData } from '../note/components/notes-utils'
-import type { TextNoteData } from '../note/components/notes/TextNote/types'
 import type { QuizDB, Quizzes } from './storage'
-import { shuffle } from '../../utils/arr'
-import { sha256 } from '../shared/hash'
-import { generate } from '../shared/llm'
 const generateQuizzesFromAI = async (text: string): Promise<QuizContent[]> => {
   const gemini = getGoogleGenerativeAI()
   if (!gemini) {
@@ -20,7 +20,7 @@ const generateQuizzesFromAI = async (text: string): Promise<QuizContent[]> => {
   const response = await generate({
     systemPrompt: PROMPT_TO_GENERATE_SELECT_QUIZ,
     userPrompt: text,
-    jsonMode: true
+    jsonMode: true,
   })
 
   let json: unknown

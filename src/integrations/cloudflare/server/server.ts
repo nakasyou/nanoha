@@ -8,7 +8,7 @@ export function createExports(manifest: import('astro').SSRManifest) {
 
   const honoApp = new Hono()
 
-  honoApp.use(basicAuth({verifyUser: (username, password, c) => true ,}))
+  honoApp.use(basicAuth({ verifyUser: (username, password, c) => true }))
 
   honoApp.all('/*', async (c) => {
     const res = await app.render(c.req.raw)

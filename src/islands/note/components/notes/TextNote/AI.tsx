@@ -12,8 +12,8 @@ import {
   onMount,
   untrack,
 } from 'solid-js'
-import { Spinner } from '../../utils/Spinner'
 import { generate as generateLLM, generateStream } from '../../../../shared/llm'
+import { Spinner } from '../../utils/Spinner'
 
 const markdownParser = markdownIt()
 
@@ -145,10 +145,12 @@ export const FromText = (props: {
   const generate = async () => {
     setIsPreprocessing(true)
     props.setStream({
-      generate: () =>generateStream({
-        systemPrompt: 'ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。太字の場所はユーザーに見えません。また、単語の一覧を箇条書きにすることはしないでください。',
-        userPrompt: getPrompt()
-      })
+      generate: () =>
+        generateStream({
+          systemPrompt:
+            'ユーザーの指示に基づき、暗記の手助けになる赤シート用文章を生成しなさい。赤シートで隠すべき単語は、Markdownの太字機能で表現しなさい。隠す必要がない場所には太字は使わないでください。太字の場所はユーザーに見えません。また、単語の一覧を箇条書きにすることはしないでください。',
+          userPrompt: getPrompt(),
+        }),
     })
     setIsPreprocessing(false)
   }
@@ -213,12 +215,13 @@ export const FromImage = (props: {
 
     const generate = async () =>
       await generateStream({
-        systemPrompt: '画像を抽出し、そっくりそのまま書き出しなさい。省略せずに画像の文字全てを書き出すこと。画像に書いていないことは書かないこと。また、ユーザーからの指示があれば、条件を満たす場所をMarkdownの太字で表現しなさい。',
-        image: {mimeType: file.type,data: b64,},
-        userPrompt: ''
+        systemPrompt:
+          '画像を抽出し、そっくりそのまま書き出しなさい。省略せずに画像の文字全てを書き出すこと。画像に書いていないことは書かないこと。また、ユーザーからの指示があれば、条件を満たす場所をMarkdownの太字で表現しなさい。',
+        image: { mimeType: file.type, data: b64 },
+        userPrompt: '',
       })
-    props.setStream({ 
-      generate
+    props.setStream({
+      generate,
     })
     setIsPreprocessing(false)
   }
@@ -235,9 +238,12 @@ export const FromImage = (props: {
       >
         <div class="h-[70dvh] max-h-[70dvh] grid grid-rows-2 grid-cols-1 md:grid-rows-1 md:grid-cols-2">
           <div>
-            <div style={{
-              'background-image': `url("${getScanedImageURL()}")`
-            }} class="w-full h-full bg-no-repeat bg-center bg-contain" />
+            <div
+              style={{
+                'background-image': `url("${getScanedImageURL()}")`,
+              }}
+              class="w-full h-full bg-no-repeat bg-center bg-contain"
+            />
           </div>
           <div class="h-full">
             <label class="h-full flex flex-col">
