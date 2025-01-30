@@ -11,7 +11,7 @@
     "check:types": "tsc --noEmit"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^11.2.0",
+    "@astrojs/cloudflare": "^12.2.1",
     "@astrojs/sitemap": "^3.2.1",
     "@astrojs/tailwind": "^5.1.2",
     "@builder.io/qwik": "1.5.6",
